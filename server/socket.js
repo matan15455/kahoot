@@ -1,7 +1,16 @@
 import { Server } from "socket.io";
 import Quiz from "./models/Quiz.js"; // המודל של החידון
+import { RoomManager } from "./realtime/RoomManager.js";
 
-const rooms = {}; // החדרים בזיכרון
+const rooms = new RoomManager();
+
+function hostRoom(roomId) {
+  return `${roomId}:host`;
+}
+
+function playersRoom(roomId) {
+  return `${roomId}:players`;
+}
 
 export default function initSocket(server) {
   const io = new Server(server, { cors: { origin: "*" } });
@@ -13,37 +22,28 @@ export default function initSocket(server) {
     // יצירת חדר
     // =======================
     socket.on("createRoom", ({ hostId, quizId }) => {
-
-      //מחית החדר הקודם של אותו מארח
-       for (const roomId in rooms) {
-        const room = rooms[roomId];
-
-        if (room.hostId === hostId) {
-          clearTimeout(room.questionTimer);
-          delete rooms[roomId];
-          console.log(`🧹 Old room ${roomId} removed before creating new one`);
-        }
+      if (!hostId || !quizId) {
+        io.to(socket.id).emit("error", "Invalid payload");
+        return;
       }
 
-      //יצירת קוד לחדר
-      const roomId = Math.random().toString(36).substring(2, 8);
+      const { roomId } = rooms.createRoom(String(hostId), socket.id, String(quizId));
 
-      rooms[roomId] = {
-        hostId:hostId,
-        quizId:quizId,
-        players: [],
-        currentQuestion: 0,
-        questionTimer: null,
-        answersCount: {}
-      };
-
+      // Everyone (host + players) stay in the base room for shared events
       socket.join(roomId);
+      // Host-only sub-room for host events
+      socket.join(hostRoom(roomId));
+
+      socket.data.roomId = roomId;
+      socket.data.userId = String(hostId);
+      socket.data.role = "host";
+
       io.to(socket.id).emit("roomCreated", { roomId });
       console.log(`🏠 Room ${roomId} created by ${hostId} quiz ${quizId}`);
     });
 
     function initAnswersCount(roomId) {
-      const room = rooms[roomId];
+      const room = rooms.getRoom(roomId);
       const currentQ = room.questions[room.currentQuestion];
 
       room.answersCount = {};
@@ -55,7 +55,7 @@ export default function initSocket(server) {
     }
 
     function finishQuestion(roomId) {
-      const room = rooms[roomId];
+      const room = rooms.getRoom(roomId);
       if (!room) 
         return;
 
@@ -75,7 +75,7 @@ export default function initSocket(server) {
 
 
     function startQuestionTimer(roomId) {
-      const room = rooms[roomId];
+      const room = rooms.getRoom(roomId);
       if (!room) return;
 
       const q = room.questions[room.currentQuestion];
@@ -102,17 +102,36 @@ export default function initSocket(server) {
     // הצטרפות לחדר
     // =======================
     socket.on("joinRoom", ({ roomId, user }) => {
-      const room = rooms[roomId];
-      if (!room)
-         return io.to(socket.id).emit("error", "Room not found");
+      const userId = user?.id;
+      const username = user?.username;
+      if (!roomId || !userId || !username) {
+        io.to(socket.id).emit("error", "Invalid payload");
+        return;
+      }
 
-      room.players.push({ id: user.id, username: user.username, score: 0 });
-      socket.join(roomId);
+      const result = rooms.joinRoom(String(roomId), {
+        userId: String(userId),
+        socketId: socket.id,
+        username: String(username),
+      });
+
+      if (!result.ok) {
+        io.to(socket.id).emit("error", result.error);
+        return;
+      }
+
+      socket.join(String(roomId));
+      socket.join(playersRoom(String(roomId)));
+
+      socket.data.roomId = String(roomId);
+      socket.data.userId = String(userId);
+      socket.data.role = "player";
 
       // שולח עדכון לכל מי שבחדר
-      io.to(roomId).emit("playersUpdated", rooms[roomId].players);
+      const snapshot = rooms.snapshot(String(roomId));
+      io.to(String(roomId)).emit("playersUpdated", snapshot.players);
 
-      console.log(`👥 ${user.username} joined room ${roomId}`);
+      console.log(`👥 ${username} joined room ${roomId}`);
     });
 
 
@@ -138,9 +157,17 @@ export default function initSocket(server) {
     // התחלת חידון
     // =======================
     socket.on("startQuiz", async ({ roomId }) => {
-      const room = rooms[roomId];
-      if (!room)
-         return io.to(socket.id).emit("error", "Room not found");
+      const room = rooms.getRoom(roomId);
+      if (!room) {
+        io.to(socket.id).emit("error", "Room not found");
+        return;
+      }
+
+      // Only host can start
+      if (!socket.data?.userId || room.hostUserId !== String(socket.data.userId)) {
+        io.to(socket.id).emit("error", "Only host can start");
+        return;
+      }
 
       try {
         const quiz = await Quiz.findById(room.quizId).populate("questions");
@@ -149,6 +176,7 @@ export default function initSocket(server) {
 
         room.questions = quiz.questions;
         room.currentQuestion = 0;
+        room.phase = "question";
 
         initAnswersCount(roomId);
         startQuestionTimer(roomId);
@@ -168,17 +196,21 @@ export default function initSocket(server) {
     // שליחת תשובה
     // =======================
     socket.on("answerQuestion", ({ roomId, userId, answerText }) => {
-      const room = rooms[roomId];
+      const room = rooms.getRoom(roomId);
       if (!room) return;
+      if (room.phase !== "question") return;
 
       const currentQ = room.questions[room.currentQuestion];
       const chosenAnswer = currentQ.answers.find(a => a.text === answerText);
       if (!chosenAnswer) 
         return;
 
-      const player = room.players.find(p => p.id === userId);
-      if (!player) 
-        return;
+      // Authoritative identity from socket, not payload (payload kept for backward compatibility)
+      const actorUserId = String(socket.data?.userId ?? userId ?? "");
+      if (!actorUserId) return;
+
+      const player = room.players.get(actorUserId);
+      if (!player) return;
 
       // סופרים תשובה
       room.answersCount[answerText]++;
@@ -190,19 +222,23 @@ export default function initSocket(server) {
       }
 
       // האם כל השחקנים ענו?
-      if (room.totalAnswers === room.players.length) {
+      if (room.totalAnswers === room.players.size) {
         finishQuestion(roomId);
       }
     });
 
     socket.on("getCurrentQuestion", ({ roomId }) => {
-      const room = rooms[roomId];
+      const room = rooms.getRoom(roomId);
       if (!room || !room.questions) return;
 
       const q = room.questions[room.currentQuestion];
 
-      sendQuestionToHost(roomId, room.currentQuestion, q);
-      sendQuestionToPlayers(roomId, room.currentQuestion, q);
+      // Send only to the requester role (prevents host/player leakage)
+      if (socket.data?.role === "host") {
+        sendQuestionToHost(roomId, room.currentQuestion, q);
+      } else {
+        sendQuestionToPlayers(roomId, room.currentQuestion, q, socket.id);
+      }
 
       socket.emit("questionTimerStarted", {
         endsAt: room.endsAt
@@ -215,22 +251,25 @@ export default function initSocket(server) {
     // מעבר לשאלה הבאה (מארח)
     // =======================
     socket.on("nextQuestion", ({ roomId }) => {
-      const room = rooms[roomId];
+      const room = rooms.getRoom(roomId);
       if (!room) return;
+      if (!socket.data?.userId || room.hostUserId !== String(socket.data.userId)) return;
 
       // אם אין עוד שאלות --> סוף משחק 
       if (room.currentQuestion >= room.questions.length - 1) {
-        io.to(roomId).emit("quizEnded", { players: room.players });
+        room.phase = "ended";
+        io.to(roomId).emit("quizEnded", { players: [...room.players.values()].map(p => ({ id: p.userId, username: p.username, score: p.score })) });
 
         clearTimeout(room.questionTimer);
 
-        delete rooms[roomId];
+        rooms.deleteRoom(roomId);
         console.log(`🗑 Room ${roomId} deleted after quiz end`);
 
         return;
       }
 
       room.currentQuestion++;
+      room.phase = "question";
 
       initAnswersCount(roomId);
       startQuestionTimer(roomId);
@@ -247,29 +286,28 @@ export default function initSocket(server) {
     // =======================
     socket.on("disconnect", () => {
       console.log("🔴 Client disconnected:", socket.id);
-      // אפשר למחוק את השחקן מרשימת השחקנים אם רוצים
-      for (const roomId in rooms) {
-        const room = rooms[roomId];
-        const index = room.players.findIndex(p => p.id === socket.id);
-        if (index !== -1) {
-          room.players.splice(index, 1);
-          io.to(roomId).emit("playersUpdated", room.players);
-        }
+      const result = rooms.disconnect(socket.id);
+      if (!result) return;
+
+      const snapshot = rooms.snapshot(result.roomId);
+      if (snapshot) {
+        io.to(result.roomId).emit("playersUpdated", snapshot.players);
       }
     });
 
     function sendQuestionToHost(roomId, questionIndex, question) {
-      const room = rooms[roomId];
+      const room = rooms.getRoom(roomId);
       if (!room) return;
 
-      io.to(roomId).emit("GetQuestionForHost", {
+      io.to(hostRoom(roomId)).emit("GetQuestionForHost", {
         questionIndex,
         question
       });
     }
 
-   function sendQuestionToPlayers(roomId, questionIndex, question) {
-      io.to(roomId).emit("GetQuestionForPlayer", {
+   function sendQuestionToPlayers(roomId, questionIndex, question, onlySocketId = null) {
+      const target = onlySocketId ? onlySocketId : playersRoom(roomId);
+      io.to(target).emit("GetQuestionForPlayer", {
         questionIndex:questionIndex,
         question: {
           text: question.text,
