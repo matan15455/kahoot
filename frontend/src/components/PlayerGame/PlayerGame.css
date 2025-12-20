@@ -1,0 +1,251 @@
+/* ========== רקע כללי לשחקן ========== */
+.player-game-container {
+  min-height: 100vh;
+  padding: 40px;
+  text-align: center;
+
+  background: radial-gradient(circle at bottom, #00d2ff 0%, #00181f 80%);
+  color: #fff;
+
+  animation: fadeInPlayer 0.6s ease-out;
+}
+
+@keyframes fadeInPlayer {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* כותרות */
+h1, h2 {
+  font-weight: 900;
+  background: linear-gradient(90deg, #fff, #7cfffa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 18px rgba(124,255,250,0.8);
+}
+
+/* ========== טיימר ========== */
+.timer-box {
+  display: inline-block;
+  padding: 12px 28px;
+  border-radius: 999px;
+
+  background: linear-gradient(135deg, #00ffbf, #0090ff);
+  color: #001018;
+
+  font-size: 1.2rem;
+  font-weight: 900;
+
+  margin: 15px auto;
+
+  box-shadow: 0 0 25px rgba(0,255,200,0.9);
+  transition: 0.3s;
+}
+
+.timer-box.low-time {
+  animation: dangerPulse 0.45s infinite;
+  background: linear-gradient(135deg, #ff3b3b, #b30000);
+  color: #fff;
+}
+
+@keyframes dangerPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+
+/* ========== כפתורי תשובות ========== */
+.answer-buttons {
+  list-style: none;
+  padding: 0;
+  margin: 35px auto;
+  max-width: 700px;
+}
+
+.answer-button {
+  padding: 20px 25px;
+  margin: 14px 0;
+
+  font-size: 1.5rem;
+  font-weight: 800;
+
+  background: rgba(255,255,255,0.12);
+  border-radius: 18px;
+  border: 2px solid rgba(255,255,255,0.25);
+
+  backdrop-filter: blur(12px);
+
+  transition: 0.25s ease;
+  cursor: pointer;
+}
+
+.answer-button:hover {
+  background: rgba(255,255,255,0.22);
+  transform: scale(1.08);
+  box-shadow: 0 0 22px rgba(255,255,255,0.4);
+}
+
+.answer-button.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ========== סיכום שאלה ========== */
+.summary-box {
+  padding: 40px;
+  animation: fadeInPlayer 0.5s ease-out;
+}
+
+.summary-list {
+  list-style: none;
+  padding: 0;
+  margin: 20px auto;
+  max-width: 650px;
+}
+
+.summary-item {
+  padding: 18px;
+  margin: 12px 0;
+  border-radius: 16px;
+
+  background: rgba(255,255,255,0.08);
+  border: 2px solid rgba(255,255,255,0.25);
+
+  display: flex;
+  justify-content: space-between;
+
+  font-size: 1.3rem;
+  transition: 0.3s ease;
+}
+
+.correct-answer {
+  background: rgba(0, 255, 120, 0.15);
+  border-left: 6px solid #00ff88;
+  color: #00ff88;
+  font-weight: 700;
+  padding-left: 12px;
+}
+
+.wrong-answer {
+  background: rgba(255, 60, 60, 0.15);
+  border-left: 6px solid #ff5050;
+  color: #ff7070;
+  font-weight: 700;
+  padding-left: 12px;
+}
+
+
+/* ========== סוף משחק ========== */
+.player-game-container ol li {
+  padding: 14px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 14px;
+  margin: 10px auto;
+  max-width: 480px;
+
+  font-weight: 800;
+  font-size: 1.3rem;
+
+  transition: 0.25s;
+}
+
+.player-game-container ol li:hover {
+  transform: scale(1.08);
+}
+
+
+.mega-timer {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 20px auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  filter: drop-shadow(0 0 25px rgba(0, 255, 255, 0.6));
+}
+
+/* SVG */
+.timer-svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.timer-svg circle {
+  fill: none;
+  stroke-width: 8;
+}
+
+/* רקע */
+.timer-svg .bg {
+  stroke: rgba(255, 255, 255, 0.08);
+}
+
+/* קו הזמן */
+.timer-svg .progress {
+  stroke: #00f2fe;
+  stroke-linecap: round;
+  stroke-dasharray: 283;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.25s linear, stroke 0.3s;
+}
+
+/* מספר */
+.timer-number {
+  font-size: 42px;
+  font-weight: 900;
+  color: white;
+  text-shadow:
+    0 0 10px rgba(0, 242, 254, 0.8),
+    0 0 25px rgba(0, 242, 254, 0.6);
+}
+
+/* טקסט קטן */
+.timer-label {
+  position: absolute;
+  bottom: 18px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ⚠️ אזהרה */
+.mega-timer.warning .progress {
+  stroke: #ffd200;
+  filter: drop-shadow(0 0 12px rgba(255, 210, 0, 0.8));
+}
+
+.mega-timer.warning {
+  animation: pulse 1s infinite;
+}
+
+/* 🚨 סכנה */
+.mega-timer.danger .progress {
+  stroke: #ff003c;
+  filter: drop-shadow(0 0 20px rgba(255, 0, 60, 1));
+}
+
+.mega-timer.danger {
+  animation: shake 0.4s infinite;
+}
+
+/* אנימציות */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  50% { transform: translateX(2px); }
+  75% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+

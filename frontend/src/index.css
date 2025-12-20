@@ -1,0 +1,37 @@
+/* Reset בסיסי */
+
+@font-face {
+  font-family: 'MyFont';
+  src: url('./assets/fonts/hebrew.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+body {
+  font-family: 'MyFont', sans-serif;
+}
+
+button {
+  font-family: 'MyFont', sans-serif !important;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #111;
+  color: #fff;
+  direction: rtl;
+  overflow-x: hidden;
+}
+
+/* מונע מהנד־בר לדחוף תוכן */
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+

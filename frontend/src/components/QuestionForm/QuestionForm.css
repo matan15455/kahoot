@@ -1,0 +1,257 @@
+/* ========================================================= */
+/*               ⚡ ULTRA PREMIUM GLASS INPUTS ⚡             */
+/* ========================================================= */
+
+/* בסיס כללי לכל השדות */
+.q-input,
+.q-select,
+.answer-input {
+  width: 100%;
+  padding: 15px 20px;
+
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 14px;
+
+  color: #fff;
+  font-size: 1.08rem;
+
+  transition: 0.3s ease, box-shadow 0.5s ease;
+  backdrop-filter: blur(12px);
+
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,0.04),
+    0 4px 18px rgba(0,0,0,0.35);
+}
+
+.q-input::placeholder,
+.answer-input::placeholder {
+  color: rgba(255,255,255,0.45);
+  transition: 0.3s;
+}
+
+.q-input:hover,
+.q-select:hover,
+.answer-input:hover {
+  background: rgba(255,255,255,0.08);
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 0 25px rgba(255,255,255,0.05),
+    0 6px 20px rgba(108,99,255,0.4);
+}
+
+/* אפקט פוקוס מטורף */
+.q-input:focus,
+.q-select:focus,
+
+/* מרווח בין כל השדות */
+.q-input,
+.q-select,
+.answer-input {
+  margin-bottom: 14px;
+}
+
+/* מרווח בין קבוצות שדה */
+.field-group {
+  margin-bottom: 22px;
+}
+
+/* מרווח מוגבר בין תשובות */
+.answer-item {
+  margin-bottom: 16px;
+}
+
+/* מרווח בין כפתורים */
+.question-actions {
+  margin-top: 35px;
+  gap: 18px;
+}
+
+
+/* ========================================================= */
+/*                   SELECT — יצירת-אלוהים                   */
+/* ========================================================= */
+
+.q-select {
+  appearance: none;
+  padding-left: 52px;
+
+  background-image: url("data:image/svg+xml,%3Csvg fill='white' width='22' height='22' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 8l7 7 7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 18px center;
+  background-size: 20px;
+
+  cursor: pointer;
+}
+
+.q-select:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+
+/* ========================================================= */
+/*                  ANSWER ITEM — אפקט כבד                   */
+/* ========================================================= */
+
+.answer-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 16px;
+  margin-bottom: 14px;
+
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 14px;
+
+  transition: 0.3s ease;
+  backdrop-filter: blur(12px);
+
+  box-shadow:
+    inset 0 0 20px rgba(255,255,255,0.03),
+    0 6px 18px rgba(0,0,0,0.35);
+}
+
+.answer-item:hover {
+  transform: translateX(-5px) scale(1.02);
+  background: rgba(255,255,255,0.1);
+  box-shadow:
+    0 8px 22px rgba(108,99,255,0.4),
+    inset 0 0 30px rgba(255,255,255,0.05);
+}
+
+/* טייטל של checkbox */
+.answer-check {
+  display: flex;
+  gap: 6px;
+  padding: 7px 12px;
+
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+
+  color: white;
+  align-items: center;
+
+  transition: 0.3s;
+}
+
+.answer-check:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+/* ========================================================= */
+/*           DELETE BUTTON — כפתור הריסה אלגנטי              */
+/* ========================================================= */
+
+.delete-btn {
+  min-width: 45px;
+  min-height: 45px;
+
+  background: linear-gradient(135deg, #ffffff, #e36565);
+  border: none;
+  border-radius: 12px;
+
+  cursor: pointer;
+  color: white;
+  font-size: 1.25rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  transition: 0.25s ease;
+  box-shadow: 0 8px 20px rgba(196, 83, 104, 0.35);
+}
+
+.delete-btn:hover {
+  transform: scale(1.1) rotate(4deg);
+  box-shadow: 0 10px 28px rgba(255,45,85,0.55);
+}
+
+.delete-btn:active {
+  transform: scale(0.92) rotate(2deg);
+}
+
+/* ========================================================= */
+/*              ADD ANSWER — כפתור פרימיום ירוק              */
+/* ========================================================= */
+
+.add-answer-btn {
+  width: 100%;
+  padding: 15px;
+
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  border: none;
+  border-radius: 14px;
+
+  color: white;
+  font-weight: 800;
+  font-size: 1.1rem;
+
+  cursor: pointer;
+  transition: 0.3s ease;
+
+  box-shadow: 0 8px 22px rgba(67,233,123,0.35);
+}
+
+.add-answer-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(67,233,123,0.55);
+}
+
+.add-answer-btn:active {
+  transform: translateY(-2px) scale(0.97);
+}
+
+/* ========================================================= */
+/*              FORM BUTTONS — שמור / בטל                     */
+/* ========================================================= */
+
+.submit-btn,
+.cancel-btn {
+  flex: 1;
+  padding: 16px;
+
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  color: white;
+
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #6c63ff, #8a84ff);
+  box-shadow: 0 8px 22px rgba(108,99,255,0.45);
+}
+
+.submit-btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(108,99,255,0.65);
+}
+
+.cancel-btn {
+  background: rgba(255,255,255,0.12);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+}
+
+.cancel-btn:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateY(-3px);
+}
+
+/* ========================================================= */
+/*                  SMOOTH ANIMATION                        */
+/* ========================================================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

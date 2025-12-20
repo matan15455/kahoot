@@ -1,0 +1,113 @@
+/* ====== רקע כללי של הדף ====== */
+.myquizzes-page {
+  min-height: 100vh;
+  padding: 40px;
+  background: radial-gradient(circle at top, #0d0f1a, #000000 70%);
+  color: #fff;
+  animation: fadeIn 0.8s ease;
+}
+
+
+/* ===== כותרת הדף ===== */
+.myquizzes-header {
+  text-align: center;
+  margin-bottom: 40px;
+  animation: slideDown 0.6s ease;
+}
+
+.myquizzes-header h1 {
+  font-size: 3rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #00eaff, #00ffbb);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 25px rgba(0, 255, 255, 0.45);
+}
+
+.header-underline {
+  display: block;
+  width: 120px;
+  height: 6px;
+  background: linear-gradient(90deg, #00f2fe, #4facfe);
+  margin: 12px auto 0;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+}
+
+
+/* ===== מצב אין חידונים ===== */
+.empty-state {
+  margin-top: 80px;
+  text-align: center;
+  font-size: 1.5rem;
+  opacity: 0.8;
+  animation: fadeInUp 0.8s ease;
+}
+
+.empty-illustration {
+  width: 180px;
+  height: 180px;
+  margin: 25px auto 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, #00f2fe44, #0044ff00 70%);
+  box-shadow: 0 0 45px rgba(0, 255, 255, 0.3);
+  animation: floating 3s ease-in-out infinite;
+}
+
+
+/* ===== גריד של החידונים ===== */
+.quizzes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 35px;
+  padding: 10px;
+  animation: fadeInUp 0.7s ease;
+}
+
+
+/* ===== עיטוף הכרטיס ===== */
+.quiz-wrapper {
+  transform: perspective(800px) translateZ(0);
+  transition: 0.3s ease;
+}
+
+.quiz-wrapper:hover {
+  transform: perspective(800px) translateZ(35px) scale(1.05);
+  filter: drop-shadow(0 0 18px rgba(0, 255, 255, 0.4));
+}
+
+
+/* ===== אנימציות ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(35px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes floating {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+
+/* ===== רספונסיביות ===== */
+@media (max-width: 480px) {
+  .myquizzes-header h1 {
+    font-size: 2.3rem;
+  }
+
+  .quizzes-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,286 @@
+/* ========== רקע כללי למארח ========== */
+.host-game-container {
+  padding: 40px;
+  text-align: center;
+  color: #fff;
+  min-height: 100vh;
+
+  /* רקע ניאון חלק */
+  background: radial-gradient(circle at top, #4a00e0 0%, #0c0032 80%);
+  backdrop-filter: blur(25px);
+
+  animation: fadeInPage 0.6s ease-out;
+}
+
+@keyframes fadeInPage {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* כותרות */
+h1, h2 {
+  background: linear-gradient(90deg, #ffffff, #9be6ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 900;
+  text-shadow: 0 0 25px rgba(155,230,255,0.6);
+}
+
+/* ========== שאלה ========== */
+.question-text {
+  font-size: 2.2rem;
+  padding: 25px 30px;
+  border-radius: 20px;
+
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.25);
+  backdrop-filter: blur(15px);
+
+  box-shadow: 0 0 25px rgba(255,255,255,0.25);
+  margin: 25px auto;
+
+  width: fit-content;
+  max-width: 900px;
+
+  animation: popIn 0.4s ease-out;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* ========== טיימר ניאון ========== */
+.timer-box {
+  display: inline-block;
+  padding: 12px 26px;
+  border-radius: 999px;
+
+  background: linear-gradient(135deg, #ff7a18, #af002d);
+  box-shadow: 0 0 20px rgba(255, 90, 40, 0.7);
+
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #fff;
+
+  margin-bottom: 20px;
+}
+
+.timer-box.low-time {
+  animation: alertPulse 0.5s infinite;
+  background: linear-gradient(135deg, #ff2b2b, #960000);
+  box-shadow: 0 0 30px rgba(255, 0, 0, 1);
+}
+
+@keyframes alertPulse {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+/* ========== תשובות שמוצגות למארח (תצוגה בלבד) ========== */
+.answers-list {
+  list-style: none;
+  padding: 0;
+  margin: 25px auto;
+  max-width: 700px;
+}
+
+.answer-item {
+  padding: 18px 22px;
+  margin: 14px 0;
+
+  font-size: 1.35rem;
+  font-weight: 700;
+
+  background: rgba(255,255,255,0.10);
+  border: 2px solid rgba(255,255,255,0.25);
+  border-radius: 16px;
+
+  backdrop-filter: blur(12px);
+  transition: 0.25s ease;
+}
+
+.answer-item:hover {
+  transform: translateX(12px);
+  background: rgba(255,255,255,0.22);
+}
+
+/* ========== כפתור "הבא" ========== */
+.next-btn {
+  padding: 16px 38px;
+  border-radius: 60px;
+
+  font-size: 1.35rem;
+  font-weight: 800;
+
+  background: linear-gradient(135deg, #ff4b2b, #ff416c);
+  color: #fff;
+
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+
+  box-shadow: 0 0 20px rgba(255, 65, 108, 0.7);
+  transition: 0.25s;
+}
+
+.next-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 35px rgba(255, 65, 108, 1);
+}
+
+/* ========== סיכום שאלה ========== */
+.summary-box {
+  padding: 40px;
+  text-align: center;
+
+  color: #fff;
+  animation: fadeInPage 0.6s ease-out;
+}
+
+.summary-list {
+  list-style: none;
+  padding: 0;
+  margin: 25px auto;
+  max-width: 650px;
+}
+
+.summary-item {
+  padding: 18px;
+  margin: 14px 0;
+  border-radius: 16px;
+
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+
+  display: flex;
+  justify-content: space-between;
+  transition: 0.3s ease;
+}
+
+.correct-answer {
+  background: rgba(0, 255, 130, 0.2);
+  border-color: rgba(0,255,130,0.5);
+  box-shadow: 0 0 16px rgba(0,255,130,0.4);
+}
+
+/* ========== טבלת תוצאות סופיות ========== */
+.results-list {
+  list-style: none;
+  margin-top: 25px;
+}
+
+.results-list li {
+  background: rgba(255,255,255,0.09);
+  padding: 16px;
+  margin: 10px auto;
+  max-width: 550px;
+
+  border-radius: 14px;
+  font-size: 1.35rem;
+  font-weight: 900;
+
+  transition: 0.25s ease;
+}
+
+.results-list li:hover {
+  transform: scale(1.07);
+}
+
+.mega-timer {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 20px auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  filter: drop-shadow(0 0 25px rgba(0, 255, 255, 0.6));
+}
+
+/* SVG */
+.timer-svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.timer-svg circle {
+  fill: none;
+  stroke-width: 8;
+}
+
+/* רקע */
+.timer-svg .bg {
+  stroke: rgba(255, 255, 255, 0.08);
+}
+
+/* קו הזמן */
+.timer-svg .progress {
+  stroke: #00f2fe;
+  stroke-linecap: round;
+  stroke-dasharray: 283;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.25s linear, stroke 0.3s;
+}
+
+/* מספר */
+.timer-number {
+  font-size: 42px;
+  font-weight: 900;
+  color: white;
+  text-shadow:
+    0 0 10px rgba(0, 242, 254, 0.8),
+    0 0 25px rgba(0, 242, 254, 0.6);
+}
+
+/* טקסט קטן */
+.timer-label {
+  position: absolute;
+  bottom: 18px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ⚠️ אזהרה */
+.mega-timer.warning .progress {
+  stroke: #ffd200;
+  filter: drop-shadow(0 0 12px rgba(255, 210, 0, 0.8));
+}
+
+.mega-timer.warning {
+  animation: pulse 1s infinite;
+}
+
+/* 🚨 סכנה */
+.mega-timer.danger .progress {
+  stroke: #ff003c;
+  filter: drop-shadow(0 0 20px rgba(255, 0, 60, 1));
+}
+
+.mega-timer.danger {
+  animation: shake 0.4s infinite;
+}
+
+/* אנימציות */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  50% { transform: translateX(2px); }
+  75% { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+

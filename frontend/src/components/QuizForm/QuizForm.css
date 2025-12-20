@@ -1,0 +1,168 @@
+/* ========================================= */
+/*          QUIZ FORM — GLASS ULTRA UI       */
+/* ========================================= */
+
+.quiz-form-card {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 42px 36px;
+
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+
+  border-radius: 26px;
+  border: 1px solid rgba(255,255,255,0.15);
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.45),
+    inset 0 0 25px rgba(255,255,255,0.05);
+
+  animation: formFade 0.6s ease;
+
+  position: relative;
+  overflow: hidden;
+}
+
+/* אפקט אור רך מסתובב */
+.quiz-form-card::before {
+  content: "";
+  position: absolute;
+  width: 260%;
+  height: 260%;
+  top: -80%;
+  right: -80%;
+  background: radial-gradient(
+    circle,
+    rgba(120, 90, 255, 0.12),
+    transparent 70%
+  );
+  animation: rotateGlow 22s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes rotateGlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes formFade {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ========================================= */
+/*                  TITLE                    */
+/* ========================================= */
+.quiz-form-card h2 {
+  font-size: 2.4rem;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 32px;
+
+  -webkit-text-fill-color:aliceblue;
+
+  letter-spacing: 1px;
+}
+
+/* ========================================= */
+/*           INPUTS & TEXTAREA               */
+/* ========================================= */
+
+.quiz-input,
+.quiz-textarea {
+  width: 100%;
+  padding: 17px 22px;
+  margin-bottom: 22px;
+
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 16px;
+
+  color: white;
+  font-size: 1.08rem;
+  font-weight: 500;
+  font-family: inherit;
+
+  transition: 0.3s ease, box-shadow 0.4s ease;
+  backdrop-filter: blur(12px);
+}
+
+.quiz-input::placeholder,
+.quiz-textarea::placeholder {
+  color: rgba(255,255,255,0.45);
+}
+
+.quiz-input:focus,
+.quiz-textarea:focus {
+  background: rgba(255,255,255,0.12);
+  border-color: #8a7bff;
+
+  box-shadow: 
+    0 0 0 4px rgba(140,120,255,0.25),
+    0 10px 30px rgba(140,120,255,0.4);
+
+  transform: translateY(-3px);
+  outline: none;
+}
+
+/* TEXTAREA */
+.quiz-textarea {
+  min-height: 130px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+/* ========================================= */
+/*                  BUTTON                   */
+/* ========================================= */
+
+.quiz-submit-btn {
+  width: 100%;
+  padding: 20px;
+
+  background: linear-gradient(135deg, #7c6aff, #b180ff);
+  border: none;
+  border-radius: 16px;
+
+  color: white;
+  font-size: 1.35rem;
+  font-weight: 800;
+  cursor: pointer;
+
+  box-shadow: 0 15px 45px rgba(124, 106, 255, 0.45);
+
+  transition: 0.35s cubic-bezier(.2, .8, .2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* אפקט מעבר אור */
+.quiz-submit-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -110%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.4),
+    transparent
+  );
+  transition: left 0.7s ease;
+}
+
+.quiz-submit-btn:hover::before {
+  left: 110%;
+}
+
+.quiz-submit-btn:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 20px 55px rgba(124, 106, 255, 0.6);
+}
+
+.quiz-submit-btn:active {
+  transform: translateY(-2px) scale(0.98);
+}
