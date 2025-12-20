@@ -1,99 +1,91 @@
-import { useState, useEffect,useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { socket } from "../../socket";
-import "./HostGame.css"; 
+import "./HostGame.css";
 
 export default function HostGame() {
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get("roomId");
 
-  const [players, setPlayers] = useState([]);
-  const [currentQuestion, setCurrentQuestion] = useState(null);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [phase, setPhase] = useState("waiting"); 
-  const [summary, setSummary] = useState(null);
+  const [room, setRoom] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
   const timerRef = useRef(null);
 
- 
-
   useEffect(() => {
-    if (!roomId) return;
+    if (!roomId) 
+      return;
 
-    socket.emit("getCurrentQuestion", { roomId });
+    const handleRoomUpdated = (roomData) => {
+      // תטפל רק בעדכון של החדר שאני נמצא בו
+      if (roomData.roomId !== roomId) 
+        return;
 
-    const handlePlayersUpdate = (players) => {
-      setPlayers(players);
-    };
+      setRoom(roomData);
 
-    const handleQuestion = ({ questionIndex, question }) => {
-      setCurrentQuestion(question);
-      setCurrentQuestionIndex(questionIndex);
-      setPhase("question");
-      setSummary(null);
+      // הצגת טיימר 
+      if (roomData.endsAt) {
+        clearInterval(timerRef.current);
 
-    };
+        const update = () => {
+          const remaining = Math.max(
+            0,
+            Math.ceil((roomData.endsAt - Date.now()) / 1000)
+          );
 
-    const handleQuizEnded = ({ players }) => {
-      setPlayers(players);
-      setPhase("end");
-    };
+          setTimeLeft(remaining);
 
-    const handleSummary = ({ answersCount, correctAnswer }) => {
-      setSummary({ answersCount, correctAnswer });
-      setPhase("summary");
-    };
+          if (remaining <= 0) {
+            clearInterval(timerRef.current);
+          }
+        };
 
-    const handleTimer = ({ endsAt }) => {
-      clearInterval(timerRef.current);
-
-      const update = () => {
-        const remaining = Math.max(
-          0,
-          Math.ceil((endsAt - Date.now()) / 1000)
-        );
-
-        setTimeLeft(remaining);
-
-        if (remaining <= 0) {
-          clearInterval(timerRef.current);
-        }
-      };
-
-        update(); 
+        update();
         timerRef.current = setInterval(update, 250);
+      } else {
+        setTimeLeft(null);
+        clearInterval(timerRef.current);
+      }
     };
 
-    socket.on("questionTimerStarted", handleTimer);
-    socket.on("playersUpdated", handlePlayersUpdate);
-    socket.on("GetQuestionForHost", handleQuestion);
-    socket.on("quizEnded", handleQuizEnded);
-    socket.on("questionSummary", handleSummary);
+    socket.on("roomUpdated", handleRoomUpdated);
+
+    socket.emit("requestRoomState", { roomId });
 
     return () => {
-      socket.off("playersUpdated", handlePlayersUpdate);
-      socket.off("GetQuestionForHost", handleQuestion);
-      socket.off("quizEnded", handleQuizEnded);
-      socket.off("questionSummary", handleSummary);
-      socket.off("questionTimerStarted", handleTimer);
+      socket.off("roomUpdated", handleRoomUpdated);
       clearInterval(timerRef.current);
     };
   }, [roomId]);
 
-  const handleNextQuestion = () => {
+ 
+  const handleNext = () => {
     socket.emit("nextQuestion", { roomId });
   };
 
-  if (phase === "end") {
+  /* =====================================================
+     UI Guards
+  ===================================================== */
+  if (!room) {
+    return (
+      <div className="host-game-container">
+        <h2>טוען משחק…</h2>
+      </div>
+    );
+  }
+
+  /* =====================================================
+     END
+  ===================================================== */
+  if (room.phase === "END") {
     return (
       <div className="host-game-container">
         <h2>🏁 החידון הסתיים!</h2>
 
         <ol className="results-list">
-          {[...players]
+          {[...room.players]
             .sort((a, b) => b.score - a.score)
             .map((p, i) => (
-              <li key={p.id}>
+              <li key={p.userId}>
                 #{i + 1} — {p.username} ({p.score} נק')
               </li>
             ))}
@@ -102,79 +94,98 @@ export default function HostGame() {
     );
   }
 
-  if (phase === "summary" && summary) {
+  /* =====================================================
+     SUMMARY
+  ===================================================== */
+  if (room.phase === "SUMMARY" && room.summary) {
     return (
       <div className="summary-box">
-        <h2>📊 תוצאות השאלה</h2>
+        <h2>תוצאות השאלה</h2>
 
         <ul className="summary-list">
-          {Object.entries(summary.answersCount).map(([answer, count]) => (
-            <li
-              key={answer}
-              className={`summary-item ${
-                summary.correctAnswer === answer ? "correct-answer" : ""
-              }`}
-            >
-              <span className="summary-answer">{answer}</span>
-              <span className="summary-count">{count}</span>
-            </li>
-          ))}
+          {Object.entries(room.summary.answersCount).map(
+            ([answer, count]) => (
+              <li
+                key={answer}
+                className={`summary-item ${
+                  room.summary.correctAnswer === answer
+                    ? "correct-answer"
+                    : ""
+                }`}
+              >
+                <span className="summary-answer">{answer}</span>
+                <span className="summary-count">{count}</span>
+              </li>
+            )
+          )}
         </ul>
 
-        <button onClick={handleNextQuestion} className="next-btn">
+        <button onClick={handleNext} className="next-btn">
           לשאלה הבאה ▶
         </button>
       </div>
     );
   }
 
-  if (phase === "question" && currentQuestion) {
+  /* =====================================================
+     QUESTION
+  ===================================================== */
+  if (room.phase === "QUESTION" && room.question) {
     return (
       <div className="host-game-container">
-        <h2>שאלה {currentQuestionIndex + 1}</h2>
+        <h2>שאלה {room.questionIndex + 1}</h2>
 
-        <div className={`mega-timer ${timeLeft <= 5 ? "danger" : timeLeft <= 10 ? "warning" : ""}`}>
-          <svg className="timer-svg" viewBox="0 0 100 100">
-            <circle className="bg" cx="50" cy="50" r="45" />
-            <circle
-              className="progress"
-              cx="50"
-              cy="50"
-              r="45"
-              style={{
-                strokeDashoffset: 283 - (283 * timeLeft) / currentQuestion.time
-              }}
-            />
-          </svg>
-
-          <div className="timer-number">
-            {timeLeft}
+        {timeLeft !== null && (
+          <div
+            className={`mega-timer ${
+              timeLeft <= 5
+                ? "danger"
+                : timeLeft <= 10
+                ? "warning"
+                : ""
+            }`}
+          >
+            <svg className="timer-svg" viewBox="0 0 100 100">
+              <circle className="bg" cx="50" cy="50" r="45" />
+              <circle
+                className="progress"
+                cx="50"
+                cy="50"
+                r="45"
+                style={{
+                  strokeDashoffset:
+                    283 -
+                    (283 * timeLeft) / room.question.time
+                }}
+              />
+            </svg>
+            <div className="timer-number">{timeLeft}</div>
           </div>
+        )}
 
-        </div>
-
-
-        <h3 className="question-text">{currentQuestion.text}</h3>
+        <h3 className="question-text">{room.question.text}</h3>
 
         <ul className="answers-list">
-          {currentQuestion.answers.map((ans, idx) => (
+          {room.question.answers.map((ans, idx) => (
             <li key={idx} className="answer-item">
               {ans.text}
             </li>
           ))}
         </ul>
 
-        <button onClick={handleNextQuestion} className="next-btn">
-          לשאלה הבאה ▶
+        <button onClick={handleNext} className="next-btn">
+          סיים שאלה ▶
         </button>
       </div>
     );
   }
 
+  /* =====================================================
+     LOBBY / FALLBACK
+  ===================================================== */
   return (
     <div className="host-game-container">
-      <h2>מחכים להתחלת המשחק...</h2>
-      <p>אם הגעת לפה בטעות — חזור ליצירת החדר.</p>
+      <h2>⏳ ממתין לתחילת המשחק…</h2>
     </div>
   );
 }

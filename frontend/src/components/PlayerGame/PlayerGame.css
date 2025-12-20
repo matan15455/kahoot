@@ -1,13 +1,16 @@
 /* ========== רקע כללי לשחקן ========== */
 .player-game-container {
-  min-height: 100vh;
   padding: 40px;
   text-align: center;
-
-  background: radial-gradient(circle at bottom, #00d2ff 0%, #00181f 80%);
   color: #fff;
+  min-height: 100vh;
 
-  animation: fadeInPlayer 0.6s ease-out;
+  /* רקע ניאון חלק */
+  background: radial-gradient(circle at top, #077424 0%, #01a9b5 80%);
+  backdrop-filter: blur(25px);
+
+  animation: fadeInPage 0.6s ease-out;
+  
 }
 
 @keyframes fadeInPlayer {

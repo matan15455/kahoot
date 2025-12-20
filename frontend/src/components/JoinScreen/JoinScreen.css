@@ -497,3 +497,65 @@
   font-weight: bold;
   font-size: 15px;
 }
+
+
+.waiting-text{
+  margin-top: 14px;
+  padding: 12px 14px;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+
+  color: rgba(0, 0, 0, 0.92);
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 14px;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.18),
+    inset 0 1px 0 rgba(255,255,255,0.10);
+
+  animation: waitingFloat 1.6s ease-in-out infinite;
+}
+
+/* תנועה עדינה */
+@keyframes waitingFloat{
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2px); }
+}
+
+/* 3 נקודות "טוען" */
+.waiting-text .dots{
+  display: inline-flex;
+  gap: 2px;
+  opacity: 0.9;
+}
+
+.waiting-text .dots span{
+  display: inline-block;
+  transform: translateY(0);
+  animation: dotPulse 1s infinite ease-in-out;
+}
+
+.waiting-text .dots span:nth-child(2){ animation-delay: 0.15s; }
+.waiting-text .dots span:nth-child(3){ animation-delay: 0.30s; }
+
+@keyframes dotPulse{
+  0%, 100% { opacity: 0.35; transform: translateY(0); }
+  50%      { opacity: 1;    transform: translateY(-3px); }
+}
+
+/* אם המשתמש ביקש reduced motion */
+@media (prefers-reduced-motion: reduce){
+  .waiting-text{ animation: none; }
+  .waiting-text .dots span{ animation: none; }
+}
+
