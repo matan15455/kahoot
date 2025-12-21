@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from "react";
 import { socket } from "../../socket";
 import "./JoinScreen.css";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../../App";
 
 export default function JoinScreen() {
   const [username, setUsername] = useState("");

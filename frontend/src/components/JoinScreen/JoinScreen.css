@@ -48,6 +48,7 @@
 
 /* כותרת */
 .join-container h1 {
+  font-family: inherit;
   font-size: 3rem;
   font-weight: 900;
   color: #ffffff;

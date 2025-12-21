@@ -2,7 +2,6 @@ import { useState, useEffect, useContext } from "react";
 import { socket } from "../../socket";
 import "./CreateRoom.css";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { UserContext } from "../../App";
 
 export default function CreateRoom() {
   const [room, setRoom] = useState(null);

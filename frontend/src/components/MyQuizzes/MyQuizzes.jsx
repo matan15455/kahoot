@@ -2,13 +2,10 @@ import { useState, useEffect,useContext } from "react";
 import axios from "axios";
 import QuizCard from "../QuizCard/QuizCard";
 import "./MyQuizzes.css";
-import { UserContext } from "../../App";
 
 export default function MyQuizzes() {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const { userId } = useContext(UserContext);
 
   useEffect(() => {
     const fetchQuizzes = async () => {
