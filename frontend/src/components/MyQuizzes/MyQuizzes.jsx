@@ -31,7 +31,7 @@ export default function MyQuizzes() {
 
     fetchQuizzes();
 
-  }, [userId]);
+  }, []);
 
   if (loading)
      return <p>טוען חידונים...</p>;

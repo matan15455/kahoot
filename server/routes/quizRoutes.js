@@ -3,6 +3,7 @@ import Quiz from '../models/Quiz.js';
 import Question from '../models/Question.js';
 import User from '../models/User.js';
 import authMiddleware from "../middleware/authMiddleware.js";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
