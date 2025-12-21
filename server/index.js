@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(cors());
 
 // ROUTES
-app.use('/api/auth', authRoutes); // מחברים את ה-Auth router
+app.use('/auth', authRoutes); // מחברים את ה-Auth router
 app.use('/quizzes', quizRoutes);
 
 
