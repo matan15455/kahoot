@@ -1,125 +1,114 @@
-import { useState, useEffect,useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
 import { socket } from "../../socket";
 import "./PlayerGame.css";
+import { UserContext } from "../../App";
 
 export default function PlayerGame() {
   const [searchParams] = useSearchParams();
-
   const roomId = searchParams.get("roomId");
-  const userId = socket.id;
 
-  const [currentQuestion, setCurrentQuestion] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const { userId } = useContext(UserContext);
 
-  const [canAnswer, setCanAnswer] = useState(false);
-  const [players, setPlayers] = useState([]);
-  const [phase, setPhase] = useState("waiting"); // waiting | question | summary | end
-  const [summary, setSummary] = useState(null);
+  const [room, setRoom] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-
   const [timeLeft, setTimeLeft] = useState(null);
+
   const timerRef = useRef(null);
 
 
   useEffect(() => {
-    if (!roomId) return;
+    if (!roomId) 
+      return;
 
-    socket.emit("getCurrentQuestion", { roomId });
+    const handleRoomUpdated = (roomData) => {
+      if (roomData.roomId !== roomId) 
+        return;
 
-    // קבלת שאלה
-    const handleQuestion = ({ questionIndex, question }) => {
-      setPhase("question");
-      setSummary(null);
+      setRoom(roomData);
 
-      setCurrentIndex(questionIndex);
-      setCurrentQuestion(question);
-      setCanAnswer(true);
+      // אם מתחילה שאלה חדשה – מאפסים תשובה
+      if (roomData.phase === "QUESTION") {
+        setSelectedAnswer(null);
+      }
 
+      // הצגת טיימר
+      if (roomData.endsAt) {
+        clearInterval(timerRef.current);
+
+        const update = () => {
+          const remaining = Math.max(
+            0,
+            Math.ceil((roomData.endsAt - Date.now()) / 1000)
+          );
+
+          setTimeLeft(remaining);
+
+          if (remaining <= 0) {
+            clearInterval(timerRef.current);
+          }
+        };
+
+        update();
+        timerRef.current = setInterval(update, 250);
+      } else {
+        setTimeLeft(null);
+        clearInterval(timerRef.current);
+      }
     };
 
-    // קבלת סיכום שאלה
-    const handleSummary = ({ answersCount, correctAnswer }) => {
-      setSummary({ answersCount, correctAnswer });
-      setPhase("summary");
+    socket.emit("requestRoomState", { roomId });
 
-    };
-
-    // עדכון שחקנים
-    const handlePlayersUpdate = (players) => {
-      setPlayers(players);
-    };
-
-    // סוף משחק
-    const handleQuizEnded = ({ players }) => {
-      setPlayers(players);
-      setPhase("end");
-    };
-
-    const handleTimer = ({ endsAt }) => {
-      clearInterval(timerRef.current);
-
-      const update = () => {
-        const remaining = Math.max(
-          0,
-          Math.ceil((endsAt - Date.now()) / 1000)
-        );
-
-        setTimeLeft(remaining);
-
-        if (remaining <= 0) {
-          clearInterval(timerRef.current);
-        }
-      };
-
-      update(); // פעם ראשונה
-      timerRef.current = setInterval(update, 250);
-    };
-
-    socket.on("questionTimerStarted", handleTimer);
-    socket.on("GetQuestionForPlayer", handleQuestion);
-    socket.on("playersUpdated", handlePlayersUpdate);
-    socket.on("quizEnded", handleQuizEnded);
-    socket.on("questionSummary", handleSummary);
+    socket.on("roomUpdated", handleRoomUpdated);
 
     return () => {
-      socket.off("GetQuestionForPlayer", handleQuestion);
-      socket.off("questionSummary",handleSummary);
-      socket.off("playersUpdated", handlePlayersUpdate);
-      socket.off("quizEnded", handleQuizEnded);
-      socket.off("questionTimerStarted", handleTimer);
+      socket.off("roomUpdated", handleRoomUpdated);
       clearInterval(timerRef.current);
     };
   }, [roomId]);
 
-  // שליחת תשובה
+  /* =====================================================
+     Answer
+  ===================================================== */
   const handleAnswerClick = (answerText) => {
-    if (!canAnswer)
-       return;
+    if (!room || room.phase !== "QUESTION") 
+      return;
+    if (selectedAnswer) 
+      return;
 
     setSelectedAnswer(answerText);
 
     socket.emit("answerQuestion", {
       roomId,
       userId,
-      answerText,
+      answerText
     });
-
-    setCanAnswer(false);
   };
 
+  /* =====================================================
+     Guards
+  ===================================================== */
+  if (!room) {
+    return (
+      <div className="player-game-container">
+        <h2>טוען משחק…</h2>
+      </div>
+    );
+  }
 
-  if (phase === "end") {
+  /* =====================================================
+     END
+  ===================================================== */
+  if (room.phase === "END") {
     return (
       <div className="player-game-container">
         <h1>🏁 המשחק הסתיים!</h1>
-        <h2>תוצאות:</h2>
 
         <ol>
-          {[...players]
+          {[...room.players]
             .sort((a, b) => b.score - a.score)
             .map((p, index) => (
-              <li key={p.id}>
+              <li key={p.userId}>
                 {index + 1}. {p.username} — {p.score} נק'
               </li>
             ))}
@@ -128,60 +117,86 @@ export default function PlayerGame() {
     );
   }
 
-  if (phase === "summary" && summary) {
+  /* =====================================================
+     SUMMARY
+  ===================================================== */
+  if (room.phase === "SUMMARY" && room.summary) {
     return (
       <div className="summary-box">
-        <h2>📊 תוצאות השאלה</h2>
+        <h2>תוצאות השאלה</h2>
 
         <ul className="summary-list">
-          {Object.entries(summary.answersCount).map(([answer, count]) => (
-            <li
-              key={answer}
-              className={`summary-item 
-                ${summary.correctAnswer === answer ? "correct-answer" : ""} 
-                ${selectedAnswer === answer && summary.correctAnswer !== answer ? "wrong-answer" : ""}
-              `}
-            >
-              <span className="summary-answer">{answer}</span>
-              <span className="summary-count">{count}</span>
-            </li>
-          ))}
+          {Object.entries(room.summary.answersCount).map(
+            ([answer, count]) => (
+              <li
+                key={answer}
+                className={`summary-item
+                  ${
+                    room.summary.correctAnswer === answer
+                      ? "correct-answer"
+                      : ""
+                  }
+                  ${
+                    selectedAnswer === answer &&
+                    room.summary.correctAnswer !== answer
+                      ? "wrong-answer"
+                      : ""
+                  }
+                `}
+              >
+                <span className="summary-answer">{answer}</span>
+                <span className="summary-count">{count}</span>
+              </li>
+            )
+          )}
         </ul>
       </div>
     );
   }
 
-
-  if (phase === "question" && currentQuestion) {
+  /* =====================================================
+     QUESTION
+  ===================================================== */
+  if (room.phase === "QUESTION" && room.question) {
     return (
       <div className="player-game-container">
-        <h1>שאלה {currentIndex + 1}</h1>
+        <h1>שאלה {room.questionIndex + 1}</h1>
 
-       <div className={`mega-timer ${timeLeft <= 5 ? "danger" : timeLeft <= 10 ? "warning" : ""}`}>
-          <svg className="timer-svg" viewBox="0 0 100 100">
-            <circle className="bg" cx="50" cy="50" r="45" />
-            <circle
-              className="progress"
-              cx="50"
-              cy="50"
-              r="45"
-              style={{
-                strokeDashoffset: 283 - (283 * timeLeft) / currentQuestion.time
-              }}
-            />
-          </svg>
-
-          <div className="timer-number">
-            {timeLeft}
+        {timeLeft !== null && (
+          <div
+            className={`mega-timer ${
+              timeLeft <= 5
+                ? "danger"
+                : timeLeft <= 10
+                ? "warning"
+                : ""
+            }`}
+          >
+            <svg className="timer-svg" viewBox="0 0 100 100">
+              <circle className="bg" cx="50" cy="50" r="45" />
+              <circle
+                className="progress"
+                cx="50"
+                cy="50"
+                r="45"
+                style={{
+                  strokeDashoffset:
+                    283 -
+                    (283 * timeLeft) / room.question.time
+                }}
+              />
+            </svg>
+            <div className="timer-number">{timeLeft}</div>
           </div>
-
-        </div>
+        )}
 
         <ul className="answer-buttons">
-          {currentQuestion.answers.map((ans, index) => (
+          {room.question.answers.map((ans, index) => (
             <li
               key={index}
-              className={`answer-button ${!canAnswer ? "disabled" : ""}`}
+              className={`answer-button ${
+                selectedAnswer ? "disabled" : ""
+              }`}
               onClick={() => handleAnswerClick(ans.text)}
             >
               {ans.text}
@@ -192,9 +207,12 @@ export default function PlayerGame() {
     );
   }
 
+  /* =====================================================
+     LOBBY / WAITING
+  ===================================================== */
   return (
     <div className="player-game-container">
-      <h1>המארח עדיין לא התחיל את החידון…</h1>
+      <h1>⏳ מחכים שהמארח יתחיל…</h1>
     </div>
   );
 }

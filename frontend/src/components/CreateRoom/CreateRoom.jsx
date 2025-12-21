@@ -1,89 +1,92 @@
-import { useState, useEffect,useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { socket } from "../../socket";
 import "./CreateRoom.css";
-import { useSearchParams,useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { UserContext } from "../../App";
 
-
 export default function CreateRoom() {
-  const [roomId, setRoomId] = useState("");
-  const [players, setPlayers] = useState([]);
+  const [room, setRoom] = useState(null);
   const [copied, setCopied] = useState(false);
 
   const { userId } = useContext(UserContext);
-  
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
-  const quizId = searchParams.get("quizId"); // ⬅️ מביא את ה-quizId מה-URL
-
+  const quizId = searchParams.get("quizId");
 
   useEffect(() => {
+    // יצירת חדר
+    socket.emit("createRoom", { userId, quizId });
 
-    socket.emit("createRoom", { hostId: userId, quizId });
+    const handleRoomUpdated = (roomData) => {
+      setRoom(roomData);
 
-    // כאשר החדר נוצר
-    const handleRoomCreated = ({ roomId }) => {
-      setRoomId(roomId);
-      console.log("חדר נוצר:", roomId);
+      // אם החידון התחיל – עוברים למסך המארח
+      if (roomData.phase === "QUESTION") {
+        navigate(`/host/game?roomId=${roomData.roomId}`);
+      }
     };
 
-    // כאשר החדר מתעדכן (שחקן נכנס / נקודות משתנות)
-    const handlePlayersUpdate = (players) => {
-      setPlayers(players);
-    };
-
-    socket.on("roomCreated", handleRoomCreated);
-    socket.on("playersUpdated", handlePlayersUpdate);
+    socket.on("roomUpdated", handleRoomUpdated);
 
     return () => {
-      socket.off("roomCreated", handleRoomCreated);
-      socket.off("playersUpdated", handlePlayersUpdate);
+      socket.off("roomUpdated", handleRoomUpdated);
     };
-  }, []);
+  }, [quizId, userId, navigate]);
 
 
   const startGame = () => {
-    socket.emit("startQuiz", { roomId });
-    navigate(`/host/game?roomId=${roomId}`);
+    if (!room) 
+      return;
+    socket.emit("startQuiz", { roomId: room.roomId });
   };
 
   const copyRoomCode = () => {
-    navigator.clipboard.writeText(roomId);
+    navigator.clipboard.writeText(room.roomId);
     setCopied(true);
-
-    setTimeout(() => setCopied(false), 200);
+    setTimeout(() => setCopied(false), 400);
   };
+
+  if (!room) {
+    return (
+      <div className="create-room-container">
+        <h2>יוצר חדר…</h2>
+      </div>
+    );
+  }
 
   return (
     <div className="create-room-container">
+      <div className="room-info">
+        <h2>✅ החדר נוצר!</h2>
 
-      {roomId && (
-        <div className="room-info">
-          <h2>✅ החדר נוצר!</h2>
-          <p>
-            <span className="room-id" onClick={copyRoomCode}>{roomId}</span>
-            <div>
-              {copied && <p className="copied-msg">הועתק! 📋</p>}
-            </div>
-          </p>
+        <p>
+          <span className="room-id" onClick={copyRoomCode}>
+            {room.roomId}
+          </span>
+        </p>
 
-          <h3>שחקנים בחדר:</h3>
-          <ul className="players-list">
-            {players.map((p) => (
-              <li key={p.id} className="player-item">
-                👤 {p.username}
-              </li>
-            ))}
-          </ul>
-          <div className="start-game-wrapper">
-            <button className="start-game-btn" onClick={startGame}>
-              ▶ התחל משחק
-            </button>
-          </div>
+        {copied && <p className="copied-msg">הועתק! 📋</p>}
 
+        <h3>שחקנים בחדר:</h3>
+        <ul className="players-list">
+          {room.players.map((p) => (
+            <li key={p.userId} className="player-item">
+              👤 {p.username}
+            </li>
+          ))}
+        </ul>
+
+        <div className="start-game-wrapper">
+          <button
+            className="start-game-btn"
+            onClick={startGame}
+            disabled={room.players.length === 0}
+          >
+            ▶ התחל משחק
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 }

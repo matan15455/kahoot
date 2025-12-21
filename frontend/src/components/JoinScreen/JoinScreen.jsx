@@ -1,77 +1,105 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { socket } from "../../socket";
 import "./JoinScreen.css";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../App";
 
 export default function JoinScreen() {
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState("");
-  const [players, setPlayers] = useState(null);
+  const [room, setRoom] = useState(null);
   const [error, setError] = useState("");
-  const [joined, setJoined] = useState(false); // חדש!
 
+  const { userId } = useContext(UserContext);
   const navigate = useNavigate();
 
-  // מקשיב לעדכוני החדר
   useEffect(() => {
-    socket.on("playersUpdated", (players) => {
-      setPlayers(players);
+    const handleRoomUpdated = (roomData) => {
+      // תטפל רק בעדכון של החדר שאני נמצא בו
+      if (roomData.roomId !== roomId)
+         return;
 
-      // בודק האם המשתמש נמצא בחדר
-      const exists = players.some(p => p.id === socket.id);
-      if (exists) {
-        setJoined(true);
+      setRoom(roomData);
+
+      // אם המשחק התחיל – מעבר אוטומטי
+      if (roomData.phase === "QUESTION") {
+        navigate(`/player/game?roomId=${roomData.roomId}`);
       }
-    });
+    };
 
-    socket.on("quizStarted", () => {
-      navigate(`/player/game?roomId=${roomId}`);
-    });
+    socket.on("roomUpdated", handleRoomUpdated);
 
     return () => {
-      socket.off("playersUpdated");
-      socket.off("quizStarted");
+      socket.off("roomUpdated", handleRoomUpdated);
     };
-  }, [roomId]);
+  }, [roomId, navigate]);
 
   const handleJoin = () => {
     if (!username.trim() || !roomId.trim()) {
       setError("אנא מלא שם וקוד חדר");
       return;
-    }    
+    }
+
+    setError("");
 
     socket.emit("joinRoom", {
       roomId,
-      user: { id: socket.id, username }
+      user: {
+        userId,
+        username
+      }
     });
   };
 
+  /* =====================================================
+     UI – Waiting Room
+  ===================================================== */
+  if (room) {
+    const isJoined = room.players.some(p => p.userId === userId);
 
-  if (joined) {
+    if (!isJoined) {
+      return (
+        <div className="join-container">
+          <p>מצטרף לחדר…</p>
+        </div>
+      );
+    }
+
     return (
       <div className="room-page">
         <div className="room-card">
-
           <p className="players-label">
-            👥 שחקנים בחדר: <span>{players.length}</span>
+            👥 שחקנים בחדר: <span>{room.players.length}</span>
           </p>
 
           <ul className="players-grid">
-            {players.map((p) => (
-              <li key={p.id} className="player-card">
-                <div className="player-avatar">{p.username.charAt(0)}</div>
+            {room.players.map((p) => (
+              <li key={p.userId} className="player-card">
+                <div className="player-avatar">
+                  {p.username.charAt(0)}
+                </div>
                 <div className="player-info">
                   <span className="player-name">{p.username}</span>
                 </div>
               </li>
             ))}
           </ul>
+
+          <p className="waiting-text">
+            ⏳ מחכים שהמארח יתחיל את החידון
+            <span className="dots" aria-hidden="true">
+              <span>.</span><span>.</span><span>.</span>
+            </span>
+          </p>
+
         </div>
       </div>
     );
   }
 
-
+  /* =====================================================
+     UI – Join Form
+  ===================================================== */
   return (
     <div className="join-container">
       <h1>הצטרף לחדר</h1>
@@ -94,6 +122,5 @@ export default function JoinScreen() {
 
       {error && <p className="error">{error}</p>}
     </div>
-    
   );
 }
