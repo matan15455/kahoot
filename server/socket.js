@@ -10,6 +10,7 @@ const PHASES = {
   LOBBY: "LOBBY",
   QUESTION: "QUESTION",
   SUMMARY: "SUMMARY",
+  SCORES: "SCORES",
   END: "END"
 };
 
@@ -226,8 +227,14 @@ export default function initSocket(server) {
         return;
       }
 
-      //  אם אנחנו כבר בסיכום → מתקדמים
       if (room.phase === PHASES.SUMMARY) {
+        room.phase = PHASES.SCORES;
+        emitRoom(roomId);
+        return;
+      }
+
+      // SCORES → QUESTION / END
+      if (room.phase === PHASES.SCORES) {
         // סוף חידון
         if (room.currentQuestionIndex >= room.questions.length - 1) {
           room.phase = PHASES.END;
@@ -236,7 +243,6 @@ export default function initSocket(server) {
           return;
         }
 
-        // מעבר לשאלה הבאה
         room.currentQuestionIndex++;
         room.phase = PHASES.QUESTION;
 
