@@ -6,16 +6,12 @@ import QuizCreator from "./components/QuizCreator/QuizCreator";
 import CreateRoom from "./components/CreateRoom/CreateRoom";
 import HostGame from "./components/HostGame/HostGame";
 import PlayerGame from "./components/PlayerGame/PlayerGame";
-import { createContext, useState } from 'react';
-
-export const UserContext = createContext();
+import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
   
-  const [userId, setUserId] = useState("690f563cbf9d89db6d35a49d");
-
   return (
-    <UserContext.Provider value={{ userId, setUserId }}>
+    <AuthProvider>
       <Router>
         <Navbar />
 
@@ -31,6 +27,6 @@ export default function App() {
           </Routes>
         </div>
       </Router>
-    </UserContext.Provider>
+    </AuthProvider>
   );
 }
