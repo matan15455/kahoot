@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'; 
-import bcrypt from 'bcryptjs';
 
 // סכמת משתמש
 const UserSchema = new mongoose.Schema({
@@ -24,19 +23,5 @@ const UserSchema = new mongoose.Schema({
     quizzesPlayedCount: { type: Number, default: 0 }   // מספר חידונים ששיחק
   }
 }, { timestamps: true });  // מוסיף תאריכים של יצירה ועדכון
-
-// הצפנת סיסמה לפני שמירה
-UserSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) 
-    return next();
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
-
-// פונקציה להשוואת סיסמאות
-UserSchema.methods.matchPassword = async function(enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
 
 export default mongoose.model('User', UserSchema); // יוצרים את המודל ושולחים אותו החוצה

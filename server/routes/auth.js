@@ -1,22 +1,50 @@
 import express from 'express';
 import User from '../models/User.js';
+import bcrypt from "bcrypt";
 
 const router = express.Router();
 
 // REGISTER
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // בדיקה אם המשתמש כבר קיים
-    const existingUser = await User.findOne({ username });
-    if (existingUser)
-        return res.status(400).json({ message: 'Username already exists' });
+    /* =====================
+       Validation
+    ===================== */
+    if (!username || !password) {
+      return res.status(400).json({
+        message: "Username and password are required"
+      });
+    }
 
-    // יצירת משתמש חדש
-    const user = new User({
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "Password must be at least 6 characters"
+      });
+    }
+
+    /* =====================
+       Check existing user
+    ===================== */
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(409).json({
+        message: "Username already exists"
+      });
+    }
+
+    /* =====================
+       Hash password
+    ===================== */
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+    /* =====================
+       Create user
+    ===================== */
+    const newUser = await User.create({
       username,
-      password,
+      password: hashedPassword,
       quizzesCreated: [],
       statistics: {
         totalPoints: 0,
@@ -24,35 +52,21 @@ router.post('/register', async (req, res) => {
         quizzesPlayedCount: 0
       }
     });
-    await user.save();
 
-    res.status(201).json({ message: 'User created successfully', userId: user._id });
+    /* =====================
+       Response
+    ===================== */
+    res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        userId: newUser._id,
+        username: newUser.username
+      }
+    });
+
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-
-// LOGIN
-router.post('/login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
-
-    // מוצאים את המשתמש
-    const user = await User.findOne({ username });
-    if (!user)
-         return res.status(400).json({ message: 'Invalid username or password' });
-
-    // בודקים סיסמה
-    const isMatch = await user.matchPassword(password);
-    if (!isMatch)
-         return res.status(400).json({ message: 'Invalid username or password' });
-
-    res.json({ message: 'Login successful', userId: user._id });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Register error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
