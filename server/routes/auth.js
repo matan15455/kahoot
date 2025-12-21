@@ -70,4 +70,56 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.post("/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    // 1️⃣ בדיקת שדות
+    if (!username || !password) {
+      return res.status(400).json({
+        message: "Username and password are required"
+      });
+    }
+
+    // 2️⃣ חיפוש משתמש
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(401).json({
+        message: "Invalid credentials"
+      });
+    }
+
+    // 3️⃣ השוואת סיסמאות (bcrypt)
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({
+        message: "Invalid credentials"
+      });
+    }
+
+    // 4️⃣ יצירת JWT
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        username: user.username
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" } // תוקף טוקן
+    );
+
+    // 5️⃣ החזרת תשובה 
+    res.json({
+      token,
+      user: {
+        userId: user._id,
+        username: user.username
+      }
+    });
+
+  } catch (err) {
+    console.error("LOGIN ERROR:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 export default router;
