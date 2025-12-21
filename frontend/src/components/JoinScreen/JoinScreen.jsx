@@ -10,7 +10,6 @@ export default function JoinScreen() {
   const [room, setRoom] = useState(null);
   const [error, setError] = useState("");
 
-  const { userId } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,29 +41,13 @@ export default function JoinScreen() {
 
     setError("");
 
-    socket.emit("joinRoom", {
-      roomId,
-      user: {
-        userId,
-        username
-      }
-    });
+    socket.emit("joinRoom", {roomId});
   };
 
   /* =====================================================
      UI – Waiting Room
   ===================================================== */
   if (room) {
-    const isJoined = room.players.some(p => p.userId === userId);
-
-    if (!isJoined) {
-      return (
-        <div className="join-container">
-          <p>מצטרף לחדר…</p>
-        </div>
-      );
-    }
-
     return (
       <div className="room-page">
         <div className="room-card">

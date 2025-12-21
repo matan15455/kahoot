@@ -42,10 +42,17 @@ router.post('/',authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/my/:userId",authMiddleware, async (req, res) => {
+router.get("/my", authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId)
+    // מגיע מה-JWT
+    const userId = req.user.userId;
+
+    const user = await User.findById(userId)
       .populate("quizzesCreated");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     res.json(user.quizzesCreated);
   } catch (err) {
@@ -53,6 +60,7 @@ router.get("/my/:userId",authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 
 export default router;

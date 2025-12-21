@@ -8,8 +8,6 @@ export default function PlayerGame() {
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get("roomId");
 
-  const { userId } = useContext(UserContext);
-
   const [room, setRoom] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
@@ -80,7 +78,6 @@ export default function PlayerGame() {
 
     socket.emit("answerQuestion", {
       roomId,
-      userId,
       answerText
     });
   };

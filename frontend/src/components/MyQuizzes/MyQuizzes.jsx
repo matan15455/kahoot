@@ -12,8 +12,18 @@ export default function MyQuizzes() {
 
   useEffect(() => {
     const fetchQuizzes = async () => {
+      
+      const token = localStorage.getItem("token");
+
       try {
-        const res = await axios.get(`http://localhost:5000/quizzes/my/${userId}`);
+       const res = await axios.get(
+          "http://localhost:5000/quizzes/my",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
         setQuizzes(res.data);
       } catch (err) {
         console.error(err);

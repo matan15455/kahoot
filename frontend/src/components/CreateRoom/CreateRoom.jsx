@@ -8,7 +8,6 @@ export default function CreateRoom() {
   const [room, setRoom] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  const { userId } = useContext(UserContext);
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
@@ -16,7 +15,7 @@ export default function CreateRoom() {
 
   useEffect(() => {
     // יצירת חדר
-    socket.emit("createRoom", { userId, quizId });
+    socket.emit("createRoom", { quizId });
 
     const handleRoomUpdated = (roomData) => {
       setRoom(roomData);
@@ -32,7 +31,7 @@ export default function CreateRoom() {
     return () => {
       socket.off("roomUpdated", handleRoomUpdated);
     };
-  }, [quizId, userId, navigate]);
+  }, [quizId, navigate]);
 
 
   const startGame = () => {
