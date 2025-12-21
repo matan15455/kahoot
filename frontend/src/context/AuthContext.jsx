@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { connectSocket, disconnectSocket } from "../socket";
 
 const AuthContext = createContext(null);
 
@@ -27,6 +28,8 @@ export function AuthProvider({ children }) {
 
     setToken(token);
     setUser(user);
+
+    connectSocket(token);
   };
 
   // התנתקות
@@ -34,6 +37,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
 
+    disconnectSocket();
     setToken(null);
     setUser(null);
   };

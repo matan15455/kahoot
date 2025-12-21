@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
-import { socket } from "../../socket";
+import { getSocket } from "../../socket";
 import "./PlayerGame.css";
 
 export default function PlayerGame() {
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get("roomId");
+
+  const socket = getSocket();
 
   const [room, setRoom] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);

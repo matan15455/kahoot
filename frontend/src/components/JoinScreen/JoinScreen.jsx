@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { socket } from "../../socket";
+import { getSocket } from "../../socket";
 import "./JoinScreen.css";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,7 @@ export default function JoinScreen() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const socket = getSocket();
 
   useEffect(() => {
     const handleRoomUpdated = (roomData) => {

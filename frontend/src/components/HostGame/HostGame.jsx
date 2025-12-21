@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
-import { socket } from "../../socket";
+import { getSocket } from "../../socket";
 import "./HostGame.css";
 
 export default function HostGame() {
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get("roomId");
+
+  const socket = getSocket();
 
   const [room, setRoom] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);

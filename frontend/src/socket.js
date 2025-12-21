@@ -1,10 +1,23 @@
-import { io } from 'socket.io-client';
+// socket.js
+import { io } from "socket.io-client";
 
-// התחברות לשרת Socket.IO
-const token = localStorage.getItem("token");
+let socket = null;
 
-export const socket = io("http://localhost:5000", {
-  auth: {
-    token
+export function connectSocket(token) {
+  socket = io("http://localhost:5000", {
+    auth: { token }
+  });
+
+  return socket;
+}
+
+export function getSocket() {
+  return socket;
+}
+
+export function disconnectSocket() {
+  if (socket) {
+    socket.disconnect();
+    socket = null;
   }
-});
+}

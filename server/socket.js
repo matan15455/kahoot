@@ -21,7 +21,8 @@ export default function initSocket(server) {
     cors: { origin: "*" }
   });
 
-  io.use((socket, next) => {
+  io.use((socket, next) => {  
+
     const token = socket.handshake.auth?.token;
 
     if (!token) {
@@ -42,7 +43,7 @@ export default function initSocket(server) {
   });
 
   io.on("connection", (socket) => {
-    console.log("🟢 Connected:", socket.id);
+    console.log("🟢 Connected:", socket.userId,socket.username);    
 
     /* =====================================================
        🔧 Helpers
@@ -173,6 +174,7 @@ export default function initSocket(server) {
     ===================================================== */
 
     socket.on("joinRoom", ({ roomId }) => {
+
       const room = rooms[roomId];
       if (!room || room.phase !== PHASES.LOBBY) 
         return;

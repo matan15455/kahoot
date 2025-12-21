@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { socket } from "../../socket";
+import { getSocket } from "../../socket";
 import "./CreateRoom.css";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
@@ -8,6 +8,7 @@ export default function CreateRoom() {
   const [copied, setCopied] = useState(false);
 
   const navigate = useNavigate();
+  const socket = getSocket();
 
   const [searchParams] = useSearchParams();
   const quizId = searchParams.get("quizId");
