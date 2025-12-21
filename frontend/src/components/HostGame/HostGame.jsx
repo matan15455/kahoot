@@ -121,11 +121,38 @@ export default function HostGame() {
         </ul>
 
         <button onClick={handleNext} className="next-btn">
-          לשאלה הבאה ▶
+          הצג ניקוד ▶
+        </button>
+
+      </div>
+    );
+  }
+  
+  /* =====================================================
+    SCORES (ניקוד ביניים)
+  ===================================================== */
+  if (room.phase === "SCORES") {
+    return (
+      <div className="host-game-container">
+        <h2>🏆 ניקוד ביניים</h2>
+
+        <ol className="results-list">
+          {[...room.players]
+            .sort((a, b) => b.score - a.score)
+            .map((p, i) => (
+              <li key={p.userId}>
+                #{i + 1} — {p.username} ({p.score} נק')
+              </li>
+            ))}
+        </ol>
+
+        <button onClick={handleNext} className="next-btn">
+          המשך ▶
         </button>
       </div>
     );
   }
+
 
   /* =====================================================
      QUESTION

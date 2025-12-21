@@ -154,6 +154,33 @@ export default function PlayerGame() {
     );
   }
 
+
+  /* =====================================================
+    SCORES (ניקוד ביניים)
+  ===================================================== */
+  if (room.phase === "SCORES") {
+    return (
+      <div className="player-game-container">
+        <h2>🏆 ניקוד ביניים</h2>
+
+        <ol className="results-list">
+          {[...room.players]
+            .sort((a, b) => b.score - a.score)
+            .map((p, index) => (
+              <li key={p.userId}>
+                #{index + 1} — {p.username} ({p.score} נק')
+              </li>
+            ))}
+        </ol>
+
+        <p className="waiting-text">
+          ⏳ ממתינים למארח להמשך המשחק…
+        </p>
+      </div>
+    );
+  }
+
+
   /* =====================================================
      QUESTION
   ===================================================== */
