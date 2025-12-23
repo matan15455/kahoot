@@ -47,11 +47,11 @@
 }
 
 .logo-glow {
-  background: linear-gradient(90deg, #22eec9, #00c227);
+  background: linear-gradient(90deg, #ffffff, #7dfbf3);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 0 0 18px rgba(1, 107, 1, 0.9);
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.9);
 }
 
 .logo-sub {
