@@ -19,19 +19,19 @@ export default function Navbar() {
       <div className="nav-links">
         {isAuthenticated ? (
           <>
-            <Link to="/my-quizzes">My Quizzes</Link>
-            <Link to="/create-quiz">Create Quiz</Link>
-            <Link to="/join-room">Join Room</Link>
+            <Link to="/my-quizzes">החידונים שלי</Link>
+            <Link to="/create-quiz">יצירת חידון</Link>
+            <Link to="/join-room">הצטרף לחדר</Link>
 
             <button className="logout-btn" onClick={handleLogout}>
-              Logout
+              התנתק
             </button>
           </>
         ) : (
           <>
-            <Link to="/login">Login</Link>
-            <Link to="/register">Register</Link>
-            <Link to="/join-room">Join Room</Link>
+            <Link to="/login">התחבר</Link>
+            <Link to="/register">הירשם</Link>
+            <Link to="/join-room">הצטרף לחדר</Link>
           </>
         )}
       </div>
