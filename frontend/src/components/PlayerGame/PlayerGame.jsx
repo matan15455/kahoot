@@ -107,7 +107,7 @@ export default function PlayerGame() {
             .sort((a, b) => b.score - a.score)
             .map((p, index) => (
               <li key={p.userId}>
-                {index + 1}. {p.username} — {p.score} נק'
+                {index + 1}. {p.nickname} — {p.score} נק'
               </li>
             ))}
         </ol>
@@ -166,7 +166,7 @@ export default function PlayerGame() {
             .sort((a, b) => b.score - a.score)
             .map((p, index) => (
               <li key={p.userId}>
-                #{index + 1} — {p.username} ({p.score} נק')
+                #{index + 1} — {p.nickname} ({p.score} נק')
               </li>
             ))}
         </ol>

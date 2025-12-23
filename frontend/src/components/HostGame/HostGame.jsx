@@ -88,7 +88,7 @@ export default function HostGame() {
             .sort((a, b) => b.score - a.score)
             .map((p, i) => (
               <li key={p.userId}>
-                #{i + 1} — {p.username} ({p.score} נק')
+                #{i + 1} — {p.nickname} ({p.score} נק')
               </li>
             ))}
         </ol>
@@ -143,7 +143,7 @@ export default function HostGame() {
             .sort((a, b) => b.score - a.score)
             .map((p, i) => (
               <li key={p.userId}>
-                #{i + 1} — {p.username} ({p.score} נק')
+                #{i + 1} — {p.nickname} ({p.score} נק')
               </li>
             ))}
         </ol>

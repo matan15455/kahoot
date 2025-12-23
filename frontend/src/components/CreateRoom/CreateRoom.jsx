@@ -71,7 +71,7 @@ export default function CreateRoom() {
         <ul className="players-list">
           {room.players.map((p) => (
             <li key={p.userId} className="player-item">
-              👤 {p.username}
+              👤 {p.nickname}
             </li>
           ))}
         </ul>

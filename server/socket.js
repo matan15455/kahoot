@@ -173,7 +173,7 @@ export default function initSocket(server) {
        👥 Join Room (Player)
     ===================================================== */
 
-    socket.on("joinRoom", ({ roomId }) => {
+    socket.on("joinRoom", ({ roomId,nickname }) => {
 
       const room = rooms[roomId];
       if (!room || room.phase !== PHASES.LOBBY) 
@@ -183,6 +183,7 @@ export default function initSocket(server) {
         socketId: socket.id,
         userId: socket.userId, 
         username: socket.username,
+        nickname: nickname,
         score: 0
       });
 

@@ -4,7 +4,7 @@ import "./JoinScreen.css";
 import { useNavigate } from "react-router-dom";
 
 export default function JoinScreen() {
-  const [username, setUsername] = useState("");
+  const [nickname, setNickname] = useState("");
   const [roomId, setRoomId] = useState("");
   const [room, setRoom] = useState(null);
   const [error, setError] = useState("");
@@ -34,14 +34,14 @@ export default function JoinScreen() {
   }, [roomId, navigate]);
 
   const handleJoin = () => {
-    if (!username.trim() || !roomId.trim()) {
+    if (!nickname.trim() || !roomId.trim()) {
       setError("אנא מלא שם וקוד חדר");
       return;
     }
 
     setError("");
 
-    socket.emit("joinRoom", {roomId});
+    socket.emit("joinRoom", {roomId,nickname});
   };
 
   /* =====================================================
@@ -59,10 +59,10 @@ export default function JoinScreen() {
             {room.players.map((p) => (
               <li key={p.userId} className="player-card">
                 <div className="player-avatar">
-                  {p.username.charAt(0)}
+                  {p.nickname.charAt(0)}
                 </div>
                 <div className="player-info">
-                  <span className="player-name">{p.username}</span>
+                  <span className="player-name">{p.nickname}</span>
                 </div>
               </li>
             ))}
@@ -90,8 +90,8 @@ export default function JoinScreen() {
       <input
         type="text"
         placeholder="NickName"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        value={nickname}
+        onChange={(e) => setNickname(e.target.value)}
       />
 
       <input
