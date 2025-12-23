@@ -2,18 +2,25 @@ import { useState, useEffect,useContext } from "react";
 import axios from "axios";
 import QuizCard from "../QuizCard/QuizCard";
 import "./MyQuizzes.css";
-import { UserContext } from "../../App";
 
 export default function MyQuizzes() {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const { userId } = useContext(UserContext);
-
   useEffect(() => {
     const fetchQuizzes = async () => {
+      
+      const token = localStorage.getItem("token");
+
       try {
-        const res = await axios.get(`http://localhost:5000/quizzes/my/${userId}`);
+       const res = await axios.get(
+          "http://localhost:5000/quizzes/my",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
         setQuizzes(res.data);
       } catch (err) {
         console.error(err);
@@ -24,7 +31,7 @@ export default function MyQuizzes() {
 
     fetchQuizzes();
 
-  }, [userId]);
+  }, []);
 
   if (loading)
      return <p>טוען חידונים...</p>;

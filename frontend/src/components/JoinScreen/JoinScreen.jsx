@@ -1,8 +1,7 @@
 import { useState, useEffect, useContext } from "react";
-import { socket } from "../../socket";
+import { getSocket } from "../../socket";
 import "./JoinScreen.css";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../../App";
 
 export default function JoinScreen() {
   const [username, setUsername] = useState("");
@@ -10,8 +9,8 @@ export default function JoinScreen() {
   const [room, setRoom] = useState(null);
   const [error, setError] = useState("");
 
-  const { userId } = useContext(UserContext);
   const navigate = useNavigate();
+  const socket = getSocket();
 
   useEffect(() => {
     const handleRoomUpdated = (roomData) => {
@@ -42,29 +41,13 @@ export default function JoinScreen() {
 
     setError("");
 
-    socket.emit("joinRoom", {
-      roomId,
-      user: {
-        userId,
-        username
-      }
-    });
+    socket.emit("joinRoom", {roomId});
   };
 
   /* =====================================================
      UI – Waiting Room
   ===================================================== */
   if (room) {
-    const isJoined = room.players.some(p => p.userId === userId);
-
-    if (!isJoined) {
-      return (
-        <div className="join-container">
-          <p>מצטרף לחדר…</p>
-        </div>
-      );
-    }
-
     return (
       <div className="room-page">
         <div className="room-card">

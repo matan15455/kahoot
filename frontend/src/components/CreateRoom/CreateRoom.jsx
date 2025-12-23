@@ -1,22 +1,21 @@
 import { useState, useEffect, useContext } from "react";
-import { socket } from "../../socket";
+import { getSocket } from "../../socket";
 import "./CreateRoom.css";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { UserContext } from "../../App";
 
 export default function CreateRoom() {
   const [room, setRoom] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  const { userId } = useContext(UserContext);
   const navigate = useNavigate();
+  const socket = getSocket();
 
   const [searchParams] = useSearchParams();
   const quizId = searchParams.get("quizId");
 
   useEffect(() => {
     // יצירת חדר
-    socket.emit("createRoom", { userId, quizId });
+    socket.emit("createRoom", { quizId });
 
     const handleRoomUpdated = (roomData) => {
       setRoom(roomData);
@@ -32,7 +31,7 @@ export default function CreateRoom() {
     return () => {
       socket.off("roomUpdated", handleRoomUpdated);
     };
-  }, [quizId, userId, navigate]);
+  }, [quizId, navigate]);
 
 
   const startGame = () => {

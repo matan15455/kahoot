@@ -1,14 +1,13 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
-import { socket } from "../../socket";
+import { getSocket } from "../../socket";
 import "./PlayerGame.css";
-import { UserContext } from "../../App";
 
 export default function PlayerGame() {
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get("roomId");
 
-  const { userId } = useContext(UserContext);
+  const socket = getSocket();
 
   const [room, setRoom] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -80,7 +79,6 @@ export default function PlayerGame() {
 
     socket.emit("answerQuestion", {
       roomId,
-      userId,
       answerText
     });
   };

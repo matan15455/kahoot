@@ -3,14 +3,11 @@ import QuizForm from "../QuizForm/QuizForm";
 import QuestionForm from "../QuestionForm/QuestionForm";
 import axios from "axios";
 import "./QuizCreator.css";
-import { UserContext } from "../../App";
 
 export default function QuizCreator() {
   const [quiz, setQuiz] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [addingQuestion, setAddingQuestion] = useState(false);
-
-  const { userId } = useContext(UserContext);
 
   const handleAddQuiz = (quizData) => setQuiz(quizData);
   const handleAddQuestion = (q) => {
@@ -25,11 +22,21 @@ export default function QuizCreator() {
       return alert("הוסף לפחות שאלה אחת");
 
     try {
-      const res = await axios.post("http://localhost:5000/quizzes", {
-        ...quiz,
-        creatorId: userId,
-        questions
-      });
+      const token = localStorage.getItem("token");
+
+      await axios.post(
+        "http://localhost:5000/quizzes",
+        {
+          ...quiz,
+          questions
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
       alert("חידון נוסף בהצלחה!");
       setQuiz(null);
       setQuestions([]);

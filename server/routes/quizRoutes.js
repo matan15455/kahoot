@@ -2,12 +2,16 @@ import express from 'express';
 import Quiz from '../models/Quiz.js';
 import Question from '../models/Question.js';
 import User from '../models/User.js';
+import authMiddleware from "../middleware/authMiddleware.js";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post('/',authMiddleware, async (req, res) => {
   try {
-    const { title, description, creatorId, questions } = req.body;
+    const { title, description, questions } = req.body;
+
+    const creatorId = req.user.userId;
 
     // יוצרים את השאלות ומכניסים למסד
     const questionDocs = await Question.insertMany(questions);
@@ -28,17 +32,28 @@ router.post('/', async (req, res) => {
       $inc: { 'statistics.quizzesCreatedCount': 1 }
     });
 
-    res.status(201).json({ message: 'Quiz created successfully', quizId: quiz._id });
+    res.status(201).json({
+      message: "Quiz created successfully",
+      quizId: quiz._id
+    });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
 });
 
-router.get("/my/:userId", async (req, res) => {
+router.get("/my", authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId)
+    // מגיע מה-JWT
+    const userId = req.user.userId;
+
+    const user = await User.findById(userId)
       .populate("quizzesCreated");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     res.json(user.quizzesCreated);
   } catch (err) {
@@ -46,6 +61,7 @@ router.get("/my/:userId", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 
 export default router;

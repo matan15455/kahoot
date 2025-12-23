@@ -1,22 +1,51 @@
 import express from 'express';
 import User from '../models/User.js';
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
 // REGISTER
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // בדיקה אם המשתמש כבר קיים
-    const existingUser = await User.findOne({ username });
-    if (existingUser)
-        return res.status(400).json({ message: 'Username already exists' });
+    /* =====================
+       Validation
+    ===================== */
+    if (!username || !password) {
+      return res.status(400).json({
+        message: "Username and password are required"
+      });
+    }
 
-    // יצירת משתמש חדש
-    const user = new User({
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "Password must be at least 6 characters"
+      });
+    }
+
+    /* =====================
+       Check existing user
+    ===================== */
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(409).json({
+        message: "Username already exists"
+      });
+    }
+
+    /* =====================
+       Hash password
+    ===================== */
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    /* =====================
+       Create user
+    ===================== */
+    const newUser = await User.create({
       username,
-      password,
+      password: hashedPassword,
       quizzesCreated: [],
       statistics: {
         totalPoints: 0,
@@ -24,35 +53,73 @@ router.post('/register', async (req, res) => {
         quizzesPlayedCount: 0
       }
     });
-    await user.save();
 
-    res.status(201).json({ message: 'User created successfully', userId: user._id });
+    /* =====================
+       Response
+    ===================== */
+    res.status(201).json({
+      message: "User registered successfully",
+      user: {
+        userId: newUser._id,
+        username: newUser.username
+      }
+    });
+
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Register error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-
-// LOGIN
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // מוצאים את המשתמש
+    // 1️⃣ בדיקת שדות
+    if (!username || !password) {
+      return res.status(400).json({
+        message: "Username and password are required"
+      });
+    }
+
+    // 2️⃣ חיפוש משתמש
     const user = await User.findOne({ username });
-    if (!user)
-         return res.status(400).json({ message: 'Invalid username or password' });
+    if (!user) {
+      return res.status(401).json({
+        message: "Invalid credentials"
+      });
+    }
 
-    // בודקים סיסמה
-    const isMatch = await user.matchPassword(password);
-    if (!isMatch)
-         return res.status(400).json({ message: 'Invalid username or password' });
+    // 3️⃣ השוואת סיסמאות (bcrypt)
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({
+        message: "Invalid credentials"
+      });
+    }
 
-    res.json({ message: 'Login successful', userId: user._id });
+    // 4️⃣ יצירת JWT
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        username: user.username
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" } // תוקף טוקן
+    );
+
+    // 5️⃣ החזרת תשובה 
+    res.json({
+      token,
+      user: {
+        userId: user._id,
+        username: user.username
+      }
+    });
+
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("LOGIN ERROR:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
