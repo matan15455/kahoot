@@ -56,45 +56,70 @@ export default function Register() {
 
   return (
     <div className="auth-page">
-      <div className="auth-glow"></div>
+      <div className="auth-bg">
+        <span className="auth-orb orb-a" />
+        <span className="auth-orb orb-b" />
+        <span className="auth-orb orb-c" />
+        <span className="auth-grid" />
+      </div>
 
       <form className="auth-card" onSubmit={handleSubmit}>
-        <h1 className="auth-title">Create Account</h1>
-        <p className="auth-subtitle">Join and start creating quizzes</p>
-
-        <div className="input-group">
-          <input
-            type="text"
-            required
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <label>Username</label>
+        <div className="auth-header">
+          <div className="auth-chip">הרשמה</div>
+          <h1 className="auth-title">יצירת משתמש</h1>
+          <p className="auth-subtitle">
+            להצטרף ולהתחיל ליצור חידונים בעצמך
+          </p>
         </div>
 
-        <div className="input-group">
-          <input
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <label>Password</label>
-        </div>
+        <div className="auth-fields">
+          <div className="input-group">
+            <input
+              className="auth-input"
+              type="text"
+              required
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder=" "
+            />
+            <label className="auth-label">שם משתמש</label>
+            <span className="input-ring" />
+          </div>
 
-        {error && <p className="auth-error">{error}</p>}
+          <div className="input-group">
+            <input
+              className="auth-input"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder=" "
+            />
+            <label className="auth-label">סיסמה</label>
+            <span className="input-ring" />
+          </div>
+
+          {error && (
+            <div className="auth-error">
+              <span>!</span>
+              <p>{error}</p>
+            </div>
+          )}
+        </div>
 
         <button
           className={`auth-button ${loading ? "loading" : ""}`}
           type="submit"
           disabled={loading}
         >
-          {loading ? <span className="loader"></span> : "Register"}
+          {loading ? <span className="loader"></span> : "הירשם →"}
         </button>
 
-        <p className="auth-link" onClick={() => navigate("/login")}>
-          Already have an account? <span>Log in</span>
-        </p>
+        <div className="auth-footer">
+          <p onClick={() => navigate("/login")}>
+           כבר יש לך משתמש? <span>התחבר</span>
+          </p>
+        </div>
       </form>
     </div>
   );

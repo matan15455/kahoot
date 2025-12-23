@@ -14,26 +14,35 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <div className="nav-logo">Matan Amram EduPlay</div>
+      <div className="navbar-blur" />
 
-      <div className="nav-links">
-        {isAuthenticated ? (
-          <>
-            <Link to="/my-quizzes">החידונים שלי</Link>
-            <Link to="/create-quiz">יצירת חידון</Link>
-            <Link to="/join-room">הצטרף לחדר</Link>
+      <div className="navbar-inner">
+        {/* LOGO */}
+        <div className="nav-logo">
+          <span className="logo-glow">Matan Amram</span>
+          <span className="logo-sub">EduPlay</span>
+        </div>
 
-            <button className="logout-btn" onClick={handleLogout}>
-              התנתק
-            </button>
-          </>
-        ) : (
-          <>
-            <Link to="/login">התחבר</Link>
-            <Link to="/register">הירשם</Link>
-            <Link to="/join-room">הצטרף לחדר</Link>
-          </>
-        )}
+        {/* LINKS */}
+        <div className="nav-links">
+          {isAuthenticated ? (
+            <>
+              <Link className="nav-link" to="/my-quizzes">החידונים שלי</Link>
+              <Link className="nav-link" to="/create-quiz">יצירת חידון</Link>
+              <Link className="nav-link" to="/join-room">הצטרף לחדר</Link>
+
+              <button className="logout-btn" onClick={handleLogout}>
+                התנתק
+              </button>
+            </>
+          ) : (
+            <>
+              <Link className="nav-link" to="/login">התחבר</Link>
+              <Link className="nav-link" to="/register">הירשם</Link>
+              <Link className="nav-link" to="/join-room">הצטרף לחדר</Link>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );
