@@ -16,6 +16,8 @@ export function AuthProvider({ children }) {
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
+
+      connectSocket(storedToken);
     }
 
     setLoading(false);
