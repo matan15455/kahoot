@@ -20,7 +20,7 @@ export default function App() {
       <Router>
         <Navbar />
 
-        <div style={{ paddingTop: "80px" }}>
+        <div style={{ paddingTop: "70px" }}>
           <Routes>
 
             {/* פתוחים לכולם */}
