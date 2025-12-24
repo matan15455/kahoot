@@ -10,9 +10,6 @@ router.post("/register", async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    /* =====================
-       Validation
-    ===================== */
     if (!username || !password) {
       return res.status(400).json({
         message: "Username and password are required"
@@ -75,14 +72,12 @@ router.post("/login", async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // 1️⃣ בדיקת שדות
     if (!username || !password) {
       return res.status(400).json({
         message: "Username and password are required"
       });
     }
 
-    // 2️⃣ חיפוש משתמש
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({
@@ -90,7 +85,6 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // 3️⃣ השוואת סיסמאות (bcrypt)
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({
@@ -98,7 +92,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    // 4️⃣ יצירת JWT
+    //  יצירת JWT
     const token = jwt.sign(
       {
         userId: user._id,
@@ -108,7 +102,7 @@ router.post("/login", async (req, res) => {
       { expiresIn: "7d" } // תוקף טוקן
     );
 
-    // 5️⃣ החזרת תשובה 
+    //  החזרת תשובה 
     res.json({
       token,
       user: {
