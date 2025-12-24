@@ -7,10 +7,32 @@ const UserSchema = new mongoose.Schema({
     required: true,       // חובה למלא
     unique: true          // חייב להיות ייחודי במסד הנתונים
   },
+  
   password: {             // סיסמה
     type: String,         // סוג הנתון מחרוזת
     required: true        // חובה למלא
   },
+
+  firstName: {             // שם פרטי
+    type: String
+  },
+
+  lastName: {              // שם משפחה
+    type: String
+  },
+
+  email: {                // אימייל
+    type: String
+  },
+
+  phone: {                // טלפון
+    type: String
+  },
+
+  birthday: {             // תאריך לידה
+    type: String
+  },
+  
   quizzesCreated: [       // רשימת חידונים שהמשתמש יצר
     {
       type: mongoose.Schema.Types.ObjectId, // מזהה של חידון

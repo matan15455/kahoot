@@ -5,11 +5,21 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
+/* =====================
+   Validation helpers
+===================== */
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phoneRegex = /^(\+972|0)?5\d{8}$/; 
+
+
 // REGISTER
 router.post("/register", async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, firstName, lastName, email, phone, birthday } = req.body;
 
+    /* =====================
+       Basic validation
+    ===================== */
     if (!username || !password) {
       return res.status(400).json({
         message: "Username and password are required"
@@ -20,6 +30,44 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({
         message: "Password must be at least 6 characters"
       });
+    }
+
+    /* =====================
+       Email validation
+    ===================== */
+    if (email && !emailRegex.test(email)) {
+      return res.status(400).json({
+        message: "Invalid email format"
+      });
+    }
+
+    /* =====================
+       Phone validation
+    ===================== */
+    if (phone && !phoneRegex.test(phone)) {
+      return res.status(400).json({
+        message: "Invalid phone number"
+      });
+    }
+
+    /* =====================
+       Birthday validation
+    ===================== */
+    if (birthday) {
+      const birthDate = new Date(birthday);
+      const today = new Date();
+
+      if (isNaN(birthDate.getTime())) {
+        return res.status(400).json({
+          message: "Invalid birthday date"
+        });
+      }
+
+      if (birthDate > today) {
+        return res.status(400).json({
+          message: "Birthday cannot be in the future"
+        });
+      }
     }
 
     /* =====================
@@ -43,6 +91,11 @@ router.post("/register", async (req, res) => {
     const newUser = await User.create({
       username,
       password: hashedPassword,
+      firstName,
+      lastName,
+      email,
+      phone,
+      birthday,
       quizzesCreated: [],
       statistics: {
         totalPoints: 0,
@@ -51,18 +104,20 @@ router.post("/register", async (req, res) => {
       }
     });
 
-    /* =====================
-       Response
-    ===================== */
-    res.status(201).json({
-      message: "User registered successfully",
-      user: {
-        userId: newUser._id,
-        username: newUser.username
-      }
-    });
-
-  } catch (err) {
+      /* =====================
+        Response
+      ===================== */
+      res.status(201).json({
+        message: "User registered successfully",
+        user: {
+          userId: newUser._id,
+          username: newUser.username,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName
+        }
+      });
+  } 
+  catch (err) {
     console.error("Register error:", err);
     res.status(500).json({ message: "Server error" });
   }
