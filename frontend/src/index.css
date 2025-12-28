@@ -40,4 +40,9 @@ body {
   min-height: 100vh;
 }
 
+.auth-page{
+  font-family: 'MyFont', ui-sans-serif, system-ui;
+}
+
+
 

@@ -175,7 +175,7 @@ export default function Register() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder=" "
             />
-            <label className="auth-label">אימייל</label>
+            <label className="auth-label">אימייל *</label>
             <span className="input-ring" />
           </div>
 
@@ -187,7 +187,7 @@ export default function Register() {
               onChange={(e) => setPhone(e.target.value)}
               placeholder=" "
             />
-            <label className="auth-label">טלפון</label>
+            <label className="auth-label">טלפון *</label>
             <span className="input-ring" />
           </div>
 
@@ -198,7 +198,7 @@ export default function Register() {
               value={birthday}
               onChange={(e) => setBirthday(e.target.value)}
             />
-            <label className="auth-label">תאריך לידה</label>
+            <label className="auth-label">תאריך לידה *</label>
             <span className="input-ring" />
           </div>
 
