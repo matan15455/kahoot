@@ -50,7 +50,7 @@ export default function Login() {
         <form className="auth-card" onSubmit={handleSubmit}>
           <div className="auth-card__top">
             <div className="auth-kicker">התחברות</div>
-            <div className="auth-title">התחבר לחשבון שלך</div>
+            <h1 className="auth-title">התחבר למשתמש שלך</h1>
             <div className="auth-subtitle">הכנס שם משתמש וסיסמה</div>
           </div>
 
