@@ -22,13 +22,13 @@ router.post("/register", async (req, res) => {
     ===================== */
     if (!username || !password) {
       return res.status(400).json({
-        message: "Username and password are required"
+        message: "נדרשים שם משתמש וסיסמה"
       });
     }
 
     if (password.length < 6) {
       return res.status(400).json({
-        message: "Password must be at least 6 characters"
+        message: "סיסמה חייבת להיות בת לפחות 6 ספרות"
       });
     }
 
@@ -37,7 +37,7 @@ router.post("/register", async (req, res) => {
     ===================== */
     if (email && !emailRegex.test(email)) {
       return res.status(400).json({
-        message: "Invalid email format"
+        message: "אימייל לא תקין"
       });
     }
 
@@ -46,7 +46,7 @@ router.post("/register", async (req, res) => {
     ===================== */
     if (phone && !phoneRegex.test(phone)) {
       return res.status(400).json({
-        message: "Invalid phone number"
+        message: "מספר טלפון לא תקין"
       });
     }
 
@@ -59,13 +59,13 @@ router.post("/register", async (req, res) => {
 
       if (isNaN(birthDate.getTime())) {
         return res.status(400).json({
-          message: "Invalid birthday date"
+          message: "תאריך לידה לא תקין"
         });
       }
 
       if (birthDate > today) {
         return res.status(400).json({
-          message: "Birthday cannot be in the future"
+          message: "תאריך לידה לא יכול להיות עתידי"
         });
       }
     }
@@ -76,7 +76,7 @@ router.post("/register", async (req, res) => {
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(409).json({
-        message: "Username already exists"
+        message: "המשתמש כבר קיים במערכת"
       });
     }
 
@@ -108,7 +108,7 @@ router.post("/register", async (req, res) => {
         Response
       ===================== */
       res.status(201).json({
-        message: "User registered successfully",
+        message: "משתמש נרשם בהצלחה",
         user: {
           userId: newUser._id,
           username: newUser.username,
@@ -129,21 +129,21 @@ router.post("/login", async (req, res) => {
 
     if (!username || !password) {
       return res.status(400).json({
-        message: "Username and password are required"
+        message: "נדרשים שם משתמש וסיסמה"
       });
     }
 
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(401).json({
-        message: "Invalid credentials"
+        message: "המשתמש לא קיים במערכת"
       });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({
-        message: "Invalid credentials"
+        message: "סיסמה לא תקינה"
       });
     }
 

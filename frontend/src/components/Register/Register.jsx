@@ -31,8 +31,6 @@ export default function Register() {
     return !isNaN(date.getTime()) && date <= new Date();
   };
 
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -41,7 +39,10 @@ export default function Register() {
       !username ||
       !password ||
       !firstName ||
-      !lastName
+      !lastName ||
+      !email ||
+      !phone ||
+      !birthday
     ) {
       setError("אנא מלא את כל שדות החובה");
       return;
