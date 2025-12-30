@@ -19,17 +19,49 @@ export default function Register() {
   const [phone, setPhone] = useState("");
   const [birthday, setBirthday] = useState("");
 
-  const isValidEmail = (email) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidId = (id) => /^\d+$/.test(id);
+
+  const allowedPlatforms = [
+    "gmail.com",
+    "gmail.co.il",
+    "outlook.com",
+    "outlook.co.il",
+    "walla.com",
+    "walla.co.il",
+    "hotmail.com",
+    "hotmail.co.il",
+    "yahoo.com",
+    "yahoo.co.il",
+    "icloud.com"
+  ];
+
+
+  const isValidEmail = (email) => {
+    if (!email) return false;
+
+    // בדיקה בסיסית למבנה אימייל
+    const basicCheck = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!basicCheck) return false;
+
+    const domain = email.split("@")[1].toLowerCase();
+
+    return allowedPlatforms.includes(domain);
+  };
+
 
   const isValidPhone = (phone) =>
-    /^(\+972|0)?5\d{8}$/.test(phone);
+    /^(\+972|0)?-?5\d-?\d{7}$/.test(phone);
 
-  const isValidBirthday = (birthday) => {
-    if (!birthday) return true;
-    const date = new Date(birthday);
-    return !isNaN(date.getTime()) && date <= new Date();
+  const isAdult21 = (birthday) => {
+    const birth = new Date(birthday);
+    const today = new Date();
+    const age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+    return age > 21 || (age === 21 && m >= 0);
   };
+
+  const isValidPassword = (password) =>
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,22 +76,27 @@ export default function Register() {
       !phone ||
       !birthday
     ) {
-      setError("אנא מלא את כל שדות החובה");
+      setError("יש למלא את כל השדות");
       return;
     }
 
-    if (email && !isValidEmail(email)) {
+    if (!isValidEmail(email)) {
       setError("אימייל לא תקין");
       return;
     }
 
-    if (phone && !isValidPhone(phone)) {
+    if (!isValidPhone(phone)) {
       setError("מספר טלפון לא תקין");
       return;
     }
 
-    if (!isValidBirthday(birthday)) {
-      setError("תאריך לידה לא תקין");
+    if (!isAdult21(birthday)) {
+      setError("המשתמש חייב להיות מעל גיל 21");
+      return;
+    }
+
+    if (!isValidPassword(password)) {
+      setError("הסיסמה חייבת להכיל לפחות 8 תווים, אות גדולה, אות קטנה, ספרה ותו מיוחד");
       return;
     }
 
