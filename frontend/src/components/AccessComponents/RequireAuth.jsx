@@ -1,3 +1,5 @@
+//דורש גישה למשתמשים רשומים בלבד
+
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
