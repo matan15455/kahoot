@@ -1,26 +1,37 @@
-import { useState, useEffect, useContext } from "react";
-import { getSocket } from "../../socket";
+import { useState, useEffect } from "react";
+import { getSocket, connectSocket } from "../../socket";
 import "./JoinScreen.css";
 import { useNavigate } from "react-router-dom";
 
 export default function JoinScreen() {
+  const [socket, setSocket] = useState(null);
   const [nickname, setNickname] = useState("");
   const [roomId, setRoomId] = useState("");
   const [room, setRoom] = useState(null);
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const socket = getSocket();
+
 
   useEffect(() => {
+    let s = getSocket();
+
+    if (!s) {
+      s = connectSocket();   // אורח בלי token
+    }
+
+    setSocket(s);
+  }, []);
+
+
+  useEffect(() => {
+    if (!socket) return;   // <-- מגן על null
+
     const handleRoomUpdated = (roomData) => {
-      // תטפל רק בעדכון של החדר שאני נמצא בו
-      if (roomData.roomId !== roomId)
-         return;
+      if (roomData.roomId !== roomId) return;
 
       setRoom(roomData);
 
-      // אם המשחק התחיל – מעבר אוטומטי
       if (roomData.phase === "QUESTION") {
         navigate(`/player/game?roomId=${roomData.roomId}`);
       }
@@ -31,22 +42,24 @@ export default function JoinScreen() {
     return () => {
       socket.off("roomUpdated", handleRoomUpdated);
     };
-  }, [roomId, navigate]);
+  }, [socket, roomId, navigate]);   //  תלוי ב-socket
 
+  /* ==========================
+     Join
+  ========================== */
   const handleJoin = () => {
+    if (!socket) return;  
+
     if (!nickname.trim() || !roomId.trim()) {
       setError("אנא מלא שם וקוד חדר");
       return;
     }
 
     setError("");
-
-    socket.emit("joinRoom", {roomId,nickname});
+    socket.emit("joinRoom", { roomId, nickname });
   };
 
-  /* =====================================================
-     UI – Waiting Room
-  ===================================================== */
+
   if (room) {
     return (
       <div className="room-page">
@@ -57,7 +70,7 @@ export default function JoinScreen() {
 
           <ul className="players-grid">
             {room.players.map((p) => (
-              <li key={p.userId} className="player-card">
+              <li key={p.socketId} className="player-card">
                 <div className="player-avatar">
                   {p.nickname.charAt(0)}
                 </div>
@@ -70,19 +83,18 @@ export default function JoinScreen() {
 
           <p className="waiting-text">
             ⏳ מחכים שהמארח יתחיל את החידון
-            <span className="dots" aria-hidden="true">
+            <span className="dots">
               <span>.</span><span>.</span><span>.</span>
             </span>
           </p>
-
         </div>
       </div>
     );
   }
 
-  /* =====================================================
-     UI – Join Form
-  ===================================================== */
+  /* ==========================
+     Join Form UI
+  ========================== */
   return (
     <div className="join-container">
       <h1>הצטרף לחדר</h1>

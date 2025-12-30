@@ -26,20 +26,21 @@ export default function initSocket(server) {
     const token = socket.handshake.auth?.token;
 
     if (!token) {
-      return next(new Error("Authentication error: No token"));
+      socket.userId = null;
+      socket.username = "Guest";
+      return next();
     }
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      //  קובע מי המשתמש
       socket.userId = decoded.userId;
       socket.username = decoded.username;
-
       next();
-    } catch (err) {
-      next(new Error("Authentication error: Invalid token"));
+    } 
+    catch (e) {
+      return next(new Error("Invalid token"));
     }
+
   });
 
   io.on("connection", (socket) => {
@@ -134,6 +135,9 @@ export default function initSocket(server) {
     ===================================================== */
 
     socket.on("createRoom", ({ quizId }) => {
+
+      if (!socket.userId) 
+        return;
       
       const userId = socket.userId;
 
@@ -181,9 +185,9 @@ export default function initSocket(server) {
 
       room.players.push({
         socketId: socket.id,
-        userId: socket.userId, 
+        userId: socket.userId || socket.id,   //  מזהה ייחודי גם לאורח
         username: socket.username,
-        nickname: nickname,
+        nickname,
         score: 0
       });
 
@@ -198,6 +202,9 @@ export default function initSocket(server) {
     socket.on("startQuiz", async ({ roomId }) => {
       const room = rooms[roomId];
       if (!room) 
+        return;
+
+      if (room.hostId !== socket.userId) 
         return;
 
       const quiz = await Quiz.findById(room.quizId).populate("questions");
@@ -222,7 +229,7 @@ export default function initSocket(server) {
       if (!room || room.phase !== PHASES.QUESTION) 
         return;
 
-      const player = room.players.find(p => p.userId === socket.userId);
+      const player = room.players.find(p => p.userId === (socket.userId || socket.id));
       if (!player) 
         return;
 
@@ -248,7 +255,11 @@ export default function initSocket(server) {
 
     socket.on("nextQuestion", ({ roomId }) => {
       const room = rooms[roomId];
-      if (!room) return;
+      if (!room) 
+        return;
+
+      if (room.hostId !== socket.userId) 
+        return;
 
       //  אם אנחנו באמצע שאלה → קודם סיכום
       if (room.phase === PHASES.QUESTION) {
