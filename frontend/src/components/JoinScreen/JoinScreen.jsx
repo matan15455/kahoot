@@ -25,7 +25,8 @@ export default function JoinScreen() {
 
 
   useEffect(() => {
-    if (!socket) return;   // <-- מגן על null
+    if (!socket) 
+      return;   
 
     const handleRoomUpdated = (roomData) => {
       if (roomData.roomId !== roomId) return;
@@ -42,7 +43,7 @@ export default function JoinScreen() {
     return () => {
       socket.off("roomUpdated", handleRoomUpdated);
     };
-  }, [socket, roomId, navigate]);   //  תלוי ב-socket
+  }, [socket, roomId, navigate]);  
 
   /* ==========================
      Join
