@@ -11,7 +11,8 @@ import PlayerGame from "./components/PlayerGame/PlayerGame";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 
-import RequireAuth from "./components/RequireAuth/RequireAuth";
+import RequireAuth from "./components/AccessComponents/RequireAuth";
+import RequirePlayer from "./components/AccessComponents/RequirePlayer";
 import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
@@ -69,9 +70,9 @@ export default function App() {
             <Route
               path="/player/game"
               element={
-                <RequireAuth>
+                <RequirePlayer>
                   <PlayerGame />
-                </RequireAuth>
+                </RequirePlayer>
               }
             />
 
