@@ -4,7 +4,8 @@ import { io } from "socket.io-client";
 let socket = null;
 
 export function connectSocket(token) {
-  if (socket) return socket; 
+  if (socket) 
+    return socket; 
 
   socket = io("http://localhost:5000", {
     auth: token ? { token } : {}

@@ -4,7 +4,7 @@ import { connectSocket, disconnectSocket } from "../socket";
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);      // { userId, username }
+  const [user, setUser] = useState(null);      
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 

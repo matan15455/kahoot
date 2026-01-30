@@ -3,13 +3,13 @@ import mongoose from 'mongoose';
 // סכמת משתמש
 const UserSchema = new mongoose.Schema({
   username: {             // שם משתמש
-    type: String,         // סוג הנתון הוא מחרוזת
+    type: String,         //מחרוזת  
     required: true,       // חובה למלא
-    unique: true          // חייב להיות ייחודי במסד הנתונים
+    unique: true          // מפתח
   },
   
   password: {             // סיסמה
-    type: String,         // סוג הנתון מחרוזת
+    type: String,         // מחרוזת
     required: true        // חובה למלא
   },
 

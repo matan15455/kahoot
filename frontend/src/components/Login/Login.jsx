@@ -12,8 +12,12 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  //מטפל בהגשת טופס ההתחברות
   const handleSubmit = async (e) => {
+    //מונע רענון של הדפדפן ומחיקת הSTATE
     e.preventDefault();
+    
+    //מוחק שגיאות קודמות
     setError("");
 
     try {
@@ -22,11 +26,14 @@ export default function Login() {
         password
       });
 
+      //שומר את הטוקן
       login({
         token: res.data.token,
         user: res.data.user
       });
 
+
+      //עובר לעמוד "החידונים שלי"
       navigate("/my-quizzes"); 
     } catch (err) {
       setError(

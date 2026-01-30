@@ -19,8 +19,6 @@ export default function Register() {
   const [phone, setPhone] = useState("");
   const [birthday, setBirthday] = useState("");
 
-  const isValidId = (id) => /^\d+$/.test(id);
-
   const allowedPlatforms = [
     "gmail.com",
     "gmail.co.il",
@@ -36,6 +34,7 @@ export default function Register() {
   ];
 
 
+  // פונקציה לבדיקת תקינות אימייל
   const isValidEmail = (email) => {
     if (!email) return false;
 
@@ -48,10 +47,11 @@ export default function Register() {
     return allowedPlatforms.includes(domain);
   };
 
-
+  //פונקציה לבדיקת תקינות טלפון
   const isValidPhone = (phone) =>
     /^(\+972|0)?-?5\d-?\d{7}$/.test(phone);
 
+  //פונקציה לבדיקת גיל (מעל 21)
   const isAdult21 = (birthday) => {
     const birth = new Date(birthday);
     const today = new Date();
@@ -60,11 +60,16 @@ export default function Register() {
     return age > 21 || (age === 21 && m >= 0);
   };
 
+  //בדיקת תקינות סיסמה (לפי הדרישות של אלון)
   const isValidPassword = (password) =>
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password);
 
+  //טיפול בהגשת טופס ההרשמה
   const handleSubmit = async (e) => {
+    //מונע מהדפדפן לרענן את הדף ולמחוק את הSTATES
     e.preventDefault();
+
+    //מנקה את השגיאה הקודמת
     setError("");
 
     if (
@@ -103,7 +108,6 @@ export default function Register() {
     try {
       setLoading(true);
 
-      // 1️⃣ Register
       await axios.post("http://localhost:5000/auth/register", {
         username,
         password,
@@ -114,18 +118,19 @@ export default function Register() {
         birthday
       });
 
-      // 2️⃣ Auto login after register
+      // התחברות אוטומטית אחרי הרשמה
       const res = await axios.post("http://localhost:5000/auth/login", {
         username,
         password
       });
 
-      // 3️⃣ Save to AuthContext
+      // שומר את הטוקן
       login({
         token: res.data.token,
         user: res.data.user
       });
 
+      // עובר לעמוד "חידונים שלי
       navigate("/my-quizzes");
       
     } catch (err) {

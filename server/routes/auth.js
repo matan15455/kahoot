@@ -5,21 +5,15 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-/* =====================
-   Validation helpers
-===================== */
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^(\+972|0)?5\d{8}$/; 
 
 
-// REGISTER
+// הרשמה
 router.post("/register", async (req, res) => {
   try {
     const { username, password, firstName, lastName, email, phone, birthday } = req.body;
 
-    /* =====================
-       Basic validation
-    ===================== */
     if (!username || !password) {
       return res.status(400).json({
         message: "נדרשים שם משתמש וסיסמה"
@@ -32,27 +26,18 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    /* =====================
-       Email validation
-    ===================== */
     if (email && !emailRegex.test(email)) {
       return res.status(400).json({
         message: "אימייל לא תקין"
       });
     }
 
-    /* =====================
-       Phone validation
-    ===================== */
     if (phone && !phoneRegex.test(phone)) {
       return res.status(400).json({
         message: "מספר טלפון לא תקין"
       });
     }
 
-    /* =====================
-       Birthday validation
-    ===================== */
     if (birthday) {
       const birthDate = new Date(birthday);
       const today = new Date();
@@ -70,9 +55,6 @@ router.post("/register", async (req, res) => {
       }
     }
 
-    /* =====================
-       Check existing user
-    ===================== */
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(409).json({
@@ -80,14 +62,8 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    /* =====================
-       Hash password
-    ===================== */
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    /* =====================
-       Create user
-    ===================== */
     const newUser = await User.create({
       username,
       password: hashedPassword,
@@ -104,9 +80,6 @@ router.post("/register", async (req, res) => {
       }
     });
 
-      /* =====================
-        Response
-      ===================== */
       res.status(201).json({
         message: "משתמש נרשם בהצלחה",
         user: {

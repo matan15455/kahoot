@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
+//שמירת חידון
 router.post('/',authMiddleware, async (req, res) => {
   try {
     const { title, description, questions } = req.body;
@@ -43,6 +44,7 @@ router.post('/',authMiddleware, async (req, res) => {
   }
 });
 
+// קבלת החידונים שהמשתמש יצר
 router.get("/my", authMiddleware, async (req, res) => {
   try {
     // מגיע מה-JWT
