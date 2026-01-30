@@ -52,15 +52,6 @@ export default function QuestionForm({ onAddQuestion, onCancel }) {
         placeholder="טקסט שאלה"
       />
 
-      <select
-        className="q-select"
-        value={type}
-        onChange={e => setType(e.target.value)}
-      >
-        <option value="multiple-choice">אמריקאית</option>
-        <option value="true-false">אמת/שקר</option>
-      </select>
-
       <div className="question-settings">
         <input
           className="q-input"

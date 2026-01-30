@@ -10,6 +10,7 @@ export default function QuizCreator() {
   const [addingQuestion, setAddingQuestion] = useState(false);
 
   const handleAddQuiz = (quizData) => setQuiz(quizData);
+  
   const handleAddQuestion = (q) => {
     setQuestions([...questions, q]);
     setAddingQuestion(false);
