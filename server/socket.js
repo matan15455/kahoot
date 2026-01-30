@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 const rooms = {};
 
 /* ===========================
-   PHASES (State Machine)
+   PHASES 
 =========================== */
 const PHASES = {
   LOBBY: "LOBBY",
@@ -47,7 +47,7 @@ export default function initSocket(server) {
     console.log("🟢 Connected:", socket.userId,socket.username);    
 
     /* =====================================================
-       🔧 Helpers
+        Helpers
     ===================================================== */
 
     function emitRoom(roomId) {
@@ -131,7 +131,7 @@ export default function initSocket(server) {
     }
 
     /* =====================================================
-       🏠 Create Room (Host)
+        Create Room (Host)
     ===================================================== */
 
     socket.on("createRoom", ({ quizId }) => {
@@ -174,7 +174,7 @@ export default function initSocket(server) {
     });
 
     /* =====================================================
-       👥 Join Room (Player)
+        Join Room (Player)
     ===================================================== */
 
     socket.on("joinRoom", ({ roomId,nickname }) => {
@@ -196,7 +196,7 @@ export default function initSocket(server) {
     });
 
     /* =====================================================
-       ▶️ Start Quiz (Host)
+        Start Quiz (Host)
     ===================================================== */
 
     socket.on("startQuiz", async ({ roomId }) => {
@@ -221,7 +221,7 @@ export default function initSocket(server) {
     });
 
     /* =====================================================
-       ✅ Answer Question (Player)
+        Answer Question (Player)
     ===================================================== */
 
     socket.on("answerQuestion", ({ roomId, answerText }) => {
@@ -250,7 +250,7 @@ export default function initSocket(server) {
     });
 
     /* =====================================================
-       ⏭ Next Question (Host)
+        Next Question (Host)
     ===================================================== */
 
     socket.on("nextQuestion", ({ roomId }) => {
@@ -299,7 +299,7 @@ export default function initSocket(server) {
 
 
     /* =====================================================
-       🔴 Disconnect
+       Disconnect
     ===================================================== */
 
     socket.on("disconnect", () => {
