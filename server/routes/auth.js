@@ -5,54 +5,16 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const phoneRegex = /^(\+972|0)?5\d{8}$/; 
-
 
 // הרשמה
 router.post("/register", async (req, res) => {
   try {
     const { username, password, firstName, lastName, email, phone, birthday } = req.body;
 
-    if (!username || !password) {
+    if (!username || !password || !firstName || !lastName || !email || !phone || !birthday) {
       return res.status(400).json({
-        message: "נדרשים שם משתמש וסיסמה"
+        message: "חסרה אחת מהשדות"
       });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({
-        message: "סיסמה חייבת להיות בת לפחות 6 ספרות"
-      });
-    }
-
-    if (email && !emailRegex.test(email)) {
-      return res.status(400).json({
-        message: "אימייל לא תקין"
-      });
-    }
-
-    if (phone && !phoneRegex.test(phone)) {
-      return res.status(400).json({
-        message: "מספר טלפון לא תקין"
-      });
-    }
-
-    if (birthday) {
-      const birthDate = new Date(birthday);
-      const today = new Date();
-
-      if (isNaN(birthDate.getTime())) {
-        return res.status(400).json({
-          message: "תאריך לידה לא תקין"
-        });
-      }
-
-      if (birthDate > today) {
-        return res.status(400).json({
-          message: "תאריך לידה לא יכול להיות עתידי"
-        });
-      }
     }
 
     const existingUser = await User.findOne({ username });
@@ -80,15 +42,9 @@ router.post("/register", async (req, res) => {
       }
     });
 
-      res.status(201).json({
-        message: "משתמש נרשם בהצלחה",
-        user: {
-          userId: newUser._id,
-          username: newUser.username,
-          firstName: newUser.firstName,
-          lastName: newUser.lastName
-        }
-      });
+    res.status(201).json({
+      message: "משתמש נרשם בהצלחה"
+    });
   } 
   catch (err) {
     console.error("Register error:", err);
@@ -96,9 +52,9 @@ router.post("/register", async (req, res) => {
   }
 });
 
-router.post("/login", async (req, res) => {
+router.get("/login", async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password } = req.query;
 
     if (!username || !password) {
       return res.status(400).json({
@@ -108,7 +64,7 @@ router.post("/login", async (req, res) => {
 
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(401).json({
+      return res.status(404).json({
         message: "המשתמש לא קיים במערכת"
       });
     }
@@ -131,12 +87,10 @@ router.post("/login", async (req, res) => {
     );
 
     //  החזרת תשובה 
-    res.json({
+    return res.status(200).json({
+      message: "התחברות הצליחה",
       token,
-      user: {
-        userId: user._id,
-        username: user.username
-      }
+      user: { userId: user._id, username: user.username }
     });
 
   } catch (err) {

@@ -119,9 +119,11 @@ export default function Register() {
       });
 
       // התחברות אוטומטית אחרי הרשמה
-      const res = await axios.post("http://localhost:5000/auth/login", {
-        username,
-        password
+      const res = await axios.get("http://localhost:5000/auth/login", {
+        params: {
+          username,
+          password
+        }
       });
 
       // שומר את הטוקן
