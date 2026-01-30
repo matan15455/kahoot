@@ -38,6 +38,8 @@ export default function QuestionForm({ onAddQuestion, onCancel }) {
        return alert("אנא מלא טקסט שאלה");
     if (answers.some(a => !a.text.trim()))
        return alert("כל התשובות חייבות להכיל טקסט");
+    if (!answers.some(a => a.isCorrect))
+      return alert("חייב לבחור לפחות תשובה אחת נכונה");
     onAddQuestion({ text, type, time, points, answers });
   };
 
@@ -57,7 +59,10 @@ export default function QuestionForm({ onAddQuestion, onCancel }) {
           className="q-input"
           type="number"
           value={time}
-          onChange={e => setTime(+e.target.value)}
+          onChange={e => {
+            const val = +e.target.value;
+            if (val >= 1) setTime(val); // לא מאפשרים שלילי
+          }}
           placeholder="זמן בשניות"
         />
 
@@ -65,7 +70,10 @@ export default function QuestionForm({ onAddQuestion, onCancel }) {
           className="q-input"
           type="number"
           value={points}
-          onChange={e => setPoints(+e.target.value)}
+          onChange={e => {
+            const val = +e.target.value;
+            if (val >= 1) setPoints(val); // לא מאפשרים שלילי
+          }}
           placeholder="נקודות"
         />
       </div>
