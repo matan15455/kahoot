@@ -89,8 +89,7 @@ router.get("/login", async (req, res) => {
     //  החזרת תשובה 
     return res.status(200).json({
       message: "התחברות הצליחה",
-      token,
-      user: { userId: user._id, username: user.username }
+      token
     });
 
   } catch (err) {

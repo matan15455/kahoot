@@ -127,10 +127,7 @@ export default function Register() {
       });
 
       // שומר את הטוקן
-      login({
-        token: res.data.token,
-        user: res.data.user
-      });
+      login({ token: res.data.token });
 
       // עובר לעמוד "חידונים שלי
       navigate("/my-quizzes");

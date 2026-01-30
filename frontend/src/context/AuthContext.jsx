@@ -4,18 +4,15 @@ import { connectSocket, disconnectSocket } from "../socket";
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);      
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // טעינה ראשונית מה־localStorage
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-    const storedUser = localStorage.getItem("user");
 
-    if (storedToken && storedUser) {
+    if (storedToken) {
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
 
       connectSocket(storedToken);
     }
@@ -24,12 +21,10 @@ export function AuthProvider({ children }) {
   }, []);
 
   // התחברות
-  const login = ({ token, user }) => {
+  const login = ({ token }) => {
     localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
 
     setToken(token);
-    setUser(user);
 
     connectSocket(token);
   };
@@ -37,17 +32,14 @@ export function AuthProvider({ children }) {
   // התנתקות
   const logout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
 
     disconnectSocket();
     setToken(null);
-    setUser(null);
   };
 
   return (
     <AuthContext.Provider
       value={{
-        user,
         token,
         isAuthenticated: !!token,
         login,

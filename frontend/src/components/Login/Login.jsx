@@ -29,10 +29,7 @@ export default function Login() {
       });
 
       //שומר את הטוקן
-      login({
-        token: res.data.token,
-        user: res.data.user
-      });
+      login({ token: res.data.token });
 
 
       //עובר לעמוד "החידונים שלי"
