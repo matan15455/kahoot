@@ -118,6 +118,13 @@
   box-shadow: 0 10px 30px rgba(239,68,68,0.7);
 }
 
+.nav-link.active {
+  font-weight: bold;
+  color: #ffd700;
+  border-bottom: 2px solid #ffd700;
+}
+
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
   .nav-links {

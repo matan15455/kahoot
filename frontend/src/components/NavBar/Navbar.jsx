@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import "./Navbar.css";
 
@@ -7,9 +7,9 @@ export default function Navbar() {
   const { isAuthenticated, logout } = useAuth();
 
   const handleLogout = () => {
-    logout();              // מנקה context + localStorage
-    navigate("/login");    // מעבר למסך התחברות
-    window.location.reload(); // (אופציונלי – מאפס socket)
+    logout();              
+    navigate("/login");    
+    window.location.reload(); 
   };
 
   return (
@@ -27,10 +27,41 @@ export default function Navbar() {
         <div className="nav-links">
           {isAuthenticated ? (
             <>
-              <Link className="nav-link" to="/my-quizzes">החידונים שלי</Link>
-              <Link className="nav-link" to="/create-quiz">יצירת חידון</Link>
-              <Link className="nav-link" to="/join-room">הצטרף לחדר</Link>
-              <Link className="nav-link" to="/profile">איזור אישי</Link>
+              <NavLink
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "active" : ""}`
+                }
+                to="/my-quizzes"
+              >
+                החידונים שלי
+              </NavLink>
+
+              <NavLink
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "active" : ""}`
+                }
+                to="/create-quiz"
+              >
+                יצירת חידון
+              </NavLink>
+
+              <NavLink
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "active" : ""}`
+                }
+                to="/join-room"
+              >
+                הצטרף לחדר
+              </NavLink>
+
+              <NavLink
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "active" : ""}`
+                }
+                to="/profile"
+              >
+                איזור אישי
+              </NavLink>
 
               <button className="logout-btn" onClick={handleLogout}>
                 התנתק
@@ -38,9 +69,32 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link className="nav-link" to="/login">התחבר</Link>
-              <Link className="nav-link" to="/register">הירשם</Link>
-              <Link className="nav-link" to="/join-room">הצטרף לחדר</Link>
+              <NavLink
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "active" : ""}`
+                }
+                to="/login"
+              >
+                התחבר
+              </NavLink>
+
+              <NavLink
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "active" : ""}`
+                }
+                to="/register"
+              >
+                הירשם
+              </NavLink>
+
+              <NavLink
+                className={({ isActive }) =>
+                  `nav-link ${isActive ? "active" : ""}`
+                }
+                to="/join-room"
+              >
+                הצטרף לחדר
+              </NavLink>
             </>
           )}
         </div>
