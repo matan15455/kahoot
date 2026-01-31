@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect ,useRef} from "react";
 import { getSocket } from "../../socket";
 import "./CreateRoom.css";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -13,9 +13,15 @@ export default function CreateRoom() {
   const [searchParams] = useSearchParams();
   const quizId = searchParams.get("quizId");
 
+  const roomCreated = useRef(false);
+
+
   useEffect(() => {
     // יצירת חדר
-    socket.emit("createRoom", { quizId });
+    if (!roomCreated.current) {
+      socket.emit("createRoom", { quizId });
+      roomCreated.current = true; // מסמן שכבר שלחנו emit
+    }
 
     const handleRoomUpdated = (roomData) => {
       setRoom(roomData);

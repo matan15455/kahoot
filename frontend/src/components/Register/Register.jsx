@@ -34,7 +34,8 @@ export default function Register() {
   // פונקציה לבדיקת תקינות תעודת זהות
   const isValidID = (id) => {
     // מוודא שכל התווים ספרות בלבד
-    if (!/^\d+$/.test(id)) return false;
+    if (!/^\d+$/.test(id)) 
+      return false;
 
     // מוסיף אפסים משמאל אם המספר קצר מ-9 ספרות
     id = id.padStart(9, "0");
@@ -107,10 +108,10 @@ export default function Register() {
       return;
     }
 
-    if (!isValidID(idUser)) {
-      setError("תעודת זהות לא תקינה");
-      return;
-    }
+    // if (!isValidID(idUser)) {
+    //   setError("תעודת זהות לא תקינה");
+    //   return;
+    // }
 
     if (!isValidEmail(email)) {
       setError("אימייל לא תקין");
