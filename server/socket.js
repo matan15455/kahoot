@@ -26,15 +26,15 @@ export default function initSocket(server) {
     const token = socket.handshake.auth?.token;
 
     if (!token) {
-      socket.userId = null;
-      socket.username = "Guest";
+      socket.mongoId = null;
+      socket.idUser = "Guest";
       return next();
     }
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      socket.userId = decoded.userId;
-      socket.username = decoded.username;
+      socket.mongoId = decoded.mongoId; // ObjectId של Mongo
+      socket.idUser = decoded.id;       // המזהה שהמשתמש הזין
       next();
     } 
     catch (e) {
@@ -44,7 +44,7 @@ export default function initSocket(server) {
   });
 
   io.on("connection", (socket) => {
-    console.log("🟢 Connected:", socket.userId,socket.username);    
+    console.log("🟢 Connected:", socket.mongoId,socket.idUser);    
 
     /* =====================================================
         Helpers
@@ -136,10 +136,10 @@ export default function initSocket(server) {
 
     socket.on("createRoom", ({ quizId }) => {
 
-      if (!socket.userId) 
+      if (!socket.mongoId) 
         return;
       
-      const userId = socket.userId;
+      const userId = socket.mongoId;
 
       // מוחק חדר קודם של אותו משתמש (Host)
       for (const id in rooms) {
@@ -185,8 +185,7 @@ export default function initSocket(server) {
 
       room.players.push({
         socketId: socket.id,
-        userId: socket.userId || socket.id,   //  מזהה ייחודי גם לאורח
-        username: socket.username,
+        userId: socket.mongoId || socket.id,   //  מזהה ייחודי גם לאורח
         nickname,
         score: 0
       });
@@ -204,7 +203,7 @@ export default function initSocket(server) {
       if (!room) 
         return;
 
-      if (room.hostId !== socket.userId) 
+      if (room.hostId !== socket.mongoId) 
         return;
 
       const quiz = await Quiz.findById(room.quizId).populate("questions");
@@ -229,7 +228,7 @@ export default function initSocket(server) {
       if (!room || room.phase !== PHASES.QUESTION) 
         return;
 
-      const player = room.players.find(p => p.userId === (socket.userId || socket.id));
+      const player = room.players.find(p => p.userId === (socket.mongoId || socket.id));
       if (!player) 
         return;
 
@@ -258,7 +257,7 @@ export default function initSocket(server) {
       if (!room) 
         return;
 
-      if (room.hostId !== socket.userId) 
+      if (room.hostId !== socket.mongoId) 
         return;
 
       //  אם אנחנו באמצע שאלה → קודם סיכום
