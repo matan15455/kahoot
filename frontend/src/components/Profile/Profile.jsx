@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import {isValidEmail,isValidPhone,isAdult21,isValidPassword} from "../../utils/validators";
 import "./Profile.css";
 
 export default function Profile() {
@@ -51,8 +52,29 @@ export default function Profile() {
   const handleUpdate = async () => {
     if (!userId) return;
 
-    setLoading(true);
     setError("");
+
+    if (!isValidEmail(userData.email)) {
+      setError("אימייל לא תקין");
+      return;
+    }
+
+    if (!isValidPhone(userData.phone)) {
+      setError("מספר טלפון לא תקין");
+      return;
+    }
+
+    if (!isAdult21(userData.birthday)) {
+      setError("המשתמש חייב להיות מעל גיל 21");
+      return;
+    }
+
+    if (userData.password && !isValidPassword(userData.password)) {
+      setError(
+        "הסיסמה חייבת להכיל לפחות 8 תווים, אות גדולה, אות קטנה, ספרה ותו מיוחד"
+      );
+      return;
+    }
 
     const updates = {
       name: userData.name,
@@ -61,12 +83,18 @@ export default function Profile() {
       birthday: userData.birthday,
     };
 
-    if (userData.password) updates.password = userData.password;
+    if (userData.password) {
+      updates.password = userData.password;
+    }
 
     try {
-      await axios.patch(`http://localhost:5000/user/${userId}`, updates, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      setLoading(true);
+      await axios.patch(
+        `http://localhost:5000/user/${userId}`,
+        updates,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
       alert("פרטים עודכנו בהצלחה!");
       setUserData(prev => ({ ...prev, password: "" }));
     } catch (err) {
