@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar/Navbar";
+import Navbar from "./components/NavBar/Navbar";
 
 import JoinScreen from "./components/JoinScreen/JoinScreen";
 import MyQuizzes from "./components/MyQuizzes/MyQuizzes";
@@ -7,6 +7,7 @@ import QuizCreator from "./components/QuizCreator/QuizCreator";
 import CreateRoom from "./components/CreateRoom/CreateRoom";
 import HostGame from "./components/HostGame/HostGame";
 import PlayerGame from "./components/PlayerGame/PlayerGame";
+import Profile from "./components/Profile/Profile";
 
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
@@ -73,6 +74,15 @@ export default function App() {
                 <RequirePlayer>
                   <PlayerGame />
                 </RequirePlayer>
+              }
+            />
+
+            <Route
+              path="/profile"
+              element={
+                <RequireAuth>
+                  <Profile />
+                </RequireAuth>
               }
             />
 

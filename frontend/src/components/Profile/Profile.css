@@ -1,0 +1,88 @@
+/* Profile.css */
+
+.profile-page {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #1e1e2f;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.profile-page h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 28px;
+  color: #ffce00;
+}
+
+.error {
+  color: #ff4c4c;
+  background: rgba(255, 0, 0, 0.1);
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.profile-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.profile-form input {
+  margin-top: 5px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #2c2c3e;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+  transition: 0.2s all;
+}
+
+.profile-form input:focus {
+  background: #3a3a54;
+  box-shadow: 0 0 5px #ffce00;
+}
+
+.profile-form button {
+  margin-top: 10px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s all;
+  color: #fff;
+  background-color: #ffce00;
+  font-weight: bold;
+}
+
+.profile-form button:hover:not(:disabled) {
+  background-color: #e6b800;
+}
+
+.profile-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.delete-btn {
+  background-color: #ff4c4c;
+}
+
+.delete-btn:hover:not(:disabled) {
+  background-color: #e04343;
+}

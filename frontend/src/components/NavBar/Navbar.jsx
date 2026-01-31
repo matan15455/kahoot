@@ -30,6 +30,7 @@ export default function Navbar() {
               <Link className="nav-link" to="/my-quizzes">החידונים שלי</Link>
               <Link className="nav-link" to="/create-quiz">יצירת חידון</Link>
               <Link className="nav-link" to="/join-room">הצטרף לחדר</Link>
+              <Link className="nav-link" to="/profile">איזור אישי</Link>
 
               <button className="logout-btn" onClick={handleLogout}>
                 התנתק

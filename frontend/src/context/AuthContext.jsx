@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { connectSocket, disconnectSocket } from "../socket";
+import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // טעינה ראשונית מה־localStorage
@@ -13,6 +15,9 @@ export function AuthProvider({ children }) {
 
     if (storedToken) {
       setToken(storedToken);
+
+      const decoded = jwtDecode(storedToken);
+      setUserId(decoded.id);
 
       connectSocket(storedToken);
     }
@@ -26,6 +31,9 @@ export function AuthProvider({ children }) {
 
     setToken(token);
 
+    const decoded = jwtDecode(token);
+    setUserId(decoded.id);
+
     connectSocket(token);
   };
 
@@ -33,14 +41,17 @@ export function AuthProvider({ children }) {
   const logout = () => {
     localStorage.removeItem("token");
 
-    disconnectSocket();
     setToken(null);
+    setUserId(null);
+
+    disconnectSocket();
   };
 
   return (
     <AuthContext.Provider
       value={{
         token,
+        userId,
         isAuthenticated: !!token,
         login,
         logout
