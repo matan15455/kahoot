@@ -53,6 +53,7 @@ export default function QuestionForm({ onAddQuestion, onCancel }) {
       />
 
       <div className="question-settings">
+        <label>זמן בשניות</label>
         <input
           className="q-input"
           type="number"
@@ -64,16 +65,18 @@ export default function QuestionForm({ onAddQuestion, onCancel }) {
           placeholder="זמן בשניות"
         />
 
-        <input
-          className="q-input"
-          type="number"
-          value={points}
-          onChange={e => {
-            const val = +e.target.value;
-            if (val >= 1) setPoints(val); // לא מאפשרים שלילי
-          }}
-          placeholder="נקודות"
-        />
+        <div className="q-setting">
+          <label> נקודות</label>
+          <input
+            className="q-input"
+            type="number"
+            value={points}
+            onChange={e => {
+              const val = +e.target.value;
+              if (val >= 1) setPoints(val); 
+            }}
+          />
+        </div>
       </div>
 
       <div className="answers-list">
