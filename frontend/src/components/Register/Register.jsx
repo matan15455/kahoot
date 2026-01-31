@@ -8,13 +8,11 @@ export default function Register() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
+  const [idUser, setIdUser] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [name, setName] = useState(""); 
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [birthday, setBirthday] = useState("");
@@ -33,6 +31,31 @@ export default function Register() {
     "icloud.com"
   ];
 
+  // פונקציה לבדיקת תקינות תעודת זהות
+  const isValidID = (id) => {
+    // מוודא שכל התווים ספרות בלבד
+    if (!/^\d+$/.test(id)) return false;
+
+    // מוסיף אפסים משמאל אם המספר קצר מ-9 ספרות
+    id = id.padStart(9, "0");
+
+    let sum = 0;
+
+    for (let i = 0; i < 9; i++) {
+      let num = parseInt(id[i], 10);
+
+      // אם המיקום אי־זוגי (index 1,3,5,7) מכפילים ב־2
+      if (i % 2 === 1) {
+        num *= 2;
+        if (num > 9) num -= 9; // סכום ספרות שווה ל־num-9
+      }
+
+      sum += num;
+    }
+
+    // מספר תקין אם הסכום מתחלק ב-10
+    return sum % 10 === 0;
+  };
 
   // פונקציה לבדיקת תקינות אימייל
   const isValidEmail = (email) => {
@@ -73,15 +96,19 @@ export default function Register() {
     setError("");
 
     if (
-      !username ||
+      !idUser ||
       !password ||
-      !firstName ||
-      !lastName ||
+      !name ||
       !email ||
       !phone ||
       !birthday
     ) {
       setError("יש למלא את כל השדות");
+      return;
+    }
+
+    if (!isValidID(idUser)) {
+      setError("תעודת זהות לא תקינה");
       return;
     }
 
@@ -109,10 +136,9 @@ export default function Register() {
       setLoading(true);
 
       await axios.post("http://localhost:5000/auth/register", {
-        username,
+        id: idUser,
         password,
-        firstName,
-        lastName,
+        name,
         email,
         phone,
         birthday
@@ -121,7 +147,7 @@ export default function Register() {
       // התחברות אוטומטית אחרי הרשמה
       const res = await axios.get("http://localhost:5000/auth/login", {
         params: {
-          username,
+          id: idUser,
           password
         }
       });
@@ -160,39 +186,16 @@ export default function Register() {
         </div>
 
         <div className="auth-fields">
-          <div className="input-group">
-            <input
-              className="auth-input"
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder=" "
-            />
-            <label className="auth-label">שם פרטי *</label>
-            <span className="input-ring" />
-          </div>
 
           <div className="input-group">
             <input
               className="auth-input"
               type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              value={idUser}
+              onChange={(e) => setIdUser(e.target.value)}
               placeholder=" "
             />
-            <label className="auth-label">שם משפחה *</label>
-            <span className="input-ring" />
-          </div>
-
-          <div className="input-group">
-            <input
-              className="auth-input"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder=" "
-            />
-            <label className="auth-label">שם משתמש *</label>
+            <label className="auth-label">תעודת זהות *</label>
             <span className="input-ring" />
           </div>
 
@@ -205,6 +208,16 @@ export default function Register() {
               placeholder=" "
             />
             <label className="auth-label">סיסמה *</label>
+            <span className="input-ring" />
+          </div>
+
+          <div className="input-group">
+            <input className="auth-input"
+                type="text"
+                value={name} 
+                onChange={e => setName(e.target.value)} 
+                placeholder=" " />
+            <label className="auth-label">שם מלא *</label>
             <span className="input-ring" />
           </div>
 
