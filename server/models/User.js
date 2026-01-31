@@ -2,10 +2,11 @@ import mongoose from 'mongoose';
 
 // סכמת משתמש
 const UserSchema = new mongoose.Schema({
-  username: {             // שם משתמש
-    type: String,         //מחרוזת  
-    required: true,       // חובה למלא
-    unique: true          // מפתח
+  
+  id: {
+    type: String,
+    required: true,
+    unique: true
   },
   
   password: {             // סיסמה
@@ -13,12 +14,9 @@ const UserSchema = new mongoose.Schema({
     required: true        // חובה למלא
   },
 
-  firstName: {             // שם פרטי
-    type: String
-  },
-
-  lastName: {              // שם משפחה
-    type: String
+  name: {
+    type: String,
+    required: true
   },
 
   email: {                // אימייל

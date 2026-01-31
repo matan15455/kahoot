@@ -9,15 +9,15 @@ const router = express.Router();
 // הרשמה
 router.post("/register", async (req, res) => {
   try {
-    const { username, password, firstName, lastName, email, phone, birthday } = req.body;
+    const { id, password, name, email, phone, birthday } = req.body;
 
-    if (!username || !password || !firstName || !lastName || !email || !phone || !birthday) {
+    if (!id || !password || !name || !email || !phone || !birthday) {
       return res.status(400).json({
         message: "חסרה אחת מהשדות"
       });
     }
 
-    const existingUser = await User.findOne({ username });
+    const existingUser = await User.findOne({ id });
     if (existingUser) {
       return res.status(409).json({
         message: "המשתמש כבר קיים במערכת"
@@ -27,10 +27,9 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await User.create({
-      username,
+      id,
       password: hashedPassword,
-      firstName,
-      lastName,
+      name,
       email,
       phone,
       birthday,
@@ -54,15 +53,16 @@ router.post("/register", async (req, res) => {
 
 router.get("/login", async (req, res) => {
   try {
-    const { username, password } = req.query;
+    const { id, password } = req.query;
 
-    if (!username || !password) {
+    if (!id || !password) {
       return res.status(400).json({
-        message: "נדרשים שם משתמש וסיסמה"
+        message: "נדרשים id וסיסמה"
       });
     }
 
-    const user = await User.findOne({ username });
+
+    const user = await User.findOne({ id });
     if (!user) {
       return res.status(404).json({
         message: "המשתמש לא קיים במערכת"
@@ -79,8 +79,8 @@ router.get("/login", async (req, res) => {
     //  יצירת JWT
     const token = jwt.sign(
       {
-        userId: user._id,
-        username: user.username
+        mongoId: user._id,  // ObjectId פנימי
+        id: user.id         // המזהה שהמשתמש הזין
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" } // תוקף טוקן
