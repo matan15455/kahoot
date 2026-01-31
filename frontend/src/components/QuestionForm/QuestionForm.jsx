@@ -9,23 +9,21 @@ export default function QuestionForm({ onAddQuestion, onCancel }) {
   const [answers, setAnswers] = useState([{ text: "", isCorrect: false }]);
 
   const handleAnswerChange = (index, key, value) => {
-    // יוצרים עותק חדש של מערך התשובות
-    const newAnswers = [...answers];
+    let newAnswers = [...answers];
 
-    // יוצרים עותק של התשובה הספציפית שנבחרה
-    const answerToUpdate = { ...answers[index] };
-
-    // בודקים איזה שדה רוצים לעדכן
-    if (key === "text") {
-      answerToUpdate.text = value;
-    } else if (key === "isCorrect") {
-      answerToUpdate.isCorrect = value;
+    if (key === "isCorrect") {
+      // רק תשובה אחת יכולה להיות נכונה
+      newAnswers = newAnswers.map((a, i) => ({
+        ...a,
+        isCorrect: i === index
+      }));
+    } else {
+      newAnswers[index] = {
+        ...newAnswers[index],
+        text: value
+      };
     }
 
-    // מחזירים את התשובה המעודכנת למערך
-    newAnswers[index] = answerToUpdate;
-
-    // מעדכנים את ה-state
     setAnswers(newAnswers);
   };
 
@@ -91,11 +89,10 @@ export default function QuestionForm({ onAddQuestion, onCancel }) {
             <label className="answer-check">
               נכון?
               <input
-                type="checkbox"
+                type="radio"
+                name="correctAnswer"
                 checked={a.isCorrect}
-                onChange={e =>
-                  handleAnswerChange(i, "isCorrect", e.target.checked)
-                }
+                onChange={() => handleAnswerChange(i, "isCorrect", true)}
               />
             </label>
 
