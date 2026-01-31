@@ -19,9 +19,9 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // GET – מביא את פרטי המשתמש
   useEffect(() => {
-    if (!userId) return;
+    if (!userId)
+      return;
 
     const fetchUser = async () => {
       setLoading(true);
@@ -78,7 +78,8 @@ export default function Profile() {
 
   const handleDelete = async () => {
     if (!userId) return;
-    if (!window.confirm("האם אתה בטוח שאתה רוצה למחוק את המשתמש?")) return;
+    if (!window.confirm("האם אתה בטוח שאתה רוצה למחוק את המשתמש?")) 
+      return;
 
     setLoading(true);
     setError("");

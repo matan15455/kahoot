@@ -1,5 +1,6 @@
-import { useState, useEffect,useContext } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 import QuizCard from "../QuizCard/QuizCard";
 import "./MyQuizzes.css";
 
@@ -7,10 +8,10 @@ export default function MyQuizzes() {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const { token } = useAuth();
+
   useEffect(() => {
     const fetchQuizzes = async () => {
-      
-      const token = localStorage.getItem("token");
 
       try {
        const res = await axios.get(
@@ -31,7 +32,7 @@ export default function MyQuizzes() {
 
     fetchQuizzes();
 
-  }, []);
+  }, [token]);
 
   if (loading)
      return <p>טוען חידונים...</p>;

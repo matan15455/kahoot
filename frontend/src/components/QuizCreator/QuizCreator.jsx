@@ -1,4 +1,5 @@
-import { useState,useContext } from "react";
+import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import QuizForm from "../QuizForm/QuizForm";
 import QuestionForm from "../QuestionForm/QuestionForm";
 import axios from "axios";
@@ -8,6 +9,8 @@ export default function QuizCreator() {
   const [quiz, setQuiz] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [addingQuestion, setAddingQuestion] = useState(false);
+
+  const { token } = useAuth();
 
   const handleAddQuiz = (quizData) => setQuiz(quizData);
   
@@ -23,8 +26,6 @@ export default function QuizCreator() {
       return alert("הוסף לפחות שאלה אחת");
 
     try {
-      const token = localStorage.getItem("token");
-
       await axios.post(
         "http://localhost:5000/quizzes",
         {
