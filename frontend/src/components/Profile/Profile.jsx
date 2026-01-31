@@ -13,7 +13,8 @@ export default function Profile() {
     email: "",
     phone: "",
     birthday: "",
-    password: "", // תמיד ריק
+    password: "", 
+    id: "", 
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -29,13 +30,13 @@ export default function Profile() {
           headers: { Authorization: `Bearer ${token}` }
         });
 
-        // מוודא שהסיסמה תמיד ריקה
         setUserData({
           name: res.data.name,
           email: res.data.email,
           phone: res.data.phone,
           birthday: res.data.birthday,
           password: "",
+          id: res.data.id,
         });
       } catch (err) {
         setError(err.response?.data?.message || "Error fetching user");
@@ -47,14 +48,12 @@ export default function Profile() {
     fetchUser();
   }, [token, userId]);
 
-  // PATCH – עדכון פרטים
   const handleUpdate = async () => {
     if (!userId) return;
 
     setLoading(true);
     setError("");
 
-    // רק השדות שהמשתמש יכול לשנות
     const updates = {
       name: userData.name,
       email: userData.email,
@@ -62,7 +61,6 @@ export default function Profile() {
       birthday: userData.birthday,
     };
 
-    // אם הסיסמה לא ריקה, מוסיפים אותה
     if (userData.password) updates.password = userData.password;
 
     try {
@@ -70,8 +68,6 @@ export default function Profile() {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert("פרטים עודכנו בהצלחה!");
-
-      // לאחר עדכון, מאפס את הסיסמה לשדה ריק שוב
       setUserData(prev => ({ ...prev, password: "" }));
     } catch (err) {
       setError(err.response?.data?.message || "Error updating user");
@@ -80,7 +76,6 @@ export default function Profile() {
     }
   };
 
-  // DELETE – מחיקת המשתמש
   const handleDelete = async () => {
     if (!userId) return;
     if (!window.confirm("האם אתה בטוח שאתה רוצה למחוק את המשתמש?")) return;
@@ -113,6 +108,11 @@ export default function Profile() {
         <p>טוען...</p>
       ) : (
         <div className="profile-form">
+          {/* ת.ז מוצגת כטקסט בלבד */}
+          <p>
+            <strong>תעודת זהות:</strong> {userData.id}
+          </p>
+
           <label>
             שם:
             <input name="name" value={userData.name || ""} onChange={handleChange} />
