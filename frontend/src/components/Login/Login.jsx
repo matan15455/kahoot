@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import "./Login.css";
 
 export default function Login() {
-  const [username, setUsername] = useState("");
+  const [idUser, setIdUser] = useState("");  // המזהה שהמשתמש הזין
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -23,7 +23,7 @@ export default function Login() {
     try {
       const res = await axios.get("http://localhost:5000/auth/login", {
         params: {
-          username,
+          id: idUser,   // <-- השתנה
           password
         }
       });
@@ -57,7 +57,7 @@ export default function Login() {
           <div className="auth-card__top">
             <div className="auth-kicker">התחברות</div>
             <h1 className="auth-title">התחבר למשתמש שלך</h1>
-            <div className="auth-subtitle">הכנס שם משתמש וסיסמה</div>
+            <div className="auth-subtitle">הכנס תעודת זהות וסיסמה</div>
           </div>
 
           <div className="auth-fields">
@@ -66,12 +66,12 @@ export default function Login() {
                 className="auth-input"
                 type="text"
                 required
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={idUser}
+                onChange={(e) => setIdUser(e.target.value)}
                 placeholder=" "
-                autoComplete="username"
+                autoComplete="id"
               />
-              <label className="auth-label">שם משתמש</label>
+              <label className="auth-label">תעודת זהות</label>
               <span className="input-ring" />
             </div>
 
