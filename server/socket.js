@@ -177,22 +177,34 @@ export default function initSocket(server) {
         Join Room (Player)
     ===================================================== */
 
-    socket.on("joinRoom", ({ roomId,nickname }) => {
-
+    socket.on("joinRoom", ({ roomId, nickname }, callback) => {
       const room = rooms[roomId];
-      if (!room || room.phase !== PHASES.LOBBY) 
-        return;
+
+      if (!room) {
+        return callback({ ok: false, message: "קוד חדר לא תקין" });
+      }
+
+      if (room.phase !== PHASES.LOBBY) {
+        return callback({ ok: false, message: "המשחק כבר התחיל" });
+      }
+
+      if (room.players.some(p => p.nickname === nickname)) {
+        return callback({ ok: false, message: "השם כבר תפוס" });
+      }
 
       room.players.push({
         socketId: socket.id,
-        userId: socket.mongoId || socket.id,   //  מזהה ייחודי גם לאורח
+        userId: socket.mongoId || socket.id,
         nickname,
         score: 0
       });
 
       socket.join(roomId);
       emitRoom(roomId);
+
+      callback({ ok: true });
     });
+
 
     /* =====================================================
         Start Quiz (Host)

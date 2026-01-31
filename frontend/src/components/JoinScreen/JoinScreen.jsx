@@ -57,7 +57,12 @@ export default function JoinScreen() {
     }
 
     setError("");
-    socket.emit("joinRoom", { roomId, nickname });
+    
+    socket.emit("joinRoom", { roomId, nickname }, (res) => {
+      if (!res.ok) {
+        setError(res.message);
+      }
+    });
   };
 
 
