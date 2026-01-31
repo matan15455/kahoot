@@ -11,7 +11,7 @@ router.post('/',authMiddleware, async (req, res) => {
   try {
     const { title, description, questions } = req.body;
 
-    const creatorId = req.user.userId;
+    const creatorId = req.user.mongoId; // ObjectId של Mongo
 
     // יוצרים את השאלות ומכניסים למסד
     const questionDocs = await Question.insertMany(questions);
@@ -47,7 +47,7 @@ router.post('/',authMiddleware, async (req, res) => {
 router.get("/my", authMiddleware, async (req, res) => {
   try {
     // מגיע מה-JWT
-    const userId = req.user.userId;
+    const userId = req.user.mongoId;
 
     const user = await User.findById(userId)
       .populate("quizzesCreated");
