@@ -7,6 +7,9 @@ export default function Navbar() {
   const { isAuthenticated, logout } = useAuth();
 
   const handleLogout = () => {
+    const confirmLogout = window.confirm("⚠️ בטוח שאתה רוצה להתנתק?");
+    if (!confirmLogout) 
+      return;
     logout();              
     navigate("/login");    
     window.location.reload(); 
