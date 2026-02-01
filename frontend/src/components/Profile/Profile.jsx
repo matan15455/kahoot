@@ -130,43 +130,55 @@ export default function Profile() {
   };
 
   return (
-    <div className="profile-page">
-      <h1>פרטי המשתמש</h1>
-      {error && <p className="error">{error}</p>}
-      {loading ? (
-        <p>טוען...</p>
-      ) : (
-        <div className="profile-form">
-          {/* ת.ז מוצגת כטקסט בלבד */}
-          <p>
-            <strong>תעודת זהות:</strong> {userData.id}
-          </p>
+    <div className="profile-wrapper">
+      <div className="profile-card">
+        <h1 className="profile-title">👤 פרטי משתמש</h1>
 
-          <label>
-            שם:
-            <input name="name" value={userData.name || ""} onChange={handleChange} />
-          </label>
-          <label>
-            אימייל:
-            <input name="email" value={userData.email || ""} onChange={handleChange} />
-          </label>
-          <label>
-            טלפון:
-            <input name="phone" value={userData.phone || ""} onChange={handleChange} />
-          </label>
-          <label>
-            תאריך לידה:
-            <input name="birthday" type="date" value={userData.birthday || ""} onChange={handleChange} />
-          </label>
-          <label>
-            סיסמה חדשה:
-            <input name="password" type="password" value={userData.password || ""} placeholder="סיסמה חדשה" onChange={handleChange} />
-          </label>
+        {error && <div className="error-box">{error}</div>}
+        {loading ? (
+          <div>טוען נתונים...</div>
+        ) : (
+          <div className="profile-form">
+            <div className="id-display">
+              <div className="id-label">תעודת זהות</div>
+              <div className="id-value">{userData.id}</div>
+            </div>
 
-          <button onClick={handleUpdate} disabled={loading}>עדכן פרטים</button>
-          <button onClick={handleDelete} disabled={loading} className="delete-btn">מחק משתמש</button>
-        </div>
-      )}
+            <div className="input-group">
+              <input name="name" value={userData.name || ""} onChange={handleChange} required />
+              <label>שם מלא</label>
+            </div>
+
+            <div className="input-group">
+              <input name="email" value={userData.email || ""} onChange={handleChange} required />
+              <label>אימייל</label>
+            </div>
+
+            <div className="input-group">
+              <input name="phone" value={userData.phone || ""} onChange={handleChange} />
+              <label>טלפון</label>
+            </div>
+
+            <div className="input-group">
+              <input type="date" name="birthday" value={userData.birthday || ""} onChange={handleChange} />
+              <label>תאריך לידה</label>
+            </div>
+
+            <div className="input-group">
+              <input type="password" name="password" value={userData.password || ""} onChange={handleChange} />
+              <label>סיסמה חדשה</label>
+            </div>
+
+            <button className="btn primary" onClick={handleUpdate} disabled={loading}>
+              💾 שמור שינויים
+            </button>
+
+            <button className="btn danger" onClick={handleDelete} disabled={loading}>
+              🗑 מחק משתמש
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
