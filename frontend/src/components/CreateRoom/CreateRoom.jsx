@@ -91,6 +91,11 @@ export default function CreateRoom() {
             ▶ התחל משחק
           </button>
         </div>
+        {room.players.length === 0 && (
+          <p className="no-players-msg">
+            ❌ לא ניתן להתחיל משחק בלי שחקנים
+          </p>
+        )}
       </div>
     </div>
   );

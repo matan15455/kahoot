@@ -300,4 +300,28 @@
   transform: translateY(-2px) scale(0.98);
 }
 
+/* 🚫 הודעה – אין שחקנים */
+.no-players-msg {
+  margin-top: 14px;
+  text-align: center;
+
+  font-size: 1.15rem;
+  font-weight: 700;
+
+  color: #ff6b6b;
+  text-shadow: 0 0 10px rgba(255, 107, 107, 0.6);
+
+  animation: softPulse 1.8s infinite;
+}
+
+.start-game-btn:disabled {
+  background: linear-gradient(135deg, #555, #333);
+  cursor: not-allowed;
+  opacity: 0.55;
+
+  box-shadow: none;
+  transform: none;
+}
+
+
 
