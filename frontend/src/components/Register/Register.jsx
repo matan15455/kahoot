@@ -39,10 +39,10 @@ export default function Register() {
       return;
     }
 
-    // if (!isValidID(idUser)) {
-    //   setError("תעודת זהות לא תקינה");
-    //   return;
-    // }
+    if (!isValidID(idUser)) {
+      setError("תעודת זהות לא תקינה");
+      return;
+    }
 
     if (!isValidEmail(email)) {
       setError("אימייל לא תקין");
