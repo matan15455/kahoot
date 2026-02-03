@@ -162,8 +162,8 @@ export default function initSocket(server) {
         answersCount: {},           // ספירת תשובות לשאלה הנוכחית
         totalAnswers: 0,            // מספר השחקנים שענו
         timer: {
-          endsAt: null,             // זמן סיום מוחלט של השאלה
-          timeoutId: null           // מזהה הטיימר של השאלה
+          endsAt: null,            // מתי השאלה מסתיימת 
+          timeoutId: null           // מזהה הטיימר של setTimeout
         }
       };
 

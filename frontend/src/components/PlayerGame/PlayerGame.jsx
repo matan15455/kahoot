@@ -33,23 +33,23 @@ export default function PlayerGame() {
 
       // הצגת טיימר
       if (roomData.endsAt) {
-        clearInterval(timerRef.current);
+        clearInterval(timerRef.current); // מנקה אינטרוול קודם אם היה
 
-        const update = () => {
+        const update = () => { // מעדכנת את הזמן שנותר
           const remaining = Math.max(
             0,
-            Math.ceil((roomData.endsAt - Date.now()) / 1000)
+            Math.ceil((roomData.endsAt - Date.now()) / 1000) // חישוב הזמן שנותר לסיום השאלה
           );
 
-          setTimeLeft(remaining);
+          setTimeLeft(remaining); // עדכון
 
-          if (remaining <= 0) {
-            clearInterval(timerRef.current);
+          if (remaining <= 0) { // אם נגמר הזמן
+            clearInterval(timerRef.current); // ניקוי אינטרוול
           }
         };
 
         update();
-        timerRef.current = setInterval(update, 250);
+        timerRef.current = setInterval(update, 250); // כל רבע שנייה עדכון
       } else {
         setTimeLeft(null);
         clearInterval(timerRef.current);

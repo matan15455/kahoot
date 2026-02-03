@@ -26,15 +26,15 @@ export default function HostGame() {
 
       // הצגת טיימר 
       if (roomData.endsAt) {
-        clearInterval(timerRef.current);
+        clearInterval(timerRef.current); // מנקה אינטרוול קודם אם היה
 
-        const update = () => {
+        const update = () => { //הפונקציה מעדכנת את הזמן
           const remaining = Math.max(
             0,
-            Math.ceil((roomData.endsAt - Date.now()) / 1000)
+            Math.ceil((roomData.endsAt - Date.now()) / 1000) // חישוב הזמן שנותר
           );
 
-          setTimeLeft(remaining);
+          setTimeLeft(remaining); // עדכון
 
           if (remaining <= 0) {
             clearInterval(timerRef.current);
@@ -42,7 +42,7 @@ export default function HostGame() {
         };
 
         update();
-        timerRef.current = setInterval(update, 250);
+        timerRef.current = setInterval(update, 250); // עדכון כל רבע שנייה
       } else {
         setTimeLeft(null);
         clearInterval(timerRef.current);
