@@ -36,27 +36,24 @@ export const isValidPassword = (password) =>
 
 // פונקציה לבדיקת תקינות תעודת זהות
 export const isValidID = (id) => {
-    // מוודא שכל התווים ספרות בלבד
-    if (!/^\d+$/.test(id)) 
-      return false;
+  // רק ספרות
+  if (!/^\d+$/.test(id)) return false;
 
-    // מוסיף אפסים משמאל אם המספר קצר מ-9 ספרות
-    id = id.padStart(9, "0");
+  let sum = 0;
+  let multiply = false;
 
-    let sum = 0;
+  for (let i = id.length - 1; i >= 0; i--) {
+    let num = Number(id[i]);
 
-    for (let i = 0; i < 9; i++) {
-      let num = parseInt(id[i], 10);
-
-      // אם המיקום אי־זוגי (index 1,3,5,7) מכפילים ב־2
-      if (i % 2 === 1) {
-        num *= 2;
-        if (num > 9) num -= 9; // סכום ספרות שווה ל־num-9
-      }
-
-      sum += num;
+    if (multiply) {
+      num *= 2;
+      if (num > 9) num -= 9;
     }
 
-    // מספר תקין אם הסכום מתחלק ב-10
-    return sum % 10 === 0;
+    sum += num;
+    multiply = !multiply;
+  }
+
+  // בדיקת ספרת ביקורת
+  return sum % 10 === 0;
 };
