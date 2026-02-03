@@ -12,7 +12,6 @@ export default function Navbar() {
       return;
     logout();              
     navigate("/login");    
-    window.location.reload(); 
   };
 
   return (
