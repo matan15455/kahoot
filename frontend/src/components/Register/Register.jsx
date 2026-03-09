@@ -39,30 +39,30 @@ export default function Register() {
       return;
     }
 
-    if (!isValidID(idUser)) {
-      setError("תעודת זהות לא תקינה");
-      return;
-    }
+    // if (!isValidID(idUser)) {
+    //   setError("תעודת זהות לא תקינה");
+    //   return;
+    // }
 
-    if (!isValidEmail(email)) {
-      setError("אימייל לא תקין");
-      return;
-    }
+    // if (!isValidEmail(email)) {
+    //   setError("אימייל לא תקין");
+    //   return;
+    // }
 
-    if (!isValidPhone(phone)) {
-      setError("מספר טלפון לא תקין");
-      return;
-    }
+    // if (!isValidPhone(phone)) {
+    //   setError("מספר טלפון לא תקין");
+    //   return;
+    // }
 
-    if (!isAdult21(birthday)) {
-      setError("המשתמש חייב להיות מעל גיל 21");
-      return;
-    }
+    // if (!isAdult21(birthday)) {
+    //   setError("המשתמש חייב להיות מעל גיל 21");
+    //   return;
+    // }
 
-    if (!isValidPassword(password)) {
-      setError("הסיסמה חייבת להכיל לפחות 8 תווים, אות גדולה, אות קטנה, ספרה ותו מיוחד");
-      return;
-    }
+    // if (!isValidPassword(password)) {
+    //   setError("הסיסמה חייבת להכיל לפחות 8 תווים, אות גדולה, אות קטנה, ספרה ותו מיוחד");
+    //   return;
+    // }
 
     try {
       setLoading(true);
