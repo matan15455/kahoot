@@ -3,6 +3,7 @@ import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import QuizCard from "../QuizCard/QuizCard";
 import "./MyQuizzes.css";
+import { AuroraText } from "../ui/aurora-text";
 
 export default function MyQuizzes() {
   const [quizzes, setQuizzes] = useState([]);
@@ -40,7 +41,7 @@ export default function MyQuizzes() {
   return (
     <div className="myquizzes-page">
       <div className="myquizzes-header">
-        <h1> החידונים שלי</h1>
+        <AuroraText> My Quizzes</AuroraText>
         <span className="header-underline"></span>
       </div>
 
