@@ -1,0 +1,136 @@
+.quiz-mode-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  direction: rtl;
+
+  background:
+    radial-gradient(circle at top left, rgba(0, 200, 255, 0.15), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(120, 70, 255, 0.20), transparent 30%),
+    linear-gradient(135deg, #07111f 0%, #0b1f35 50%, #07111f 100%);
+}
+
+.quiz-mode-overlay {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(5px);
+}
+
+.quiz-mode-container {
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+  width: 100%;
+  padding: 20px;
+}
+
+.quiz-mode-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.quiz-mode-header h1 {
+  font-size: 3rem;
+  color: white;
+  font-weight: 800;
+}
+
+.quiz-mode-header p {
+  color: rgba(255,255,255,0.7);
+  margin-top: 10px;
+}
+
+.quiz-mode-cards {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 28px;
+}
+
+.quiz-mode-card {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 24px;
+  padding: 35px;
+
+  backdrop-filter: blur(15px);
+  box-shadow:
+    0 15px 40px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+
+  transition: all .3s ease;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.quiz-mode-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(0,220,255,0.35);
+}
+
+.quiz-mode-card h2 {
+  color: white;
+  font-size: 1.6rem;
+  margin: 15px 0;
+}
+
+.quiz-mode-card p {
+  color: rgba(255,255,255,0.75);
+  line-height: 1.7;
+}
+
+.quiz-mode-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(135deg,#00bfff,#007bff);
+  color: white;
+  box-shadow: 0 0 20px rgba(0,180,255,0.4);
+}
+
+.ai-icon {
+  background: linear-gradient(135deg,#8d5cff,#00d9ff);
+  box-shadow: 0 0 22px rgba(140,90,255,0.4);
+}
+
+.quiz-mode-btn {
+  margin-top: 25px;
+  border: none;
+  padding: 14px;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.manual-btn {
+  background: linear-gradient(135deg,#00bfff,#007bff);
+  color: white;
+}
+
+.ai-btn {
+  background: linear-gradient(135deg,#8d5cff,#00d9ff);
+  color: white;
+}
+
+.quiz-mode-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+@media (max-width: 850px) {
+  .quiz-mode-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .quiz-mode-header h1 {
+    font-size: 2.3rem;
+  }
+}

@@ -8,6 +8,8 @@ import CreateRoom from "./components/CreateRoom/CreateRoom";
 import HostGame from "./components/HostGame/HostGame";
 import PlayerGame from "./components/PlayerGame/PlayerGame";
 import Profile from "./components/Profile/Profile";
+import QuizCreationMode from "./components/QuizCreationMode/QuizCreationMode";
+import AICreateQuiz from "./components/AICreateQuiz/AICreateQuiz";
 
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
@@ -45,7 +47,25 @@ export default function App() {
               path="/create-quiz"
               element={
                 <RequireAuth>
+                  <QuizCreationMode />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/create-manual"
+              element={
+                <RequireAuth>
                   <QuizCreator />
+                </RequireAuth>
+              }
+            />
+
+            <Route
+              path="/create-ai"
+              element={
+                <RequireAuth>
+                  <AICreateQuiz/>
                 </RequireAuth>
               }
             />
