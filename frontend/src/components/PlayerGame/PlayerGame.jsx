@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getSocket } from "../../socket";
 import "./PlayerGame.css";
+import ScoreTable from "../ScoreTable/ScoreTable";
 
 export default function PlayerGame() {
   const [searchParams] = useSearchParams();
@@ -102,15 +103,8 @@ export default function PlayerGame() {
       <div className="player-game-container">
         <h1>🏁 המשחק הסתיים!</h1>
 
-        <ol>
-          {[...room.players]
-            .sort((a, b) => b.score - a.score)
-            .map((p, index) => (
-              <li key={p.userId}>
-                {index + 1}. {p.nickname} — {p.score} נק'
-              </li>
-            ))}
-        </ol>
+        <ScoreTable players={room.players} />
+
       </div>
     );
   }
@@ -159,17 +153,8 @@ export default function PlayerGame() {
   if (room.phase === "SCORES") {
     return (
       <div className="player-game-container">
-        <h2>🏆 ניקוד ביניים</h2>
 
-        <ol className="results-list">
-          {[...room.players]
-            .sort((a, b) => b.score - a.score)
-            .map((p, index) => (
-              <li key={p.userId}>
-                #{index + 1} — {p.nickname} ({p.score} נק')
-              </li>
-            ))}
-        </ol>
+        <ScoreTable players={room.players} />
 
         <p className="waiting-text">
           ⏳ ממתינים למארח להמשך המשחק…

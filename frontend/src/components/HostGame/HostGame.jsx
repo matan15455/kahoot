@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getSocket } from "../../socket";
 import "./HostGame.css";
+import ScoreTable from "../ScoreTable/ScoreTable";
 
 export default function HostGame() {
   const [searchParams] = useSearchParams();
@@ -81,17 +82,10 @@ export default function HostGame() {
   if (room.phase === "END") {
     return (
       <div className="host-game-container">
-        <h2>🏁 החידון הסתיים!</h2>
+        <h2>החידון הסתיים!</h2>
 
-        <ol className="results-list">
-          {[...room.players]
-            .sort((a, b) => b.score - a.score)
-            .map((p, i) => (
-              <li key={p.userId}>
-                #{i + 1} — {p.nickname} ({p.score} נק')
-              </li>
-            ))}
-        </ol>
+        <ScoreTable players={room.players} />
+
       </div>
     );
   }
@@ -135,18 +129,8 @@ export default function HostGame() {
   ===================================================== */
   if (room.phase === "SCORES") {
     return (
-      <div className="host-game-container">
-        <h2>🏆 ניקוד ביניים</h2>
-
-        <ol className="results-list">
-          {[...room.players]
-            .sort((a, b) => b.score - a.score)
-            .map((p, i) => (
-              <li key={p.userId}>
-                #{i + 1} — {p.nickname} ({p.score} נק')
-              </li>
-            ))}
-        </ol>
+    <div className="host-game-container">
+        <ScoreTable players={room.players} />
 
         <button onClick={handleNext} className="next-btn">
           המשך ▶

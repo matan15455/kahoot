@@ -1,0 +1,105 @@
+.leaderboard-container {
+  max-width: 850px;
+  margin: auto;
+  padding: 40px;
+  text-align: center;
+  color: white;
+  font-family: "Poppins", sans-serif;
+}
+
+.leaderboard-title {
+  font-size: 40px;
+  margin-bottom: 40px;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.podium {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 25px;
+  margin-bottom: 50px;
+}
+
+.podium-card {
+  width: 140px;
+  border-radius: 20px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.08);
+  box-shadow: 0 0 25px rgba(0,0,0,0.4);
+  transition: transform 0.3s;
+}
+
+.podium-card:hover {
+  transform: scale(1.05);
+}
+
+.first {
+  height: 220px;
+  background: linear-gradient(135deg,#ffd700,#ffae00);
+  box-shadow: 0 0 25px gold;
+}
+
+.second {
+  height: 180px;
+  background: linear-gradient(135deg,#c0c0c0,#8e8e8e);
+}
+
+.third {
+  height: 160px;
+  background: linear-gradient(135deg,#cd7f32,#a0502d);
+}
+
+.podium-rank {
+  font-size: 35px;
+}
+
+.crown {
+  font-size: 40px;
+}
+
+.podium-name {
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.podium-score {
+  margin-top: 8px;
+  font-size: 20px;
+}
+
+.leaderboard-list {
+  background: rgba(255,255,255,0.05);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.leaderboard-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  transition: background 0.2s;
+}
+
+.leaderboard-row:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.rank {
+  font-weight: bold;
+}
+
+.player {
+  flex: 1;
+  text-align: left;
+  margin-left: 20px;
+}
+
+.score {
+  font-weight: bold;
+}

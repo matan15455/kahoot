@@ -3,6 +3,8 @@ import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import QuizCard from "../QuizCard/QuizCard";
 import "./MyQuizzes.css";
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from "@mui/material/Box";
 
 export default function MyQuizzes() {
   const [quizzes, setQuizzes] = useState([]);
@@ -34,8 +36,18 @@ export default function MyQuizzes() {
 
   }, [token]);
 
-  if (loading)
-     return <p>טוען חידונים...</p>;
+  if (loading){
+     return <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh"
+      }}
+    >
+      <CircularProgress color="secondary" size={80} />
+    </Box>;
+  }
 
   return (
     <div className="myquizzes-page">

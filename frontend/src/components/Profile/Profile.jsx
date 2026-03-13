@@ -4,6 +4,8 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import {isValidEmail,isValidPhone,isAdult21,isValidPassword} from "../../utils/validators";
 import "./Profile.css";
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from "@mui/material/Box";
 
 export default function Profile() {
   const { token, userId, logout } = useAuth();
@@ -136,7 +138,16 @@ export default function Profile() {
 
         {error && <div className="error-box">{error}</div>}
         {loading ? (
-          <div>טוען נתונים...</div>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh"
+            }}
+          >
+            <CircularProgress color="secondary" size={80} />
+          </Box>
         ) : (
           <div className="profile-form">
             <div className="id-display">
