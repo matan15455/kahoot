@@ -79,6 +79,7 @@ Rules:
 - Questions must match the requested topic.
 - Difficulty must match the requested level (easy, medium, hard).
 - The language must match the topic language.
+- You must give a description for the quiz.
 `
         }
       ]
