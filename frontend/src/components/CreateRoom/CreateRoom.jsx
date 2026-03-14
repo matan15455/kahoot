@@ -63,7 +63,7 @@ export default function CreateRoom() {
   return (
     <div className="create-room-container">
       <div className="room-info">
-        <h2>✅ החדר נוצר!</h2>
+        <h2>החדר נוצר!</h2>
 
         <p>
           <span className="room-id" onClick={copyRoomCode}>
