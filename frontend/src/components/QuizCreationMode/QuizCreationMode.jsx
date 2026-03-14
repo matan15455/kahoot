@@ -25,8 +25,7 @@ export default function QuizCreationMode() {
             <h2>יצירה ידנית</h2>
 
             <p>
-              צור את החידון שלך שלב אחר שלב, הוסף שאלות,
-              תשובות, ניקוד וזמן לכל שאלה.
+              צור חידון ידנית ובחר את התשובות והשאלות בעצמך
             </p>
 
             <button className="quiz-mode-btn manual-btn">
@@ -43,7 +42,7 @@ export default function QuizCreationMode() {
             <h2>יצירה עם AI</h2>
 
             <p>
-              תן נושא ורמת קושי וה-AI ייצור עבורך חידון
+              בחר נושא ורמת קושי וה-AI ייצור עבורך חידון
               שתוכל לערוך לפני השמירה.
             </p>
 

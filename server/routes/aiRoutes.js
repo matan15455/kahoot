@@ -1,10 +1,12 @@
 import express from "express";
 import { GoogleGenAI, Type } from "@google/genai";
+import dotenv from "dotenv";
+dotenv.config();
 
 const router = express.Router();
 
 const ai = new GoogleGenAI({
-  apiKey: "AIzaSyDIsrZJyoRXD_q4HXpx_n9ofLX9bRXqyFo"
+  apiKey: process.env.GOOGLE_API_KEY
 });
 
 router.post("/generate-quiz", async (req, res) => {
