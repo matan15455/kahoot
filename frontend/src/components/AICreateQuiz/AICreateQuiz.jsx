@@ -2,6 +2,9 @@ import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import "./AICreateQuiz.css";
+import CircularProgress from "@mui/material/CircularProgress";
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 export default function AICreateQuiz() {
 
@@ -10,12 +13,17 @@ export default function AICreateQuiz() {
   const [topic,setTopic] = useState("");
   const [difficulty,setDifficulty] = useState("medium");
   const [numQuestions,setNumQuestions] = useState(5);
+  const [saving,setSaving] = useState(false);
 
   const [quiz,setQuiz] = useState(null);
   const [questions,setQuestions] = useState([]);
   const [loading,setLoading] = useState(false);
+  const [success,setSuccess] = useState(false);
 
   const generateQuiz = async () => {
+
+    if(loading) 
+      return;
 
     if(!topic.trim())
       return alert("יש להזין נושא");
@@ -90,6 +98,8 @@ export default function AICreateQuiz() {
 
     try{
 
+      setSaving(true);
+
       await axios.post(
         "http://localhost:5000/quizzes",
         {
@@ -103,7 +113,9 @@ export default function AICreateQuiz() {
         }
       );
 
-      alert("חידון נוסף בהצלחה");
+      
+      setSuccess(true);
+      setTimeout(()=>setSuccess(false),1000);
 
       setQuiz(null);
       setQuestions([]);
@@ -113,6 +125,8 @@ export default function AICreateQuiz() {
       alert("שגיאה בשמירה");
     }
 
+    setSaving(false);
+
   };
 
 
@@ -121,6 +135,12 @@ export default function AICreateQuiz() {
     <div className="ai-page">
 
       <div className="ai-container">
+
+        {success && (
+          <Alert variant="outlined" severity="success">
+             החידון נשמר בהצלחה
+          </Alert>
+        )}
 
         {!quiz ? (
 
@@ -250,8 +270,15 @@ export default function AICreateQuiz() {
             <button
               className="quiz-submit-btn"
               onClick={handleSubmit}
+              disabled={saving}
             >
-              שמור חידון
+
+              {saving ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "שמור חידון"
+              )}
+
             </button>
 
           </>
