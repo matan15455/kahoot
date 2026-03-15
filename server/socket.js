@@ -136,6 +136,8 @@ export default function initSocket(server) {
 
     socket.on("createRoom", ({ quizId }) => {
 
+      console.log("createRoom - socket.mongoId:", socket.mongoId);
+
       if (!socket.mongoId) 
         return;
       
