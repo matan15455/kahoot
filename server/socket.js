@@ -215,7 +215,7 @@ export default function initSocket(server) {
       if (!room) 
         return;
 
-      if (room.hostId !== socket.mongoId) 
+      if (String(room.hostId) !== String(socket.mongoId)) 
         return;
 
       const quiz = await Quiz.findById(room.quizId).populate("questions");
@@ -269,7 +269,7 @@ export default function initSocket(server) {
       if (!room) 
         return;
 
-      if (room.hostId !== socket.mongoId) 
+      if (String(room.hostId) !== String(socket.mongoId)) 
         return;
 
       //  אם אנחנו באמצע שאלה → קודם סיכום
