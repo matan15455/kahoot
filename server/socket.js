@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import Quiz from "./models/Quiz.js";
-import Gamesession from "./models/Gamesession.js";
+import GameSession from "./models/GameSession.js";
 import jwt from "jsonwebtoken";
 
 const rooms = {};
@@ -132,7 +132,7 @@ export default function initSocket(server) {
       try {
         const quiz = await Quiz.findById(room.quizId).lean();
 
-        await GameSession.create({
+        await Gamesession.create({
           quizId: room.quizId,
           quizTitle: quiz?.title || 'חידון',
           hostId: room.hostId,

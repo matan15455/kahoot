@@ -2,7 +2,7 @@ import express from 'express';
 import Quiz from '../models/Quiz.js';
 import User from '../models/User.js';
 import authMiddleware from '../middleware/authMiddleware.js';
-import Gamesession from '../models/Gamesession.js';
+import Gamesession from '../models/GameSession.js';
 
 const router = express.Router();
 
