@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import Quiz from "./models/Quiz.js";
-import GameSession from "./models/GameSession.js";
+import Gamesession from "./models/Gamesession.js";
 import jwt from "jsonwebtoken";
 
 const rooms = {};
