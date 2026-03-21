@@ -10,7 +10,7 @@ import PlayerGame from "./components/PlayerGame/PlayerGame";
 import Profile from "./components/Profile/Profile";
 import QuizCreationMode from "./components/QuizCreationMode/QuizCreationMode";
 import AICreateQuiz from "./components/AICreateQuiz/AICreateQuiz";
-
+import Statistics from "./components/Statistics/Statistics"
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 
@@ -84,6 +84,15 @@ export default function App() {
               element={
                 <RequireAuth>
                   <HostGame />
+                </RequireAuth>
+              }
+            />
+
+            <Route 
+              path="/statistics" 
+              element={
+                <RequireAuth>
+                  <Statistics />
                 </RequireAuth>
               }
             />

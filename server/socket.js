@@ -1,13 +1,10 @@
 import { Server } from "socket.io";
 import Quiz from "./models/Quiz.js";
+import Gamesession from "./models/Gamesession.js";
 import jwt from "jsonwebtoken";
-
 
 const rooms = {};
 
-/* ===========================
-   PHASES 
-=========================== */
 const PHASES = {
   LOBBY: "LOBBY",
   QUESTION: "QUESTION",
@@ -21,60 +18,45 @@ export default function initSocket(server) {
     cors: { origin: "*" }
   });
 
-  io.use((socket, next) => {  
-
-    const token = socket.handshake.auth?.token; // מחפש טוקן
-
-    // אם אין אז אורח
+  io.use((socket, next) => {
+    const token = socket.handshake.auth?.token;
     if (!token) {
       socket.mongoId = null;
       socket.idUser = "Guest";
       return next();
     }
-
-    // אם יש אז מנסה לאמת
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      socket.mongoId = decoded.mongoId; // ObjectId של Mongo
-      socket.idUser = decoded.id;       // המזהה שהמשתמש הזין
+      socket.mongoId = decoded.mongoId;
+      socket.idUser = decoded.id;
       next();
-    } 
-    catch (e) {
+    } catch (e) {
       return next(new Error("Invalid token"));
     }
-
   });
 
   io.on("connection", (socket) => {
-    console.log("🟢 Connected:", socket.mongoId,socket.idUser);    
+    console.log("🟢 Connected:", socket.mongoId, socket.idUser);
 
     /* =====================================================
         Helpers
     ===================================================== */
-
-    // שולח חדר
     function emitRoom(roomId) {
       const room = rooms[roomId];
-      if (!room) 
-        return;
+      if (!room) return;
 
       const payload = {
         roomId: room.id,
         phase: room.phase,
         players: room.players,
         questionIndex: room.currentQuestionIndex,
-        endsAt: room.timer.endsAt,
-        serverTime: Date.now()
+        endsAt: room.timer.endsAt
       };
 
-      // שאלה נשלחת רק בפאזה QUESTION
       if (room.phase === PHASES.QUESTION) {
-        payload.question = sanitizeQuestion(
-          room.questions[room.currentQuestionIndex]
-        );
+        payload.question = sanitizeQuestion(room.questions[room.currentQuestionIndex]);
       }
 
-      // סיכום נשלח רק בפאזה SUMMARY
       if (room.phase === PHASES.SUMMARY) {
         payload.summary = {
           answersCount: room.answersCount,
@@ -85,9 +67,6 @@ export default function initSocket(server) {
       io.to(roomId).emit("roomUpdated", payload);
     }
 
-    /**
-     * מסיר מידע רגיש (isCorrect) לפני שליחה ללקוח
-     */
     function sanitizeQuestion(q) {
       return {
         text: q.text,
@@ -96,68 +75,91 @@ export default function initSocket(server) {
       };
     }
 
-    // מחזיר תשובה נכונה של השאלה הנוכחית
     function getCorrectAnswer(room) {
       const q = room.questions[room.currentQuestionIndex];
       return q.answers.find(a => a.isCorrect).text;
     }
 
-    // 
     function initAnswers(room) {
-      room.answersCount = {}; // מאפס כמה שחקנים בחרו כל תשובה
-      room.totalAnswers = 0; // כמה שחקנים כבר ענו על השאלה הנוכחית
+      room.answersCount = {};
+      room.totalAnswers = 0;
+      // עוקב אחרי זמן תחילת שאלה לחישוב timeToAnswer
+      room.questionStartedAt = Date.now();
 
       const q = room.questions[room.currentQuestionIndex];
-      q.answers.forEach(a => { // מאפס את כמות השחקנים שענו לשאלה הנוכחית
+      q.answers.forEach(a => {
         room.answersCount[a.text] = 0;
       });
     }
 
-    // מתחיל טיימר
     function startTimer(roomId) {
       const room = rooms[roomId];
       const q = room.questions[room.currentQuestionIndex];
-
-      clearTimeout(room.timer.timeoutId); // מנקה 
-
-      // שעה לסיום
+      clearTimeout(room.timer.timeoutId);
       room.timer.endsAt = Date.now() + q.time * 1000;
-
-      // אם נגמר הזמן - מסיים שאלה
       room.timer.timeoutId = setTimeout(() => {
         finishQuestion(roomId);
       }, q.time * 1000);
     }
 
-    // מסיים שאלה
     function finishQuestion(roomId) {
       const room = rooms[roomId];
-      if (!room) 
-        return;
+      if (!room) return;
 
-      //מנקה טיימר 
+      // שמירת סטטיסטיקת שאלה
+      const q = room.questions[room.currentQuestionIndex];
+      const correctAnswer = q.answers.find(a => a.isCorrect)?.text;
+      const correctCount = room.answersCount[correctAnswer] || 0;
+      const totalAnswers = Object.values(room.answersCount).reduce((a, b) => a + b, 0);
+
+      room.questionResults.push({
+        questionId: q._id,
+        questionText: q.text,
+        correctCount,
+        totalAnswers,
+        correctPercent: totalAnswers ? Math.round((correctCount / totalAnswers) * 100) : 0
+      });
+
       clearTimeout(room.timer.timeoutId);
       room.phase = PHASES.SUMMARY;
       emitRoom(roomId);
     }
 
     /* =====================================================
+        שמירת GameSession למסד
+    ===================================================== */
+    async function saveGameSession(room) {
+      try {
+        const quiz = await Quiz.findById(room.quizId).lean();
+
+        await GameSession.create({
+          quizId: room.quizId,
+          quizTitle: quiz?.title || 'חידון',
+          hostId: room.hostId,
+          players: room.players.map(p => ({
+            nickname: p.nickname,
+            userId: p.userId,
+            score: p.score,
+            answers: p.answers || []
+          })),
+          totalPlayers: room.players.length,
+          totalQuestions: room.questions.length,
+          questionStats: room.questionResults
+        });
+
+        console.log(`💾 GameSession saved for room ${room.id}`);
+      } catch (err) {
+        console.error('❌ Failed to save GameSession:', err.message);
+      }
+    }
+
+    /* =====================================================
         Create Room (Host)
     ===================================================== */
-
-    // מקבל קוד חידון ויוצר חדר
     socket.on("createRoom", ({ quizId }) => {
-
-      console.log("createRoom - socket.mongoId:", socket.mongoId);
-
-      // בודק שהמשתמש שיוצר לא אורח
-      if (!socket.mongoId) 
-        return;
-      
-      // מזהה משתמש
+      if (!socket.mongoId) return;
       const userId = socket.mongoId;
 
-      // מוחק חדר קודם של אותו משתמש (Host)
       for (const id in rooms) {
         if (rooms[id].hostId === userId) {
           clearTimeout(rooms[id].timer.timeoutId);
@@ -165,143 +167,106 @@ export default function initSocket(server) {
         }
       }
 
-      // יוצר מזהה ייחודי לחדר
       const roomId = Math.random().toString(36).substring(2, 8);
 
       rooms[roomId] = {
-        id: roomId,                 // מזהה החדר (קוד הצטרפות)
-        hostId: userId,             // מזהה המשתמש שהוא המארח
-        quizId,                     // מזהה החידון במסד הנתונים
-        phase: PHASES.LOBBY,        // מצב המשחק הנוכחי (LOBBY / QUESTION / SUMMARY / END)
-        currentQuestionIndex: 0,    // אינדקס השאלה הפעילה
-        questions: [],              // כל שאלות החידון (נטען מהשרת)
-        players: [],                // רשימת שחקנים וניקוד
-        answersCount: {},           // ספירת תשובות לשאלה הנוכחית
-        totalAnswers: 0,            // מספר השחקנים שענו
-        timer: {
-          endsAt: null,            // מתי השאלה מסתיימת 
-          timeoutId: null           // מזהה הטיימר של setTimeout
-        }
+        id: roomId,
+        hostId: userId,
+        quizId,
+        phase: PHASES.LOBBY,
+        currentQuestionIndex: 0,
+        questions: [],
+        players: [],
+        answersCount: {},
+        totalAnswers: 0,
+        questionResults: [], // ← חדש: לשמירת סטטיסטיקות
+        questionStartedAt: null, // ← חדש: לחישוב זמן תשובה
+        timer: { endsAt: null, timeoutId: null }
       };
 
-      // מכניס את המשתמש לחדר בסוקט
       socket.join(roomId);
-
-      // שולח מצב חדר
       emitRoom(roomId);
-
       console.log(`🏠 Room ${roomId} created by ${userId}`);
     });
 
     /* =====================================================
         Join Room (Player)
     ===================================================== */
-
-
-    // התחברות לחדר
     socket.on("joinRoom", ({ roomId, nickname }, callback) => {
       const room = rooms[roomId];
+      if (!room) return callback({ ok: false, message: "קוד חדר לא תקין" });
+      if (room.phase !== PHASES.LOBBY) return callback({ ok: false, message: "המשחק כבר התחיל" });
+      if (room.players.some(p => p.nickname === nickname)) return callback({ ok: false, message: "השם כבר תפוס" });
 
-      // בודק שיש קוד בכלל
-      if (!room) {
-        return callback({ ok: false, message: "קוד חדר לא תקין" });
-      }
-
-      // בודק שהמשחק כבר לא התחיל
-      if (room.phase !== PHASES.LOBBY) {
-        return callback({ ok: false, message: "המשחק כבר התחיל" });
-      }
-      
-      // בודק שאין שם כזה
-      if (room.players.some(p => p.nickname === nickname)) {
-        return callback({ ok: false, message: "השם כבר תפוס" });
-      }
-
-      // מכניס את המשתמש
       room.players.push({
         socketId: socket.id,
-        userId: socket.mongoId || socket.id, // למקרה שזה אורח
+        userId: socket.mongoId || socket.id,
         nickname,
-        score: 0
+        score: 0,
+        answers: [] // ← חדש: לשמירת תשובות
       });
 
-      // מכניס את המשתמש לחדר
       socket.join(roomId);
-
-      //שולח מצב חדר 
       emitRoom(roomId);
-
       callback({ ok: true });
     });
-
 
     /* =====================================================
         Start Quiz (Host)
     ===================================================== */
-
-    // מתחיל חידון
     socket.on("startQuiz", async ({ roomId }) => {
       const room = rooms[roomId];
-      if (!room) 
-        return;
+      if (!room) return;
+      if (String(room.hostId) !== String(socket.mongoId)) return;
 
-      // בודק שזה באמת מי שיצר את החידון
-      if (String(room.hostId) !== String(socket.mongoId)) 
-        return;
-
-      // מחלץ את החידון
       const quiz = await Quiz.findById(room.quizId).populate("questions");
-      if (!quiz) 
-        return;
+      if (!quiz) return;
 
-      // מעדכן את החדר
       room.questions = quiz.questions;
       room.currentQuestionIndex = 0;
       room.phase = PHASES.QUESTION;
+      room.questionResults = [];
 
-      // מאתחל מספור תשובות
       initAnswers(room);
-
-      // מתחיל טיימר
       startTimer(roomId);
-
-      // שולח מצב חדר
       emitRoom(roomId);
     });
 
     /* =====================================================
         Answer Question (Player)
     ===================================================== */
-
-    //מתבצע כששחקן עונה על שאלה
     socket.on("answerQuestion", ({ roomId, answerText }) => {
       const room = rooms[roomId];
+      if (!room || room.phase !== PHASES.QUESTION) return;
 
-      // בודק שזה במצב שאלה
-      if (!room || room.phase !== PHASES.QUESTION) 
-        return;
-
-      // מוצא את השחקן בחדר
       const player = room.players.find(p => p.userId === (socket.mongoId || socket.id));
-      if (!player) 
-        return;
+      if (!player) return;
 
-      // שולף את השאלה הנוכחית
+      // מונע תשובה כפולה
       const q = room.questions[room.currentQuestionIndex];
+      const alreadyAnswered = player.answers.some(a => String(a.questionId) === String(q._id));
+      if (alreadyAnswered) return;
 
-      // מעלה את כמות הבוחרים את התשובה
-      room.answersCount[answerText]++;
+      const timeToAnswer = Date.now() - (room.questionStartedAt || Date.now());
+      const correct = getCorrectAnswer(room);
+      const isCorrect = answerText === correct;
 
-      // מעלה את כמות העונים על השאלה
+      room.answersCount[answerText] = (room.answersCount[answerText] || 0) + 1;
       room.totalAnswers++;
 
-      // שולף את התשובה הנכונה ובודק שזה נכון
-      const correct = getCorrectAnswer(room);
-      if (answerText === correct) {
+      if (isCorrect) {
         player.score += q.points;
       }
 
-      // כולם ענו → סיום שאלה
+      // שמירת תשובה על השחקן
+      player.answers.push({
+        questionId: q._id,
+        questionText: q.text,
+        answerText,
+        isCorrect,
+        timeToAnswer
+      });
+
       if (room.totalAnswers === room.players.length) {
         finishQuestion(roomId);
       }
@@ -310,67 +275,52 @@ export default function initSocket(server) {
     /* =====================================================
         Next Question (Host)
     ===================================================== */
-    // ממאזין לסיום שאלה מהמארח
     socket.on("nextQuestion", ({ roomId }) => {
       const room = rooms[roomId];
-      if (!room) 
-        return;
+      if (!room) return;
+      if (String(room.hostId) !== String(socket.mongoId)) return;
 
-      // בודק שבאמת המארח שלח את הEMIT
-      if (String(room.hostId) !== String(socket.mongoId)) 
-        return;
-
-      //  אם אנחנו באמצע שאלה → קודם סיכום
       if (room.phase === PHASES.QUESTION) {
         finishQuestion(roomId);
         return;
       }
 
-      // אם באמצע סיכום אז תציג ניקוד
       if (room.phase === PHASES.SUMMARY) {
         room.phase = PHASES.SCORES;
         emitRoom(roomId);
         return;
       }
 
-      // SCORES → QUESTION / END
       if (room.phase === PHASES.SCORES) {
-        // אם זה סוף חידון
         if (room.currentQuestionIndex >= room.questions.length - 1) {
           room.phase = PHASES.END;
           emitRoom(roomId);
+
+          // ← שמירה למסד לפני מחיקת החדר
+          saveGameSession(room);
           delete rooms[roomId];
           return;
         }
 
-        // אם זה לא סוף חיידון
-        // מקדם את השאלה הנוכחית
         room.currentQuestionIndex++;
-
-        // משנה למצב שאלה
         room.phase = PHASES.QUESTION;
-
         initAnswers(room);
         startTimer(roomId);
         emitRoom(roomId);
       }
     });
 
-    // כשנכנסים למסך המשחק, יש חלון זמן קצר בין רישום ה-listener לבין הרגע שה-socket מוכן — אם roomUpdated נשלח מהשרת בדיוק בחלון הזה, הלקוח לא יקבל אותו.
     socket.on("requestRoomState", ({ roomId }) => {
       emitRoom(roomId);
     });
 
-
     /* =====================================================
        Disconnect
     ===================================================== */
-
     socket.on("disconnect", () => {
       for (const roomId in rooms) {
         const room = rooms[roomId];
 
-        // אם המארח התנתק - סגור את החדר
         if (String(room.hostId) === String(socket.mongoId)) {
           clearTimeout(room.timer.timeoutId);
           io.to(roomId).emit("roomUpdated", { ...room, phase: "END" });
@@ -378,7 +328,6 @@ export default function initSocket(server) {
           continue;
         }
 
-        // אחרת - הסר את השחקן
         room.players = room.players.filter(p => p.socketId !== socket.id);
         emitRoom(roomId);
       }

@@ -57,6 +57,13 @@ export default function Navbar() {
               </NavLink>
 
               <NavLink
+                className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+                to="/statistics"
+              >
+                סטטיסטיקות
+              </NavLink>
+
+              <NavLink
                 className={({ isActive }) =>
                   `nav-link ${isActive ? "active" : ""}`
                 }

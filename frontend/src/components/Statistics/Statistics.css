@@ -1,0 +1,426 @@
+/* ============================================
+   STATISTICS PAGE — Data Dashboard Aesthetic
+   ============================================ */
+
+.stats-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 900px 600px at 10% 0%, rgba(0, 200, 255, 0.07), transparent 60%),
+    radial-gradient(ellipse 700px 500px at 90% 100%, rgba(120, 70, 255, 0.09), transparent 60%),
+    linear-gradient(160deg, #060d1a 0%, #090f1f 50%, #060d1a 100%);
+  color: #e8f0fe;
+  padding: 40px;
+  direction: rtl;
+}
+
+/* ── Header ── */
+.stats-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 36px;
+}
+
+.stats-header h1 {
+  font-size: 2rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, #fff 30%, #7df3ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── Tabs ── */
+.stats-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  width: fit-content;
+}
+
+.stats-tab {
+  padding: 10px 22px;
+  border-radius: 13px;
+  border: none;
+  background: transparent;
+  color: rgba(232, 240, 254, 0.55);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-family: inherit;
+}
+
+.stats-tab:hover {
+  color: rgba(232, 240, 254, 0.85);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.stats-tab.active {
+  background: linear-gradient(135deg, rgba(0, 200, 255, 0.2), rgba(120, 70, 255, 0.2));
+  color: #fff;
+  border: 1px solid rgba(0, 200, 255, 0.3);
+  box-shadow: 0 0 18px rgba(0, 200, 255, 0.15);
+}
+
+/* ── Grid ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+/* ── Stat Card ── */
+.stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: 0.25s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--card-accent, linear-gradient(90deg, #00c8ff, #7846ff));
+  opacity: 0.7;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 200, 255, 0.25);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+.stat-card-icon {
+  font-size: 1.6rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  margin-bottom: 4px;
+}
+
+.stat-card-label {
+  font-size: 0.82rem;
+  color: rgba(232, 240, 254, 0.5);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.stat-card-value {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+.stat-card-sub {
+  font-size: 0.8rem;
+  color: rgba(232, 240, 254, 0.4);
+  margin-top: 2px;
+}
+
+/* ── Chart Card ── */
+.chart-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 22px;
+  padding: 26px 28px;
+  margin-bottom: 22px;
+  backdrop-filter: blur(12px);
+}
+
+.chart-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(232, 240, 254, 0.85);
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chart-card-title::before {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 18px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #00c8ff, #7846ff);
+}
+
+/* ── Two column layout ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 900px) {
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Bar Chart (CSS) ── */
+.bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bar-label {
+  font-size: 0.82rem;
+  color: rgba(232, 240, 254, 0.6);
+  min-width: 130px;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bar-track {
+  flex: 1;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--bar-color-start, #00c8ff), var(--bar-color-end, #7846ff));
+  transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bar-pct {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(232, 240, 254, 0.7);
+  min-width: 36px;
+  text-align: left;
+}
+
+/* ── Line Chart (SVG-based Recharts wrapper) ── */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: rgba(255, 255, 255, 0.06);
+}
+
+.recharts-text {
+  fill: rgba(232, 240, 254, 0.45) !important;
+  font-size: 11px !important;
+}
+
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: rgba(10, 18, 40, 0.95) !important;
+  border: 1px solid rgba(0, 200, 255, 0.25) !important;
+  border-radius: 12px !important;
+  color: #fff !important;
+}
+
+/* ── Sessions Table ── */
+.sessions-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sessions-table th {
+  font-size: 0.78rem;
+  color: rgba(232, 240, 254, 0.4);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  text-align: right;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sessions-table td {
+  padding: 13px 14px;
+  font-size: 0.9rem;
+  color: rgba(232, 240, 254, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: right;
+}
+
+.sessions-table tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* ── Quiz Selector ── */
+.quiz-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+}
+
+.quiz-pill {
+  padding: 8px 16px;
+  border-radius: 99px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(232, 240, 254, 0.6);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+  font-family: inherit;
+}
+
+.quiz-pill:hover {
+  border-color: rgba(0, 200, 255, 0.3);
+  color: rgba(232, 240, 254, 0.9);
+}
+
+.quiz-pill.active {
+  background: rgba(0, 200, 255, 0.15);
+  border-color: rgba(0, 200, 255, 0.4);
+  color: #00c8ff;
+}
+
+/* ── Highlight Badge ── */
+.highlight-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.highlight-card {
+  flex: 1;
+  padding: 18px 20px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.highlight-card.hard {
+  background: rgba(255, 80, 80, 0.1);
+  border: 1px solid rgba(255, 80, 80, 0.25);
+}
+
+.highlight-card.easy {
+  background: rgba(0, 230, 140, 0.1);
+  border: 1px solid rgba(0, 230, 140, 0.25);
+}
+
+.highlight-icon {
+  font-size: 1.6rem;
+}
+
+.highlight-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.highlight-info .label {
+  font-size: 0.75rem;
+  color: rgba(232, 240, 254, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.highlight-info .value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.highlight-info .pct {
+  font-size: 0.8rem;
+  color: rgba(232, 240, 254, 0.55);
+}
+
+/* ── Popular Quiz Item ── */
+.popular-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.popular-rank {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: rgba(232, 240, 254, 0.25);
+  min-width: 30px;
+  text-align: center;
+}
+
+.popular-title {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgba(232, 240, 254, 0.8);
+}
+
+.popular-count {
+  font-size: 0.82rem;
+  color: #00c8ff;
+  font-weight: 700;
+  background: rgba(0, 200, 255, 0.1);
+  border-radius: 99px;
+  padding: 3px 12px;
+}
+
+/* ── Empty / Loading ── */
+.stats-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: rgba(232, 240, 254, 0.35);
+  font-size: 1rem;
+}
+
+.stats-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+/* ── Global Metric ── */
+.global-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 600px) {
+  .stats-page { padding: 20px 16px; }
+  .stats-row { grid-template-columns: 1fr; }
+  .highlight-row { flex-direction: column; }
+  .global-grid { grid-template-columns: 1fr; }
+}
