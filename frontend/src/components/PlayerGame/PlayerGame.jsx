@@ -16,14 +16,11 @@ export default function PlayerGame() {
 
   const timerRef = useRef(null);
 
-
   useEffect(() => {
-    if (!roomId) 
-      return;
+    if (!roomId) return;
 
     const handleRoomUpdated = (roomData) => {
-      if (roomData.roomId !== roomId) 
-        return;
+      if (roomData.roomId !== roomId) return;
 
       setRoom(roomData);
 
@@ -34,10 +31,10 @@ export default function PlayerGame() {
 
       // הצגת טיימר
       if (roomData.endsAt) {
-        clearInterval(timerRef.current); // מנקה אינטרוול קודם אם היה
+        clearInterval(timerRef.current);
 
-        const offset = Date.now() - roomData.serverTime; // הפרש שעונים
-        const correctedEndsAt = roomData.endsAt + offset; // מתקן
+        const offset = Date.now() - roomData.serverTime;
+        const correctedEndsAt = roomData.endsAt + offset;
 
         const update = () => {
           const remaining = Math.max(0, Math.ceil((correctedEndsAt - Date.now()) / 1000));
@@ -46,7 +43,7 @@ export default function PlayerGame() {
         };
 
         update();
-        timerRef.current = setInterval(update, 1000); // כל  שנייה עדכון
+        timerRef.current = setInterval(update, 1000);
       } else {
         setTimeLeft(null);
         clearInterval(timerRef.current);
@@ -54,7 +51,6 @@ export default function PlayerGame() {
     };
 
     socket.emit("requestRoomState", { roomId });
-
     socket.on("roomUpdated", handleRoomUpdated);
 
     return () => {
@@ -67,10 +63,8 @@ export default function PlayerGame() {
      Answer
   ===================================================== */
   const handleAnswerClick = (answerText) => {
-    if (!room || room.phase !== "QUESTION") 
-      return;
-    if (selectedAnswer) 
-      return;
+    if (!room || room.phase !== "QUESTION") return;
+    if (selectedAnswer) return;
 
     setSelectedAnswer(answerText);
 
@@ -85,8 +79,11 @@ export default function PlayerGame() {
   ===================================================== */
   if (!room) {
     return (
-      <div className="player-game-container">
-        <h2>טוען משחק…</h2>
+      <div className="player-wrapper">
+        <div className="glass-panel text-center">
+          <div className="loader"></div>
+          <h2 className="loading-text">טוען משחק...</h2>
+        </div>
       </div>
     );
   }
@@ -96,11 +93,13 @@ export default function PlayerGame() {
   ===================================================== */
   if (room.phase === "END") {
     return (
-      <div className="player-game-container">
-        <h1>🏁 המשחק הסתיים!</h1>
-
-        <ScoreTable players={room.players} />
-
+      <div className="player-wrapper">
+        <div className="glass-panel end-screen">
+          <h1 className="title-glow">🏁 המשחק הסתיים!</h1>
+          <div className="table-wrapper">
+            <ScoreTable players={room.players} />
+          </div>
+        </div>
       </div>
     );
   }
@@ -109,106 +108,119 @@ export default function PlayerGame() {
      SUMMARY
   ===================================================== */
   if (room.phase === "SUMMARY" && room.summary) {
-    return (
-      <div className="summary-box">
-        <h2>תוצאות השאלה</h2>
+    const isCorrect = room.summary.correctAnswer === selectedAnswer;
 
-        <ul className="summary-list">
-          {Object.entries(room.summary.answersCount).map(
-            ([answer, count]) => (
-              <li
-                key={answer}
-                className={`summary-item
-                  ${
-                    room.summary.correctAnswer === answer
-                      ? "correct-answer"
-                      : ""
-                  }
-                  ${
-                    selectedAnswer === answer &&
-                    room.summary.correctAnswer !== answer
-                      ? "wrong-answer"
-                      : ""
-                  }
-                `}
-              >
-                <span className="summary-answer">{answer}</span>
-                <span className="summary-count">{count}</span>
-              </li>
-            )
-          )}
-        </ul>
+    return (
+      <div className="player-wrapper">
+        <div className="glass-panel summary-screen">
+          
+          {/* חיווי אישי לשחקן האם צדק או טעה */}
+          <div className={`personal-feedback ${isCorrect ? "feedback-correct" : "feedback-wrong"}`}>
+            {isCorrect ? "🎉 צדקת!" : "❌ טעית..."}
+          </div>
+
+          <h2 className="subtitle">תוצאות השאלה</h2>
+
+          <ul className="summary-list">
+            {Object.entries(room.summary.answersCount).map(([answer, count]) => {
+              const isAnswerCorrect = room.summary.correctAnswer === answer;
+              const isPlayerChoice = selectedAnswer === answer && !isAnswerCorrect;
+
+              return (
+                <li
+                  key={answer}
+                  className={`summary-item 
+                    ${isAnswerCorrect ? "correct-answer pulse-glow" : ""} 
+                    ${isPlayerChoice ? "wrong-answer" : ""}
+                  `}
+                >
+                  <span className="summary-answer">
+                    {answer} {selectedAnswer === answer && " (הבחירה שלך)"}
+                  </span>
+                  <span className="summary-count-badge">{count}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     );
   }
-
 
   /* =====================================================
     SCORES (ניקוד ביניים)
   ===================================================== */
   if (room.phase === "SCORES") {
     return (
-      <div className="player-game-container">
-
-        <ScoreTable players={room.players} />
-
-        <p className="waiting-text">
-          ⏳ ממתינים למארח להמשך המשחק…
-        </p>
+      <div className="player-wrapper">
+        <div className="glass-panel scores-screen">
+          <div className="table-wrapper">
+            <ScoreTable players={room.players} />
+          </div>
+          <p className="waiting-text pulse-text">
+            ⏳ ממתינים למארח להמשך המשחק...
+          </p>
+        </div>
       </div>
     );
   }
-
 
   /* =====================================================
      QUESTION
   ===================================================== */
   if (room.phase === "QUESTION" && room.question) {
     return (
-      <div className="player-game-container">
-        <h1>שאלה {room.questionIndex + 1}</h1>
+      <div className="player-wrapper">
+        <div className="game-header">
+          <div className="question-badge">שאלה {room.questionIndex + 1}</div>
 
-        {timeLeft !== null && (
-          <div
-            className={`mega-timer ${
-              timeLeft <= 5
-                ? "danger"
-                : timeLeft <= 10
-                ? "warning"
-                : ""
-            }`}
-          >
-            <svg className="timer-svg" viewBox="0 0 100 100">
-              <circle className="bg" cx="50" cy="50" r="45" />
-              <circle
-                className="progress"
-                cx="50"
-                cy="50"
-                r="45"
-                style={{
-                  strokeDashoffset:
-                    283 -
-                    (283 * timeLeft) / room.question.time
-                }}
-              />
-            </svg>
-            <div className="timer-number">{timeLeft}</div>
+          {timeLeft !== null && (
+            <div className={`mega-timer ${timeLeft <= 5 ? "danger" : timeLeft <= 10 ? "warning" : ""}`}>
+              <svg className="timer-svg" viewBox="0 0 100 100">
+                <circle className="bg" cx="50" cy="50" r="45" />
+                <circle
+                  className="progress"
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  style={{
+                    strokeDashoffset: 283 - (283 * timeLeft) / room.question.time
+                  }}
+                />
+              </svg>
+              <div className="timer-number">{timeLeft}</div>
+            </div>
+          )}
+        </div>
+
+        <h2 className="mobile-question-text">{room.question.text}</h2>
+
+        <div className="player-answers-grid">
+          {room.question.answers.map((ans, index) => {
+            const isSelected = selectedAnswer === ans.text;
+            const isDisabled = selectedAnswer !== null;
+
+            return (
+              <button
+                key={index}
+                onClick={() => handleAnswerClick(ans.text)}
+                disabled={isDisabled}
+                className={`player-answer-btn shape-${index % 4} 
+                  ${isSelected ? "selected" : ""} 
+                  ${isDisabled && !isSelected ? "dimmed" : ""}
+                `}
+              >
+                <span className="answer-text">{ans.text}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {selectedAnswer && (
+          <div className="waiting-text pulse-text mt-3">
+            התשובה נקלטה! ממתין לסיום הזמן...
           </div>
         )}
-
-        <ul className="answer-buttons">
-          {room.question.answers.map((ans, index) => (
-            <li
-              key={index}
-              className={`answer-button ${
-                selectedAnswer ? "disabled" : ""
-              }`}
-              onClick={() => handleAnswerClick(ans.text)}
-            >
-              {ans.text}
-            </li>
-          ))}
-        </ul>
       </div>
     );
   }
@@ -217,8 +229,11 @@ export default function PlayerGame() {
      LOBBY / WAITING
   ===================================================== */
   return (
-    <div className="player-game-container">
-      <h1>⏳ מחכים שהמארח יתחיל…</h1>
+    <div className="player-wrapper">
+      <div className="glass-panel text-center pulse-glow">
+        <h2 className="title-glow">⏳ הכינו את האצבעות!</h2>
+        <p className="subtitle">מחכים שהמארח יתחיל את המשחק...</p>
+      </div>
     </div>
   );
 }

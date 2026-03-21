@@ -1,176 +1,277 @@
-/* רקע כללי */
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&display=swap');
+
+/* --- Base & Wrapper --- */
 .profile-wrapper {
+  direction: rtl;
+  font-family: 'Heebo', sans-serif;
   min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1e0049);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at top, #1b1b3a, #0b0b16);
-  font-family: "Segoe UI", sans-serif;
+  padding: 2rem;
+  box-sizing: border-box;
+  color: white;
 }
 
-/* כרטיס */
-.profile-card {
-  width: 420px;
-  padding: 35px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(14px);
-  box-shadow:
-    0 0 40px rgba(255, 206, 0, 0.15),
-    inset 0 0 30px rgba(255, 255, 255, 0.05);
-  color: #fff;
-  animation: fadeIn 0.6s ease;
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-@keyframes fadeIn {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+/* --- Glass Panel --- */
+.profile-panel {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 3rem;
+  width: 100%;
+  max-width: 650px; /* צר יותר ממסך משחק, מותאם לטופס */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.profile-title {
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 30px;
-  color: #ffce00;
-  text-shadow: 0 0 10px rgba(255, 206, 0, 0.6);
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* ת"ז */
-.readonly {
-  background: rgba(0, 0, 0, 0.35);
-  padding: 12px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  color: #ccc;
-}
-
-.readonly strong {
-  color: #fff;
-}
-
-/* טופס */
-.profile-form {
+/* --- Header --- */
+.profile-header {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
-/* קבוצת אינפוט */
-.input-group {
-  position: relative;
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #00e5ff, #005a8d);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: white;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.4);
+  border: 3px solid rgba(255, 255, 255, 0.2);
 }
 
-.input-group input {
-  width: 100%;
-  padding: 14px 12px;
-  border-radius: 10px;
-  border: none;
+.title-glow {
+  font-size: 2.5rem;
+  font-weight: 900;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+  margin: 0;
+}
+
+/* --- Alerts --- */
+.alert-box {
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  text-align: center;
+  backdrop-filter: blur(5px);
+}
+
+.error-alert {
+  background: rgba(255, 59, 48, 0.2);
+  border: 1px solid #ff3b30;
+  color: #ffcccc;
+  box-shadow: 0 0 15px rgba(255, 59, 48, 0.3);
+}
+
+.success-alert {
+  background: rgba(52, 199, 89, 0.2);
+  border: 1px solid #34c759;
+  color: #ccffcc;
+  box-shadow: 0 0 15px rgba(52, 199, 89, 0.3);
+}
+
+.slide-in {
+  animation: slideDown 0.4s ease-out;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Badge (ID Display) --- */
+.id-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   background: rgba(0, 0, 0, 0.4);
-  color: #fff;
-  font-size: 16px;
-  outline: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  margin-bottom: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.input-group label {
+.id-badge-label {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.id-badge-value {
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: #00e5ff;
+  letter-spacing: 1px;
+}
+
+/* --- Modern Form Inputs --- */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.input-container {
+  position: relative;
+  width: 100%;
+}
+
+.modern-input {
+  width: 100%;
+  padding: 1.2rem 1rem 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px 8px 0 0;
+  color: white;
+  font-size: 1.1rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.modern-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom-color: #00e5ff;
+  box-shadow: 0 5px 15px -5px rgba(0, 229, 255, 0.3);
+}
+
+/* אפקט Label מרחף */
+.modern-label {
   position: absolute;
   top: 50%;
-  right: 12px;
+  right: 1rem;
   transform: translateY(-50%);
-  font-size: 14px;
-  color: #aaa;
+  color: rgba(255, 255, 255, 0.6);
   pointer-events: none;
-  transition: 0.25s;
-  background: transparent;
+  transition: all 0.2s ease-out;
+  font-weight: 500;
 }
 
-/* אנימציית label */
-.input-group input:focus + label,
-.input-group input:not(:placeholder-shown) + label {
-  top: -8px;
-  font-size: 12px;
-  color: #ffce00;
-  text-shadow: 0 0 6px rgba(255, 206, 0, 0.6);
+/* כשיש פוקוס או שיש טקסט - הלייבל עולה למעלה */
+.modern-input:focus ~ .modern-label,
+.modern-input:not(:placeholder-shown) ~ .modern-label {
+  top: 8px;
+  font-size: 0.8rem;
+  color: #00e5ff;
 }
 
-/* כפתורים */
-.btn {
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
-  font-size: 16px;
-  font-weight: bold;
+/* טיפול מיוחד בשדה תאריך שאין לו פלייסחולדר טבעי */
+.date-input {
+  padding-top: 1.5rem;
+  color: white;
+}
+.date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
   cursor: pointer;
-  transition: 0.25s;
+}
+.date-label {
+  top: 8px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+.date-input:focus ~ .date-label {
+  color: #00e5ff;
 }
 
-.btn.primary {
-  background: linear-gradient(135deg, #ffce00, #ff9f00);
-  color: #000;
+/* --- Buttons --- */
+.profile-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
 }
 
-.btn.primary:hover {
-  box-shadow: 0 0 15px rgba(255, 206, 0, 0.8);
+.action-btn {
+  width: 100%;
+  max-width: 300px;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 50px;
+  font-family: inherit;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.btn.danger {
-  background: linear-gradient(135deg, #ff4c4c, #c62828);
+.save-btn {
+  background: linear-gradient(90deg, #00e5ff, #0077ff);
   color: #fff;
+  box-shadow: 0 5px 15px rgba(0, 229, 255, 0.3);
 }
 
-.btn.danger:hover {
-  box-shadow: 0 0 15px rgba(255, 76, 76, 0.8);
+.save-btn:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 229, 255, 0.5);
 }
 
-/* שגיאה */
-.error-box {
-  background: rgba(255, 0, 0, 0.15);
-  border: 1px solid rgba(255, 0, 0, 0.4);
-  padding: 10px;
-  border-radius: 10px;
-  text-align: center;
-  margin-bottom: 20px;
+.delete-btn {
+  background: transparent;
+  color: #ff4d4d;
+  border: 2px solid #ff4d4d;
 }
 
-/* תצוגת תעודת זהות */
-.id-display {
-  padding: 18px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #2b2b45, #1a1a2f);
-  border: 1px solid rgba(255, 206, 0, 0.4);
-  text-align: center;
-  margin-bottom: 25px;
-  box-shadow: 0 0 25px rgba(255, 206, 0, 0.15);
+.delete-btn:hover:not(:disabled) {
+  background: #ff4d4d;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(255, 77, 77, 0.4);
 }
 
-.id-label {
-  font-size: 13px;
-  color: #ffce00;
-  letter-spacing: 1px;
-  margin-bottom: 6px;
-  text-transform: uppercase;
+.action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.id-value {
-  font-size: 28px;
-  font-weight: bold;
-  color: #ffffff;
-  letter-spacing: 3px;
-  text-shadow: 0 0 10px rgba(255, 206, 0, 0.6);
-}
-
-
-/* טעינה */
-.loader {
-  text-align: center;
-  color: #ffce00;
-  font-size: 18px;
+/* --- Responsive --- */
+@media (max-width: 600px) {
+  .profile-panel {
+    padding: 2rem 1.5rem;
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr; /* טור אחד במובייל */
+    gap: 1rem;
+  }
+  
+  .profile-actions {
+    margin-top: 1.5rem;
+  }
 }

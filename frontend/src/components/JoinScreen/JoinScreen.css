@@ -1,561 +1,278 @@
-/* JoinScreen.css */
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap');
 
-.join-container {
-  max-width: 550px;
-  margin: 0 auto;
-  padding: 50px 45px;
-  background: linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 242, 254, 0.15) 100%);
-  backdrop-filter: blur(25px);
-  border-radius: 30px;
-  border: 2px solid rgba(79, 172, 254, 0.35);
-  box-shadow: 0 20px 60px rgba(79, 172, 254, 0.4);
-  animation: zoomInFloat 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-  overflow: hidden;
-}
-
-/* אפקט רקע מנצנץ */
-.join-container::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(79, 172, 254, 0.12) 0%, transparent 70%);
-  animation: rotate 20s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes zoomInFloat {
-  0% {
-    opacity: 0;
-    transform: scale(0.6) translateY(30px);
-  }
-  70% {
-    transform: scale(1.05) translateY(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-/* כותרת */
-.join-container h1 {
-  font-size: 3rem;
-  font-weight: 900;
-  color: #ffffff;
-  text-align: center;
-  margin-bottom: 45px;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  position: relative;
-  padding-bottom: 25px;
-  z-index: 1;
-  text-shadow: 0 0 30px rgba(79, 172, 254, 0.5);
-}
-
-.join-container h1::after {
-  content: '🎮';
-  position: absolute;
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 2.5rem;
-  animation: bounce 2s ease-in-out infinite;
-  filter: drop-shadow(0 5px 15px rgba(79, 172, 254, 0.6));
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateX(-50%) translateY(0);
-  }
-  50% {
-    transform: translateX(-50%) translateY(-15px);
-  }
-}
-
-/* שדות קלט */
-.join-container input {
-  width: 100%;
-  padding: 20px 28px;
-  margin-bottom: 25px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.25);
-  border-radius: 16px;
-  color: #ffffff;
-  font-size: 1.2rem;
-  font-weight: 600;
-  font-family: inherit;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-  z-index: 1;
-}
-
-.join-container input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: 500;
-}
-
-.join-container input:focus {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: #4facfe;
-  box-shadow: 0 0 0 5px rgba(79, 172, 254, 0.25), 0 10px 35px rgba(79, 172, 254, 0.4);
-  transform: translateY(-4px);
-  outline: none;
-}
-
-/* אייקונים לשדות */
-.join-container input:nth-of-type(1)::before {
-  content: '👤';
-}
-
-.join-container input:nth-of-type(2)::before {
-  content: '🔑';
-}
-
-/* כפתור הצטרף */
-.join-container button {
-  width: 100%;
-  padding: 22px;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+/* --- Base & Wrapper --- */
+.join-wrapper {
+  direction: rtl;
+  font-family: 'Heebo', sans-serif;
+  min-height: 100vh;
+  width: 100vw;
+  /* רקע אנרגטי שמתאים למשחק */
+  background: linear-gradient(-45deg, #1e0049, #6a11cb, #2575fc, #005a8d);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
   color: white;
-  border: none;
-  border-radius: 16px;
-  font-size: 1.6rem;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 12px 40px rgba(79, 172, 254, 0.5);
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  letter-spacing: 0.5px;
-  margin-top: 10px;
 }
 
-/* אפקט זוהר בכפתור */
-.join-container button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* --- Glass Panels --- */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  padding: 3rem 2rem;
   width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  transition: left 0.7s ease;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.join-container button:hover::before {
-  left: 100%;
+.form-panel { max-width: 450px; }
+.lobby-panel { max-width: 650px; }
+
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-.join-container button::after {
-  content: '→';
-  position: absolute;
-  left: 30px;
-  opacity: 0;
-  transition: all 0.3s ease;
-  font-size: 1.8rem;
-}
-
-.join-container button:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 18px 50px rgba(79, 172, 254, 0.7);
-}
-
-.join-container button:hover::after {
-  opacity: 1;
-  left: 20px;
-}
-
-.join-container button:active {
-  transform: translateY(-3px) scale(0.98);
-}
-
-/* תיבת מידע */
-.join-info {
-  margin-bottom: 30px;
-  padding: 18px 24px;
-  background: linear-gradient(135deg, rgba(255, 235, 59, 0.12) 0%, rgba(255, 193, 7, 0.12) 100%);
-  border-radius: 14px;
-  border: 2px solid rgba(255, 235, 59, 0.35);
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.7;
-  font-size: 1rem;
-  position: relative;
-  z-index: 1;
+/* --- Typography --- */
+.text-center { text-align: center; }
+.title-glow {
+  font-size: 2.8rem;
+  font-weight: 900;
   text-align: center;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  margin-bottom: 2rem;
+}
+.success-text {
+  color: #38ef7d;
+  text-shadow: 0 0 15px rgba(56, 239, 125, 0.5);
 }
 
-.join-info::before {
-  content: '💡';
-  font-size: 1.4rem;
-  margin-left: 8px;
-}
-
-/* אנימציות כניסה לשדות */
-.join-container input,
-.join-container button {
-  animation: fadeInUp 0.6s ease-out backwards;
-}
-
-.join-container input:nth-of-type(1) { animation-delay: 0.1s; }
-.join-container input:nth-of-type(2) { animation-delay: 0.2s; }
-.join-container button { animation-delay: 0.3s; }
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* סטטוס חיבור */
-.connection-status {
-  text-align: center;
-  margin-top: 25px;
-  padding: 12px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  position: relative;
-  z-index: 1;
-}
-
-.connection-status.connected {
-  background: rgba(67, 233, 123, 0.15);
-  color: #43e97b;
-  border: 1px solid rgba(67, 233, 123, 0.3);
-}
-
-.connection-status.connected::before {
-  content: '🟢 ';
-}
-
-.connection-status.disconnected {
-  background: rgba(245, 87, 108, 0.15);
-  color: #f5576c;
-  border: 1px solid rgba(245, 87, 108, 0.3);
-}
-
-.connection-status.disconnected::before {
-  content: '🔴 ';
-}
-
-/* ולידציה */
-.join-container input:invalid {
-  border-color: rgba(245, 87, 108, 0.5);
-}
-
-.join-container input:valid {
-  border-color: rgba(67, 233, 123, 0.5);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .join-container {
-    padding: 40px 35px;
-    border-radius: 25px;
-  }
-
-  .join-container h1 {
-    font-size: 2.5rem;
-    margin-bottom: 35px;
-    padding-bottom: 20px;
-  }
-
-  .join-container h1::after {
-    font-size: 2rem;
-  }
-
-  .join-container input {
-    padding: 18px 24px;
-    font-size: 1.1rem;
-  }
-
-  .join-container button {
-    padding: 20px;
-    font-size: 1.4rem;
-  }
-
-  .join-info {
-    padding: 16px 20px;
-    font-size: 0.95rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .join-container {
-    padding: 35px 28px;
-    border-radius: 22px;
-  }
-
-  .join-container h1 {
-    font-size: 2.2rem;
-    margin-bottom: 30px;
-  }
-
-  .join-container h1::after {
-    font-size: 1.8rem;
-  }
-
-  .join-container input {
-    padding: 16px 22px;
-    font-size: 1.05rem;
-  }
-
-  .join-container button {
-    padding: 18px;
-    font-size: 1.3rem;
-  }
-
-  .join-info {
-    padding: 14px 18px;
-    font-size: 0.9rem;
-  }
-}
-
-/* אפקט טעינה */
-.join-container button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.join-container button.loading::after {
-  content: '⏳';
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* הודעת שגיאה */
-.error-message {
-  margin-top: 20px;
-  padding: 15px 20px;
-  background: rgba(245, 87, 108, 0.15);
-  border: 2px solid rgba(245, 87, 108, 0.4);
+/* --- Errors --- */
+.alert-box {
+  padding: 1rem;
   border-radius: 12px;
-  color: #f5576c;
+  margin-bottom: 1.5rem;
   font-weight: 700;
   text-align: center;
-  animation: shake 0.5s ease;
-  position: relative;
-  z-index: 1;
 }
-
-.error-message::before {
-  content: '⚠️ ';
-  font-size: 1.2rem;
+.error-alert {
+  background: rgba(226, 27, 60, 0.2);
+  border: 1px solid #ff4d4d;
+  color: #ffcccc;
 }
+.slide-in { animation: slideDown 0.3s ease-out; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
-}
-
-/* ——— עמוד מלא עם רקע אנימציה ——— */
-
-.room-page {
-  min-height: 100vh;
-  padding-top: 40px;
+/* --- Join Form Inputs (Game Style) --- */
+.join-form {
   display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-container {
+  position: relative;
+  width: 100%;
+}
+
+.game-input {
+  width: 100%;
+  padding: 1.5rem 1rem 0.8rem 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: white;
+  font-size: 1.3rem;
+  font-weight: 700;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.game-input:focus {
+  outline: none;
+  background: rgba(0, 0, 0, 0.5);
+  border-color: #00e5ff;
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+}
+
+.game-label {
+  position: absolute;
+  top: 50%;
+  right: 1.2rem;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+  transition: all 0.2s ease-out;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.game-input:focus ~ .game-label,
+.game-input:not(:placeholder-shown) ~ .game-label {
+  top: 10px;
+  font-size: 0.8rem;
+  color: #00e5ff;
+}
+
+/* --- Join Button --- */
+.join-btn {
+  background: white;
+  color: #1e0049;
+  border: none;
+  padding: 1.2rem;
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-family: inherit;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
-  animation: bgMove 6s infinite alternate ease-in-out;
+  gap: 10px;
+  margin-top: 1rem;
+  box-shadow: 0 8px 0 rgba(200, 200, 200, 1); /* אפקט כפתור 3D */
 }
 
-@keyframes bgMove {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
+.join-btn:active {
+  transform: translateY(8px);
+  box-shadow: 0 0 0 rgba(200, 200, 200, 1);
 }
 
-
-/* ——— כרטיס מרכזי ——— */
-
-.room-card {
-  width: 90%;
-  max-width: 550px;
-  background: #ffffffee;
-  backdrop-filter: blur(12px);
-  border-radius: 22px;
-  padding: 35px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-  animation: fadeIn 0.6s ease-out;
+.join-btn:hover {
+  background: #00e5ff;
+  box-shadow: 0 8px 0 #009eb3, 0 0 20px rgba(0, 229, 255, 0.5);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* --- Lobby / Waiting Room --- */
+.players-counter {
+  background: rgba(0, 0, 0, 0.4);
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
-.room-title {
-  text-align: center;
-  font-size: 32px;
-  color: #222;
-  margin-bottom: 10px;
+.counter-number {
+  color: #00e5ff;
+  font-weight: 900;
+  font-size: 1.5rem;
+  margin-right: 5px;
 }
 
-.players-label {
-  text-align: center;
-  font-size: 18px;
-  margin-bottom: 20px;
-  font-weight: 600;
-  color: #1a1a1a;
+.players-grid-container {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+  margin-bottom: 2rem;
+  background: rgba(0,0,0,0.1);
+  border-radius: 16px;
 }
 
-.players-label span {
-  color: #0088ff;
-}
-
-
-/* ——— רשימת שחקנים ——— */
+/* Custom Scrollbar for Grid */
+.players-grid-container::-webkit-scrollbar { width: 6px; }
+.players-grid-container::-webkit-scrollbar-track { background: transparent; }
+.players-grid-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
 
 .players-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
   list-style: none;
   padding: 0;
   margin: 0;
-  
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
 }
 
 .player-card {
-  background: #f7f7f7;
-  padding: 18px;
-  border-radius: 16px;
-  box-shadow: 0 8px 15px rgba(0,0,0,0.12);
-
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
+  border-radius: 50px;
   display: flex;
   align-items: center;
-  gap: 12px;
-
-  transition: 0.2s ease;
-  cursor: pointer;
-  border: 3px solid transparent;
+  gap: 10px;
+  backdrop-filter: blur(5px);
+  animation: popIn 0.4s backwards;
+  transition: transform 0.2s;
 }
 
-/* ריחוף אפקטיבי */
 .player-card:hover {
-  transform: translateY(-4px);
-  background: #fff;
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.2);
 }
-
-
-/* ——— אווטאר עגול ——— */
 
 .player-avatar {
-  width: 50px;
-  height: 50px;
-  background: #00aeff;
-  color: #fff;
-  font-size: 22px;
-  font-weight: bold;
-
+  width: 35px;
+  height: 35px;
+  background: #00e5ff;
+  color: #1e0049;
   border-radius: 50%;
   display: flex;
-  justify-content: center;
   align-items: center;
-
-  box-shadow: 0 6px 12px rgba(31, 133, 223, 0.854);
-}
-
-
-/* ——— פרטי שחקן ——— */
-
-.player-info {
-  display: flex;
-  flex-direction: column;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.2rem;
 }
 
 .player-name {
-  font-size: 18px;
-  font-weight: 600;
-  color: #222;
+  font-weight: 700;
+  font-size: 1.1rem;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.player-score {
-  color: #7928ca;
-  font-weight: bold;
-  font-size: 15px;
-}
-
-
-.waiting-text{
-  margin-top: 14px;
-  padding: 12px 14px;
-
-  display: inline-flex;
+/* --- Waiting Spinner Area --- */
+.waiting-spinner {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
-
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-
-  color: rgba(0, 0, 0, 0.92);
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.14);
-  border-radius: 14px;
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.18),
-    inset 0 1px 0 rgba(255,255,255,0.10);
-
-  animation: waitingFloat 1.6s ease-in-out infinite;
+  margin-top: 1rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 1.5rem;
 }
 
-/* תנועה עדינה */
-@keyframes waitingFloat{
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-2px); }
+.loader {
+  border: 4px solid rgba(255,255,255,0.1);
+  border-top: 4px solid #00e5ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+.small-loader { width: 30px; height: 30px; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+.waiting-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  opacity: 0.8;
 }
 
-/* 3 נקודות "טוען" */
-.waiting-text .dots{
-  display: inline-flex;
-  gap: 2px;
-  opacity: 0.9;
+.pulse-text { animation: opacityPulse 1.5s infinite alternate; }
+@keyframes opacityPulse { 0% { opacity: 0.5; } 100% { opacity: 1; } }
+
+/* --- Responsive --- */
+@media (max-width: 450px) {
+  .glass-panel { padding: 2rem 1.5rem; }
+  .title-glow { font-size: 2.2rem; }
+  .game-input { font-size: 1.1rem; }
+  .join-btn { font-size: 1.3rem; }
 }
-
-.waiting-text .dots span{
-  display: inline-block;
-  transform: translateY(0);
-  animation: dotPulse 1s infinite ease-in-out;
-}
-
-.waiting-text .dots span:nth-child(2){ animation-delay: 0.15s; }
-.waiting-text .dots span:nth-child(3){ animation-delay: 0.30s; }
-
-@keyframes dotPulse{
-  0%, 100% { opacity: 0.35; transform: translateY(0); }
-  50%      { opacity: 1;    transform: translateY(-3px); }
-}
-
-/* אם המשתמש ביקש reduced motion */
-@media (prefers-reduced-motion: reduce){
-  .waiting-text{ animation: none; }
-  .waiting-text .dots span{ animation: none; }
-}
-

@@ -9,14 +9,32 @@ export default function QuizCard({ quiz }) {
   };
 
   return (
-    <div className="quiz-card" onClick={handleClick}>
-      <h3 className="quiz-title">{quiz.title}</h3>
-      <p className="quiz-description">
-        {quiz.description ? quiz.description : "ללא תיאור"}
-      </p>
-      <p className="quiz-info">
-        מספר שאלות: {quiz.questions.length}
-      </p>
+    <div className="quiz-card-content" onClick={handleClick}>
+      
+      {/* אזור "תמונת הנושא" של החידון */}
+      <div className="quiz-card-cover">
+        <div className="quiz-icon">🧠</div>
+      </div>
+
+      <div className="quiz-card-body">
+        <h3 className="quiz-title" title={quiz.title}>
+          {quiz.title}
+        </h3>
+        <p className="quiz-description" title={quiz.description}>
+          {quiz.description ? quiz.description : "ללא תיאור"}
+        </p>
+      </div>
+
+      <div className="quiz-card-footer">
+        <div className="questions-badge">
+          📝 {quiz.questions?.length || 0} שאלות
+        </div>
+        
+        <button className="play-quiz-btn">
+          שחק <span className="play-icon">▶</span>
+        </button>
+      </div>
+      
     </div>
   );
 }

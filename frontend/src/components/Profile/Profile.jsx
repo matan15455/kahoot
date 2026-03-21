@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import {isValidEmail,isValidPhone,isAdult21,isValidPassword} from "../../utils/validators";
+import { isValidEmail, isValidPhone, isAdult21, isValidPassword } from "../../utils/validators";
 import "./Profile.css";
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from "@mui/material/Box";
@@ -16,15 +16,15 @@ export default function Profile() {
     email: "",
     phone: "",
     birthday: "",
-    password: "", 
-    id: "", 
+    password: "",
+    id: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
-    if (!userId)
-      return;
+    if (!userId) return;
 
     const fetchUser = async () => {
       setLoading(true);
@@ -33,16 +33,19 @@ export default function Profile() {
           headers: { Authorization: `Bearer ${token}` }
         });
 
+        // חילוץ תאריך בפורמט YYYY-MM-DD אם יש צורך
+        const formattedBirthday = res.data.birthday ? res.data.birthday.split('T')[0] : "";
+
         setUserData({
-          name: res.data.name,
-          email: res.data.email,
-          phone: res.data.phone,
-          birthday: res.data.birthday,
+          name: res.data.name || "",
+          email: res.data.email || "",
+          phone: res.data.phone || "",
+          birthday: formattedBirthday,
           password: "",
-          id: res.data.id,
+          id: res.data.id || "",
         });
       } catch (err) {
-        setError(err.response?.data?.message || "Error fetching user");
+        setError(err.response?.data?.message || "שגיאה בטעינת נתוני משתמש");
       } finally {
         setLoading(false);
       }
@@ -55,6 +58,7 @@ export default function Profile() {
     if (!userId) return;
 
     setError("");
+    setSuccessMsg("");
 
     if (!isValidEmail(userData.email)) {
       setError("אימייל לא תקין");
@@ -72,9 +76,7 @@ export default function Profile() {
     }
 
     if (userData.password && !isValidPassword(userData.password)) {
-      setError(
-        "הסיסמה חייבת להכיל לפחות 8 תווים, אות גדולה, אות קטנה, ספרה ותו מיוחד"
-      );
+      setError("הסיסמה חייבת להכיל לפחות 8 תווים, אות גדולה, אות קטנה, ספרה ותו מיוחד");
       return;
     }
 
@@ -97,10 +99,14 @@ export default function Profile() {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      alert("פרטים עודכנו בהצלחה!");
+      setSuccessMsg("הפרטים עודכנו בהצלחה! ✨");
       setUserData(prev => ({ ...prev, password: "" }));
+      
+      // העלמת הודעת ההצלחה אחרי כמה שניות
+      setTimeout(() => setSuccessMsg(""), 4000);
+      
     } catch (err) {
-      setError(err.response?.data?.message || "Error updating user");
+      setError(err.response?.data?.message || "שגיאה בעדכון המשתמש");
     } finally {
       setLoading(false);
     }
@@ -108,7 +114,7 @@ export default function Profile() {
 
   const handleDelete = async () => {
     if (!userId) return;
-    if (!window.confirm("האם אתה בטוח שאתה רוצה למחוק את המשתמש?")) 
+    if (!window.confirm("⚠️ האם אתה בטוח שאתה רוצה למחוק את המשתמש לצמיתות? פעולה זו בלתי הפיכה.")) 
       return;
 
     setLoading(true);
@@ -121,7 +127,7 @@ export default function Profile() {
       logout();
       navigate("/login");
     } catch (err) {
-      setError(err.response?.data?.message || "Error deleting user");
+      setError(err.response?.data?.message || "שגיאה במחיקת המשתמש");
     } finally {
       setLoading(false);
     }
@@ -133,60 +139,110 @@ export default function Profile() {
 
   return (
     <div className="profile-wrapper">
-      <div className="profile-card">
-        <h1 className="profile-title">👤 פרטי משתמש</h1>
+      <div className="glass-panel profile-panel">
+        <div className="profile-header">
+          <div className="profile-avatar">
+            {userData.name ? userData.name.charAt(0) : "👤"}
+          </div>
+          <h1 className="title-glow">הפרופיל שלי</h1>
+        </div>
 
-        {error && <div className="error-box">{error}</div>}
+        {error && <div className="alert-box error-alert slide-in">{error}</div>}
+        {successMsg && <div className="alert-box success-alert slide-in">{successMsg}</div>}
+
         {loading ? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100vh"
-            }}
-          >
-            <CircularProgress color="secondary" size={80} />
+          <Box sx={{ display: "flex", justifyContent: "center", py: 5 }}>
+            <CircularProgress sx={{ color: '#00e5ff' }} size={60} thickness={4} />
           </Box>
         ) : (
           <div className="profile-form">
-            <div className="id-display">
-              <div className="id-label">תעודת זהות</div>
-              <div className="id-value">{userData.id}</div>
+            <div className="id-badge">
+              <span className="id-badge-label">תעודת זהות:</span>
+              <span className="id-badge-value">{userData.id}</span>
             </div>
 
-            <div className="input-group">
-              <input name="name" value={userData.name || ""} onChange={handleChange} required />
-              <label>שם מלא</label>
+            <div className="form-grid">
+              <div className="input-container">
+                <input 
+                  type="text" 
+                  name="name" 
+                  value={userData.name || ""} 
+                  onChange={handleChange} 
+                  required 
+                  placeholder=" " 
+                  className="modern-input"
+                />
+                <label className="modern-label">שם מלא</label>
+              </div>
+
+              <div className="input-container">
+                <input 
+                  type="email" 
+                  name="email" 
+                  value={userData.email || ""} 
+                  onChange={handleChange} 
+                  required 
+                  placeholder=" " 
+                  className="modern-input"
+                />
+                <label className="modern-label">אימייל</label>
+              </div>
+
+              <div className="input-container">
+                <input 
+                  type="tel" 
+                  name="phone" 
+                  value={userData.phone || ""} 
+                  onChange={handleChange} 
+                  placeholder=" " 
+                  className="modern-input"
+                  dir="ltr"
+                />
+                <label className="modern-label">טלפון</label>
+              </div>
+
+              <div className="input-container date-container">
+                <input 
+                  type="date" 
+                  name="birthday" 
+                  value={userData.birthday || ""} 
+                  onChange={handleChange} 
+                  className="modern-input date-input"
+                />
+                <label className="modern-label date-label">תאריך לידה</label>
+              </div>
+
+              <div className="input-container full-width">
+                <input 
+                  type="password" 
+                  name="password" 
+                  value={userData.password || ""} 
+                  onChange={handleChange} 
+                  placeholder=" " 
+                  className="modern-input"
+                  dir="ltr"
+                />
+                <label className="modern-label">סיסמה חדשה (השאר ריק כדי לא לשנות)</label>
+              </div>
             </div>
 
-            <div className="input-group">
-              <input name="email" value={userData.email || ""} onChange={handleChange} required />
-              <label>אימייל</label>
+            <div className="profile-actions">
+              <button 
+                className="action-btn save-btn" 
+                onClick={handleUpdate} 
+                disabled={loading}
+              >
+                <span className="btn-icon">💾</span> שמור שינויים
+              </button>
+
+              <button 
+                className="action-btn delete-btn" 
+                onClick={handleDelete} 
+                disabled={loading}
+              >
+                <span className="btn-icon">🗑</span> מחק משתמש
+              </button>
             </div>
-
-            <div className="input-group">
-              <input name="phone" value={userData.phone || ""} onChange={handleChange} />
-              <label>טלפון</label>
-            </div>
-
-            <div className="input-group">
-              <input type="date" name="birthday" value={userData.birthday || ""} onChange={handleChange} />
-              <label>תאריך לידה</label>
-            </div>
-
-            <div className="input-group">
-              <input type="password" name="password" value={userData.password || ""} onChange={handleChange} />
-              <label>סיסמה חדשה</label>
-            </div>
-
-            <button className="btn primary" onClick={handleUpdate} disabled={loading}>
-              💾 שמור שינויים
-            </button>
-
-            <button className="btn danger" onClick={handleDelete} disabled={loading}>
-              🗑 מחק משתמש
-            </button>
           </div>
         )}
       </div>

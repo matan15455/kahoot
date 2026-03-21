@@ -14,9 +14,8 @@ export default function MyQuizzes() {
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-
       try {
-       const res = await axios.get(
+        const res = await axios.get(
           "http://localhost:5000/quizzes/my",
           {
             headers: {
@@ -36,40 +35,62 @@ export default function MyQuizzes() {
 
   }, [token]);
 
-  if (loading){
-     return <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh"
-      }}
-    >
-      <CircularProgress color="secondary" size={80} />
-    </Box>;
+  /* ==========================
+     Loading State
+  ========================== */
+  if (loading) {
+    return (
+      <div className="myquizzes-wrapper">
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh"
+          }}
+        >
+          {/* התאמתי את הצבע של MUI לטון הניאון שלנו */}
+          <CircularProgress sx={{ color: '#00e5ff' }} size={80} thickness={4} />
+        </Box>
+      </div>
+    );
   }
 
+  /* ==========================
+     Main UI
+  ========================== */
   return (
-    <div className="myquizzes-page">
-      <div className="myquizzes-header">
-        <h1> החידונים שלי</h1>
-        <span className="header-underline"></span>
-      </div>
+    <div className="myquizzes-wrapper">
+      <div className="myquizzes-container">
+        
+        <div className="myquizzes-header">
+          <h1 className="title-glow">החידונים שלי 📚</h1>
+        </div>
 
-      {quizzes.length === 0 ? (
-        <div className="empty-state">
-          <p>עדיין לא יצרת חידונים</p>
-          <div className="empty-illustration"></div>
-        </div>
-      ) : (
-        <div className="quizzes-grid">
-          {quizzes.map((quiz) => (
-            <div className="quiz-wrapper" key={quiz._id}>
-              <QuizCard quiz={quiz} />
-            </div>
-          ))}
-        </div>
-      )}
+        {quizzes.length === 0 ? (
+          <div className="glass-panel empty-state">
+            <div className="empty-icon">📂</div>
+            <h2>עדיין לא יצרת חידונים</h2>
+            <p>זה הזמן להתחיל ליצור חידונים מטורפים ולשחק עם חברים!</p>
+          </div>
+        ) : (
+          <div className="quizzes-grid">
+            {quizzes.map((quiz, index) => (
+              <div 
+                className="quiz-wrapper" 
+                key={quiz._id}
+                style={{ animationDelay: `${index * 0.1}s` }} /* אנימציית הופעה מדורגת */
+              >
+                <div className="glass-card">
+                  {/* אנחנו מניחים שה-QuizCard שלך יושב פה בפנים */}
+                  <QuizCard quiz={quiz} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+      </div>
     </div>
   );
 }

@@ -12,7 +12,6 @@ export default function JoinScreen() {
 
   const navigate = useNavigate();
 
-
   useEffect(() => {
     let s = getSocket();
 
@@ -23,10 +22,8 @@ export default function JoinScreen() {
     setSocket(s);
   }, []);
 
-
   useEffect(() => {
-    if (!socket) 
-      return;   
+    if (!socket) return;   
 
     const handleRoomUpdated = (roomData) => {
       if (roomData.roomId !== roomId) return;
@@ -65,34 +62,42 @@ export default function JoinScreen() {
     });
   };
 
-
+  /* ==========================
+     Waiting Room UI
+  ========================== */
   if (room) {
     return (
-      <div className="room-page">
-        <div className="room-card">
-          <p className="players-label">
-            👥 שחקנים בחדר: <span>{room.players.length}</span>
-          </p>
+      <div className="join-wrapper">
+        <div className="glass-panel text-center lobby-panel">
+          <h1 className="title-glow success-text">אתה בפנים! 🎉</h1>
+          
+          <div className="players-counter">
+            👥 שחקנים בחדר: <span className="counter-number">{room.players.length}</span>
+          </div>
 
-          <ul className="players-grid">
-            {room.players.map((p) => (
-              <li key={p.socketId} className="player-card">
-                <div className="player-avatar">
-                  {p.nickname.charAt(0)}
-                </div>
-                <div className="player-info">
-                  <span className="player-name">{p.nickname}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <div className="players-grid-container">
+            <ul className="players-grid">
+              {room.players.map((p, i) => (
+                <li 
+                  key={p.socketId} 
+                  className="player-card"
+                  style={{ animationDelay: `${(i % 10) * 0.1}s` }} // אנימציית כניסה מדורגת
+                >
+                  <div className="player-avatar">
+                    {p.nickname.charAt(0)}
+                  </div>
+                  <div className="player-name">{p.nickname}</div>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-          <p className="waiting-text">
-            ⏳ מחכים שהמארח יתחיל את החידון
-            <span className="dots">
-              <span>.</span><span>.</span><span>.</span>
-            </span>
-          </p>
+          <div className="waiting-spinner">
+            <div className="loader small-loader"></div>
+            <p className="waiting-text pulse-text">
+              מחכים שהמארח יתחיל את החידון...
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -102,26 +107,42 @@ export default function JoinScreen() {
      Join Form UI
   ========================== */
   return (
-    <div className="join-container">
-      <h1>הצטרף לחדר</h1>
+    <div className="join-wrapper">
+      <div className="glass-panel form-panel">
+        <h1 className="title-glow">היכנס למשחק 🚀</h1>
 
-      <input
-        type="text"
-        placeholder="NickName"
-        value={nickname}
-        onChange={(e) => setNickname(e.target.value)}
-      />
+        {error && <div className="alert-box error-alert slide-in">{error}</div>}
 
-      <input
-        type="text"
-        placeholder="קוד חדר"
-        value={roomId}
-        onChange={(e) => setRoomId(e.target.value)}
-      />
+        <div className="join-form">
+          <div className="input-container">
+            <input
+              type="text"
+              placeholder=" "
+              className="game-input"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              maxLength={15}
+            />
+            <label className="game-label">כינוי (Nickname)</label>
+          </div>
 
-      <button onClick={handleJoin}>הצטרף</button>
+          <div className="input-container">
+            <input
+              type="text"
+              placeholder=" "
+              className="game-input"
+              value={roomId}
+              onChange={(e) => setRoomId(e.target.value)}
+              dir="ltr"
+            />
+            <label className="game-label">קוד חדר</label>
+          </div>
 
-      {error && <p className="error">{error}</p>}
+          <button className="join-btn" onClick={handleJoin}>
+            הצטרף עכשיו <span className="btn-icon">🎮</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

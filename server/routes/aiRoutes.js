@@ -102,7 +102,7 @@ Difficulty: ${difficulty}
     ];
 
     const stream = await ai.models.generateContentStream({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash", //gemini-3-flash-preview
       config,
       contents
     });
