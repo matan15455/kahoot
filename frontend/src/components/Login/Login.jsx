@@ -2,157 +2,166 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { motion } from "framer-motion";
+import { Bolt, Trophy, Flame, Gift, User } from "lucide-react";
 import "./Login.css";
 
 export default function Login() {
-  const [idUser, setIdUser] = useState("");  // המזהה שהמשתמש הזין
+  const [idUser, setIdUser] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  //מטפל בהגשת טופס ההתחברות
   const handleSubmit = async (e) => {
-    //מונע רענון של הדפדפן ומחיקת הSTATE
     e.preventDefault();
-    
-    //מוחק שגיאות קודמות
     setError("");
+    setLoading(true);
 
     try {
       const res = await axios.get("http://localhost:5000/auth/login", {
-        params: {
-          id: idUser,   // <-- השתנה
-          password
-        }
+        params: { id: idUser, password },
       });
-
-      //שומר את הטוקן
       login({ token: res.data.token });
-
-
-      //עובר לעמוד "החידונים שלי"
-      navigate("/my-quizzes"); 
+      navigate("/my-quizzes");
     } catch (err) {
-      setError(
-        err.response?.data?.message || "שגיאה בהתחברות"
-      );
+      setError(err.response?.data?.message || "שגיאה בהתחברות");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-bg">
-        <span className="auth-orb auth-orb--a" />
-        <span className="auth-orb auth-orb--b" />
-        <span className="auth-orb auth-orb--c" />
-        <span className="auth-grid" />
-        <span className="auth-noise" />
-      </div>
+    <div className="ep-login-page">
+      {/* Blobs */}
+      <div className="ep-blob ep-blob--a" />
+      <div className="ep-blob ep-blob--b" />
+      <div className="ep-blob ep-blob--c" />
 
-      <div className="auth-shell">
+      {/* Header */}
+      <header className="ep-header">
+        <div className="ep-logo">EDUPLAY</div>
+        <div className="ep-avatar-btn">
+          <User size={20} />
+        </div>
+      </header>
 
-        <form className="auth-card" onSubmit={handleSubmit}>
-          <div className="auth-card__top">
-            <div className="auth-kicker">התחברות</div>
-            <h1 className="auth-title">התחבר למשתמש שלך</h1>
-            <div className="auth-subtitle">הכנס תעודת זהות וסיסמה</div>
-          </div>
+      <main className="ep-main">
+        {/* Hero */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="ep-hero"
+        >
+          <h1 className="ep-hero-title">
+            Level <span className="ep-accent">Up</span> Your Brain.
+          </h1>
+          <p className="ep-hero-sub">התחבר לזירה והתחל את רצף הניצחונות שלך.</p>
+        </motion.div>
 
-          <div className="auth-fields">
-            <div className="input-group">
+        {/* Card */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.18 }}
+          className="ep-card"
+        >
+          <div className="ep-card-glow" />
+
+          <form className="ep-form" onSubmit={handleSubmit}>
+            <div className="ep-field">
+              <label className="ep-label">תעודת זהות</label>
               <input
-                className="auth-input"
                 type="text"
-                required
+                className="ep-input"
+                placeholder="123456789"
                 value={idUser}
                 onChange={(e) => setIdUser(e.target.value)}
-                placeholder=" "
-                autoComplete="id"
+                required
+                autoComplete="username"
               />
-              <label className="auth-label">תעודת זהות</label>
-              <span className="input-ring" />
             </div>
 
-            <div className="input-group">
+            <div className="ep-field">
+              <div className="ep-label-row">
+                <label className="ep-label">סיסמה</label>
+                <button
+                  type="button"
+                  className="ep-forgot"
+                  onClick={() => navigate("/register")}
+                >
+                  הרשמה
+                </button>
+              </div>
               <input
-                className="auth-input"
                 type="password"
-                required
+                className="ep-input"
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder=" "
+                required
                 autoComplete="current-password"
               />
-              <label className="auth-label">סיסמה</label>
-              <span className="input-ring" />
             </div>
 
             {error && (
-              <div className="auth-error" role="alert" aria-live="polite">
-                <span className="auth-error__icon">!</span>
-                <span className="auth-error__text">{error}</span>
+              <div className="ep-error" role="alert">
+                <span className="ep-error-icon">!</span>
+                <span>{error}</span>
               </div>
             )}
-          </div>
 
-          <button className="auth-button" type="submit">
-            <span className="auth-button__shine" />
-            <span className="auth-button__text">התחבר</span>
-            <span className="auth-button__arrow">→</span>
-          </button>
+            <button className="ep-submit-btn" type="submit" disabled={loading}>
+              <span className="ep-btn-shine" />
+              <span className="ep-btn-text">
+                {loading ? "מתחבר..." : "כנס לזירה"}
+              </span>
+              {!loading && (
+                <Bolt size={20} className="ep-bolt" />
+              )}
+            </button>
+          </form>
 
-          <div className="auth-divider">
+          <div className="ep-divider">
             <span />
-            <p>התחברות מוגנת</p>
+            <p>או המשך עם</p>
             <span />
           </div>
+        </motion.div>
 
-
-        </form>
-
-
-        <div className="auth-left">
-          <div className="brand-chip">
-            <span className="brand-dot" />
-          </div>
-
-          <h1 className="hero-title">
-            ברוך השב
-            <span className="hero-title__glow">.</span>
-          </h1>
-          <p className="hero-subtitle">
-            התחבר כדי להמשיך - ליצור חידונים , לקבל סטטיסטיקות, ולנהל את המשתמש
+        {/* Register link */}
+        <div className="ep-register-link">
+          <p>
+            מתמודד חדש?{" "}
+            <button
+              type="button"
+              className="ep-register-btn"
+              onClick={() => navigate("/register")}
+            >
+              צור חשבון
+            </button>
           </p>
-
-          
-
-          <div className="hero-stats">
-            <div className="stat-card">
-              <div className="stat-num">⚡</div>
-              <div className="stat-meta">
-                <div className="stat-title">לייב</div>
-                <div className="stat-desc">חדרים חיים</div>
-              </div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-num">🛡️</div>
-              <div className="stat-meta">
-                <div className="stat-title">מוגן</div>
-                <div className="stat-desc">התחברות מאובטחת</div>
-              </div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-num">🎯</div>
-              <div className="stat-meta">
-                <div className="stat-title">AI</div>
-                <div className="stat-desc"> יצירת חידונים באמצעות בינה מלאכותית</div>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
+      </main>
+
+      {/* Stats footer */}
+      <footer className="ep-stats">
+        <div className="ep-stat-card">
+          <Trophy size={24} className="ep-stat-icon" />
+          <span className="ep-stat-label">דירוג גלובלי</span>
+        </div>
+        <div className="ep-stat-card ep-stat-card--fire">
+          <Flame size={24} className="ep-stat-icon ep-stat-icon--fire" />
+          <span className="ep-stat-label ep-stat-label--fire">10K+ רצפים</span>
+        </div>
+        <div className="ep-stat-card">
+          <Gift size={24} className="ep-stat-icon ep-stat-icon--gift" />
+          <span className="ep-stat-label">פרסים יומיים</span>
+        </div>
+      </footer>
     </div>
   );
 }

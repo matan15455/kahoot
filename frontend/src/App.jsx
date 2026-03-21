@@ -22,7 +22,7 @@ export default function App() {
   return (
     <AuthProvider>
       <Router>
-        <Navbar />
+        
 
         <div style={{ paddingTop: "70px" }}>
           <Routes>
