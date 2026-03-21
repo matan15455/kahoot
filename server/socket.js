@@ -63,7 +63,8 @@ export default function initSocket(server) {
         phase: room.phase,
         players: room.players,
         questionIndex: room.currentQuestionIndex,
-        endsAt: room.timer.endsAt
+        endsAt: room.timer.endsAt,
+        serverTime: Date.now()
       };
 
       // שאלה נשלחת רק בפאזה QUESTION

@@ -36,21 +36,17 @@ export default function PlayerGame() {
       if (roomData.endsAt) {
         clearInterval(timerRef.current); // מנקה אינטרוול קודם אם היה
 
-        const update = () => { // מעדכנת את הזמן שנותר
-          const remaining = Math.max(
-            0,
-            Math.ceil((roomData.endsAt - Date.now()) / 1000) // חישוב הזמן שנותר לסיום השאלה
-          );
+        const offset = Date.now() - roomData.serverTime; // הפרש שעונים
+        const correctedEndsAt = roomData.endsAt + offset; // מתקן
 
-          setTimeLeft(remaining); // עדכון
-
-          if (remaining <= 0) { // אם נגמר הזמן
-            clearInterval(timerRef.current); // ניקוי אינטרוול
-          }
+        const update = () => {
+          const remaining = Math.max(0, Math.ceil((correctedEndsAt - Date.now()) / 1000));
+          setTimeLeft(remaining);
+          if (remaining <= 0) clearInterval(timerRef.current);
         };
 
         update();
-        timerRef.current = setInterval(update, 250); // כל רבע שנייה עדכון
+        timerRef.current = setInterval(update, 1000); // כל  שנייה עדכון
       } else {
         setTimeLeft(null);
         clearInterval(timerRef.current);
