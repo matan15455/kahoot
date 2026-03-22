@@ -13,7 +13,8 @@ const API = "http://localhost:5000";
 
 /* ─── Custom Tooltip ──────────────────────────────── */
 const CustomTooltip = ({ active, payload, label }) => {
-  if (!active || !payload?.length) return null;
+  if (!active || !payload?.length) 
+    return null;
   return (
     <div style={{
       background: "rgba(6,13,26,0.95)",
@@ -31,7 +32,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 /* ─── Bar Tooltip ─────────────────────────────────── */
 const BarTooltip = ({ active, payload, label }) => {
-  if (!active || !payload?.length) return null;
+  if (!active || !payload?.length) 
+    return null;
   return (
     <div style={{
       background: "rgba(6,13,26,0.95)",
@@ -59,8 +61,10 @@ function PersonalTab({ token }) {
       .finally(() => setLoading(false));
   }, [token]);
 
-  if (loading) return <div className="stats-loading"><CircularProgress sx={{ color: "#00c8ff" }} /></div>;
-  if (!data) return <div className="stats-empty">שגיאה בטעינת נתונים</div>;
+  if (loading) 
+    return <div className="stats-loading"><CircularProgress sx={{ color: "#00c8ff" }} /></div>;
+  if (!data) 
+    return <div className="stats-empty">שגיאה בטעינת נתונים</div>;
 
   const cards = [
     { icon: "🎯", label: "חידונים שנוצרו", value: data.totalQuizzes, accent: "linear-gradient(90deg,#00c8ff,#7846ff)" },
