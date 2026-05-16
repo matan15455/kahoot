@@ -1,11 +1,12 @@
-import { useState, useEffect ,useRef} from "react";
+import { useState, useEffect, useRef } from "react";
 import { getSocket } from "../../socket";
-import "./CreateRoom.css";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { EpShape } from "../_shared/EpBrand";
+import "./CreateRoom.css";
 
 export default function CreateRoom() {
   const [room, setRoom] = useState(null);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(null); // 'pin' | 'link' | null
 
   const navigate = useNavigate();
   const socket = getSocket();
@@ -41,61 +42,130 @@ export default function CreateRoom() {
 
 
   const startGame = () => {
-    if (!room) 
+    if (!room)
       return;
     socket.emit("startQuiz", { roomId: room.roomId });
   };
 
   const copyRoomCode = () => {
     navigator.clipboard.writeText(room.roomId);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 400);
+    setCopied("pin");
+    setTimeout(() => setCopied(null), 1500);
   };
 
+  const copyInviteLink = () => {
+    const url = `${window.location.origin}/join-room?roomId=${room.roomId}`;
+    navigator.clipboard.writeText(url);
+    setCopied("link");
+    setTimeout(() => setCopied(null), 1500);
+  };
+
+  /* ============ Loading ============ */
   if (!room) {
     return (
-      <div className="create-room-container">
-        <h2>יוצר חדר…</h2>
+      <div className="ep-cr ep-cr--state">
+        <div className="ep-cr__loader">
+          <div className="ep-cr__spinner" />
+          <p className="ep-cr__loader-text">יוצר חדר…</p>
+        </div>
       </div>
     );
   }
 
+  const playerCount = room.players.length;
+  const pinDigits = room.roomId.split("");
+
   return (
-    <div className="create-room-container">
-      <div className="room-info">
-        <h2>החדר נוצר!</h2>
+    <div className="ep-cr">
+      <div className="ep-cr__grid">
 
-        <p>
-          <span className="room-id" onClick={copyRoomCode}>
-            {room.roomId}
-          </span>
-        </p>
+        {/* ============ צד שמאל: PIN ו-CTA ============ */}
+        <section className="ep-cr__main">
+          <div className="ep-cr__main-head">
+            <span className="ep-cr__kicker">
+              <span className="ep-cr__kicker-dot" />
+              חדר פעיל
+            </span>
+            <h1 className="ep-cr__title">החדר מוכן.</h1>
+            <p className="ep-cr__sub">
+              שתפו את הקוד או הקישור.
+              המשחק יתחיל כשתלחצו על "התחל".
+            </p>
+          </div>
 
-        {copied && <p className="copied-msg">הועתק! 📋</p>}
+          <div className="ep-cr__pin-wrap">
+            <p className="ep-cr__pin-label">הצטרפו ב־<strong>eduplay.app</strong> · הקלידו</p>
+            <div className="ep-cr__pin">
+              {pinDigits.map((d, i) => (
+                <span key={i} className="ep-cr__pin-digit">{d}</span>
+              ))}
+            </div>
+          </div>
 
-        <h3>שחקנים בחדר:</h3>
-        <ul className="players-list">
-          {room.players.map((p) => (
-            <li key={p.userId} className="player-item">
-              👤 {p.nickname}
-            </li>
-          ))}
-        </ul>
+          <div className="ep-cr__actions">
+            <button
+              className={"ep-cr__act" + (copied === "pin" ? " is-copied" : "")}
+              onClick={copyRoomCode}
+            >
+              {copied === "pin" ? "✓ הועתק" : "העתק קוד"}
+            </button>
+            <button
+              className={"ep-cr__act" + (copied === "link" ? " is-copied" : "")}
+              onClick={copyInviteLink}
+            >
+              {copied === "link" ? "✓ הקישור הועתק" : "העתק קישור הזמנה"}
+            </button>
+          </div>
 
-        <div className="start-game-wrapper">
           <button
-            className="start-game-btn"
+            className="ep-cr__start"
             onClick={startGame}
-            disabled={room.players.length === 0}
+            disabled={playerCount === 0}
           >
-            ▶ התחל משחק
+            <span className="ep-cr__start-icon" aria-hidden="true">▶</span>
+            <span>התחל משחק</span>
+            {playerCount > 0 && (
+              <span className="ep-cr__start-meta">· {playerCount} שחקנים</span>
+            )}
           </button>
-        </div>
-        {room.players.length === 0 && (
-          <p className="no-players-msg">
-            ❌ לא ניתן להתחיל משחק בלי שחקנים
-          </p>
-        )}
+
+          {playerCount === 0 && (
+            <p className="ep-cr__hint">
+              <span className="ep-cr__hint-icon">!</span>
+              לא ניתן להתחיל משחק בלי שחקנים — חכו שמישהו יצטרף.
+            </p>
+          )}
+        </section>
+
+        {/* ============ צד ימין: שחקנים ============ */}
+        <aside className="ep-cr__roster">
+          <div className="ep-cr__roster-head">
+            <p className="ep-cr__roster-label">שחקנים בחדר</p>
+            <p className="ep-cr__roster-count">{playerCount}</p>
+            <div className="ep-cr__roster-status">
+              <span className="ep-cr__pulse" />
+              ממתינים לעוד מצטרפים…
+            </div>
+          </div>
+
+          {playerCount === 0 ? (
+            <div className="ep-cr__roster-empty">
+              <span className="ep-cr__empty-glyph" aria-hidden="true">
+                <EpShape kind="hex" size={40} color="rgba(255,255,255,0.18)" />
+              </span>
+              <p>החדר ריק לעת עתה.<br />שתפו את הקוד עם השחקנים.</p>
+            </div>
+          ) : (
+            <ul className="ep-cr__players">
+              {room.players.map((p, i) => (
+                <li key={p.userId || p.socketId || i} className="ep-cr__player">
+                  <span className="ep-cr__avatar">{p.nickname.charAt(0)}</span>
+                  <span className="ep-cr__player-name">{p.nickname}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </aside>
       </div>
     </div>
   );

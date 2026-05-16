@@ -1,5 +1,7 @@
 /* Reset בסיסי */
 
+@import "./styles/eduplay-tokens.css";
+
 @font-face {
   font-family: 'MyFont';
   src: url('./assets/fonts/hebrew.woff2') format('woff2');

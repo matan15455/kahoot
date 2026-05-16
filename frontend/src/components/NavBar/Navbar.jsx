@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { EpLogo } from "../_shared/EpBrand";
 import "./Navbar.css";
 
 export default function Navbar() {
@@ -8,94 +9,55 @@ export default function Navbar() {
 
   const handleLogout = () => {
     const confirmLogout = window.confirm("⚠️ בטוח שאתה רוצה להתנתק?");
-    if (!confirmLogout) 
+    if (!confirmLogout)
       return;
-    logout();              
-    navigate("/login");    
+    logout();
+    navigate("/login");
   };
 
+  const linkClass = ({ isActive }) =>
+    "ep-nav__link" + (isActive ? " is-active" : "");
+
   return (
-    <nav className="navbar">
-      <div className="navbar-blur" />
+    <nav className="ep-nav">
+      <div className="ep-nav__inner">
 
-      <div className="navbar-inner">
-        {/* LOGO */}
-        <div className="nav-logo">
-          <span className="logo-glow">Matan Amram</span>
-          <span className="logo-sub">EduPlay</span>
-        </div>
+        {/* ── מותג ── */}
+        <NavLink to="/" className="ep-nav__brand" end>
+          <EpLogo size={32} />
+          <span className="ep-nav__brand-wordmark">
+            EduPlay
+            <span className="ep-nav__brand-credit">by Matan Amram</span>
+          </span>
+        </NavLink>
 
-        {/* LINKS */}
-        <div className="nav-links">
+        {/* ── קישורים ── */}
+        <div className="ep-nav__links">
           {isAuthenticated ? (
             <>
-              <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "active" : ""}`
-                }
-                to="/my-quizzes"
-              >
-                החידונים שלי
-              </NavLink>
+              <NavLink className={linkClass} to="/my-quizzes">החידונים שלי</NavLink>
+              <NavLink className={linkClass} to="/create-quiz">יצירת חידון</NavLink>
+              <NavLink className={linkClass} to="/join-room">הצטרף לחדר</NavLink>
+              <NavLink className={linkClass} to="/statistics">סטטיסטיקות</NavLink>
+              <NavLink className={linkClass} to="/profile">איזור אישי</NavLink>
 
-              <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "active" : ""}`
-                }
-                to="/create-quiz"
-              >
-                יצירת חידון
-              </NavLink>
+              <span className="ep-nav__divider" aria-hidden="true" />
 
-              <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "active" : ""}`
-                }
-                to="/join-room"
-              >
-                הצטרף לחדר
-              </NavLink>
-
-              <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "active" : ""}`
-                }
-                to="/profile"
-              >
-                איזור אישי
-              </NavLink>
-
-              <button className="logout-btn" onClick={handleLogout}>
+              <button className="ep-nav__logout" onClick={handleLogout}>
                 התנתק
               </button>
             </>
           ) : (
             <>
-              <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "active" : ""}`
-                }
-                to="/login"
-              >
+              <NavLink className={linkClass} to="/join-room">הצטרף לחדר</NavLink>
+
+              <span className="ep-nav__divider" aria-hidden="true" />
+
+              <NavLink className="ep-nav__link ep-nav__link--ghost" to="/login">
                 התחבר
               </NavLink>
-
-              <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "active" : ""}`
-                }
-                to="/register"
-              >
-                הירשם
-              </NavLink>
-
-              <NavLink
-                className={({ isActive }) =>
-                  `nav-link ${isActive ? "active" : ""}`
-                }
-                to="/join-room"
-              >
-                הצטרף לחדר
+              <NavLink className="ep-nav__cta" to="/register">
+                הרשמה
               </NavLink>
             </>
           )}

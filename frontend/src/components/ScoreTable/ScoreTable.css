@@ -1,105 +1,234 @@
-.leaderboard-container {
-  max-width: 850px;
-  margin: auto;
-  padding: 40px;
+/* ===================================================================
+   EduPlay — ScoreTable (redesign)
+   פודיום + רשימת ניקוד דורגת
+   =================================================================== */
+
+.ep-st {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  direction: rtl;
+  font-family: var(--ep-f-body);
+  color: var(--ep-ink);
+}
+
+/* =========================
+   פודיום
+   ========================= */
+.ep-st__podium {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 16px;
+  align-items: end;
+  padding: 28px 8px 0;
+}
+
+.ep-st__pod {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   text-align: center;
-  color: white;
-  font-family: "Poppins", sans-serif;
 }
 
-.leaderboard-title {
-  font-size: 40px;
-  margin-bottom: 40px;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.ep-st__pod-crown {
+  font-size: 32px;
+  line-height: 1;
+  margin-bottom: -4px;
+  animation: ep-st-float 3s ease-in-out infinite;
+}
+@keyframes ep-st-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
-.podium {
-  display: flex;
+.ep-st__pod-medal {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ep-paper);
+  border: 2px solid var(--ep-ink);
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
-  align-items: flex-end;
-  gap: 25px;
-  margin-bottom: 50px;
+  font-family: var(--ep-f-num);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ep-ink);
 }
 
-.podium-card {
-  width: 140px;
-  border-radius: 20px;
-  padding: 20px;
-  backdrop-filter: blur(10px);
-  background: rgba(255,255,255,0.08);
-  box-shadow: 0 0 25px rgba(0,0,0,0.4);
-  transition: transform 0.3s;
+.ep-st__pod-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--ep-ink);
+  color: var(--ep-ans-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 26px;
+  border: 3px solid var(--ep-paper);
+  box-shadow: 0 4px 0 0 rgba(20, 18, 26, 0.16);
+}
+.ep-st__pod-avatar--gold {
+  width: 72px;
+  height: 72px;
+  font-size: 32px;
+  background: var(--ep-ans-3);
+  color: var(--ep-ink);
+  box-shadow: 0 6px 0 0 var(--ep-ans-3-ink);
 }
 
-.podium-card:hover {
-  transform: scale(1.05);
-}
-
-.first {
-  height: 220px;
-  background: linear-gradient(135deg,#ffd700,#ffae00);
-  box-shadow: 0 0 25px gold;
-}
-
-.second {
-  height: 180px;
-  background: linear-gradient(135deg,#c0c0c0,#8e8e8e);
-}
-
-.third {
-  height: 160px;
-  background: linear-gradient(135deg,#cd7f32,#a0502d);
-}
-
-.podium-rank {
-  font-size: 35px;
-}
-
-.crown {
-  font-size: 40px;
-}
-
-.podium-name {
-  margin-top: 15px;
+.ep-st__pod-name {
+  font-family: var(--ep-f-display);
+  font-weight: 700;
   font-size: 18px;
-  font-weight: bold;
-}
-
-.podium-score {
-  margin-top: 8px;
-  font-size: 20px;
-}
-
-.leaderboard-list {
-  background: rgba(255,255,255,0.05);
-  border-radius: 16px;
+  color: var(--ep-ink);
+  max-width: 100%;
   overflow: hidden;
-  backdrop-filter: blur(10px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+.ep-st__pod--1 .ep-st__pod-name { font-size: 22px; }
 
-.leaderboard-row {
+.ep-st__pod-score {
+  font-family: var(--ep-f-num);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--ep-ink-3);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+.ep-st__pod-pts {
+  font-size: 11px;
+  color: var(--ep-ink-mute);
+  font-weight: 500;
+}
+.ep-st__pod--1 .ep-st__pod-score { font-size: 22px; color: var(--ep-ink); }
+
+/* בלוקי הפודיום */
+.ep-st__pod-block {
+  width: 100%;
+  max-width: 200px;
+  border-radius: 14px 14px 0 0;
   display: flex;
-  justify-content: space-between;
-  padding: 14px 22px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  transition: background 0.2s;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14px;
+  font-family: var(--ep-f-display);
+  font-weight: 900;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  margin-top: 4px;
+}
+.ep-st__pod-block--1 {
+  height: 160px;
+  background: var(--ep-ans-3);
+  color: var(--ep-ink);
+  box-shadow: 0 6px 0 0 var(--ep-ans-3-ink);
+}
+.ep-st__pod-block--2 {
+  height: 120px;
+  background: var(--ep-ans-2);
+  color: #fff;
+  box-shadow: 0 6px 0 0 var(--ep-ans-2-ink);
+}
+.ep-st__pod-block--3 {
+  height: 90px;
+  background: var(--ep-ans-1);
+  color: #fff;
+  box-shadow: 0 6px 0 0 var(--ep-ans-1-ink);
 }
 
-.leaderboard-row:hover {
-  background: rgba(255,255,255,0.08);
+/* =========================
+   רשימת שאר השחקנים
+   ========================= */
+.ep-st__list {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.06);
+  border-radius: var(--ep-r-xl);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.rank {
-  font-weight: bold;
+.ep-st__row {
+  display: grid;
+  grid-template-columns: 36px 36px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: var(--ep-r-md);
+  transition: background 0.15s;
+}
+.ep-st__row:hover { background: var(--ep-cream); }
+
+.ep-st__row-rank {
+  font-family: var(--ep-f-num);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ep-ink-mute);
+  text-align: center;
 }
 
-.player {
-  flex: 1;
-  text-align: left;
-  margin-left: 20px;
+.ep-st__row-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--ep-cream);
+  border: 1px solid rgba(20, 18, 26, 0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ep-ink);
 }
 
-.score {
-  font-weight: bold;
+.ep-st__row-name {
+  font-family: var(--ep-f-display);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--ep-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ep-st__row-score {
+  font-family: var(--ep-f-num);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--ep-ink);
+}
+
+/* =========================
+   Responsive
+   ========================= */
+@media (max-width: 600px) {
+  .ep-st__podium { padding: 20px 0 0; gap: 8px; }
+  .ep-st__pod-avatar { width: 44px; height: 44px; font-size: 20px; }
+  .ep-st__pod-avatar--gold { width: 56px; height: 56px; font-size: 24px; }
+  .ep-st__pod-name { font-size: 14px; }
+  .ep-st__pod--1 .ep-st__pod-name { font-size: 17px; }
+  .ep-st__pod-score { font-size: 14px; }
+  .ep-st__pod--1 .ep-st__pod-score { font-size: 16px; }
+  .ep-st__pod-block { font-size: 36px; padding-top: 10px; }
+  .ep-st__pod-block--1 { height: 120px; }
+  .ep-st__pod-block--2 { height: 90px; }
+  .ep-st__pod-block--3 { height: 70px; }
+  .ep-st__row { grid-template-columns: 28px 32px 1fr auto; gap: 10px; padding: 10px 12px; }
+  .ep-st__row-score { font-size: 15px; }
 }

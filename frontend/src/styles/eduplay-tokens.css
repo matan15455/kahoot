@@ -1,0 +1,55 @@
+/* ===================================================================
+   EduPlay — Design System Tokens
+   צבעים, פונטים, רדיוסים, צללים, ערכי בסיס
+   =================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Heebo:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+  /* Surfaces */
+  --ep-cream:   #F5EFE4;
+  --ep-cream-2: #EEE6D5;
+  --ep-paper:   #FBF8F1;
+  --ep-ink:     #14121A;
+  --ep-ink-2:   #2A2738;
+  --ep-ink-3:   #57536A;
+  --ep-ink-mute:#8A8699;
+
+  /* Brand */
+  --ep-primary:      #4F3FF5;
+  --ep-primary-deep: #2C1FB8;
+  --ep-primary-soft: #E3DEFF;
+
+  /* 4 צבעי תשובה */
+  --ep-ans-1:     #FF5C3C;  /* א — קורל   */
+  --ep-ans-2:     #4F3FF5;  /* ב — סגול   */
+  --ep-ans-3:     #B8E142;  /* ג — ליים   */
+  --ep-ans-4:     #2BC9D0;  /* ד — אקווה  */
+  --ep-ans-1-ink: #B23A1F;
+  --ep-ans-2-ink: #2A1FB8;
+  --ep-ans-3-ink: #6B8413;
+  --ep-ans-4-ink: #137A82;
+
+  /* Semantic */
+  --ep-ok:   #1E9E5F;
+  --ep-warn: #E59C00;
+  --ep-bad:  #D63A2D;
+
+  /* Radii */
+  --ep-r-xs:   8px;
+  --ep-r-sm:  12px;
+  --ep-r-md:  18px;
+  --ep-r-lg:  24px;
+  --ep-r-xl:  32px;
+  --ep-r-pill: 999px;
+
+  /* Shadows */
+  --ep-sh-1: 0 1px 2px rgba(20,18,26,.06), 0 0 0 1px rgba(20,18,26,.05);
+  --ep-sh-2: 0 4px 16px rgba(20,18,26,.08), 0 0 0 1px rgba(20,18,26,.04);
+  --ep-sh-3: 0 12px 32px rgba(20,18,26,.12);
+
+  /* Typography */
+  --ep-f-display: 'Rubik', 'MyFont', system-ui, sans-serif;
+  --ep-f-body:    'Heebo', 'MyFont', system-ui, sans-serif;
+  --ep-f-num:     'Space Grotesk', 'Heebo', system-ui, sans-serif;
+}

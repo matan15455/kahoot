@@ -1,113 +1,206 @@
-/* ====== רקע כללי של הדף ====== */
-.myquizzes-page {
-  min-height: 100vh;
-  padding: 40px;
-  background: radial-gradient(circle at top, #0d0f1a, #000000 70%);
+/* ===================================================================
+   EduPlay — MyQuizzes (redesign)
+   ספריית החידונים של המשתמש המחובר
+   =================================================================== */
+
+.ep-myq {
+  min-height: calc(100vh - 70px);
+  padding: 40px 32px 80px;
+  background: var(--ep-cream);
+  color: var(--ep-ink);
+  font-family: var(--ep-f-body);
+  direction: rtl;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.ep-myq--state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 70px);
+}
+
+.ep-myq__loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+.ep-myq__loader-text {
+  font-family: var(--ep-f-num);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ep-ink-mute);
+}
+
+/* =========================
+   כותרת
+   ========================= */
+.ep-myq__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 36px;
+}
+.ep-myq__head-text { display: flex; flex-direction: column; gap: 8px; }
+
+.ep-myq__kicker {
+  margin: 0;
+  font-family: var(--ep-f-num);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ep-ink-mute);
+}
+.ep-myq__kicker-stat { color: var(--ep-ink-3); }
+
+.ep-myq__title {
+  margin: 0;
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 48px;
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
+/* CTA */
+.ep-myq__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: var(--ep-primary);
   color: #fff;
-  animation: fadeIn 0.8s ease;
+  border: none;
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 0 0 var(--ep-primary-deep);
 }
-
-
-/* ===== כותרת הדף ===== */
-.myquizzes-header {
-  text-align: center;
-  margin-bottom: 40px;
-  animation: slideDown 0.6s ease;
+.ep-myq__cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 0 var(--ep-primary-deep);
 }
-
-.myquizzes-header h1 {
-  font-size: 3rem;
+.ep-myq__cta:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 0 0 var(--ep-primary-deep);
+}
+.ep-myq__cta-plus {
+  font-family: var(--ep-f-display);
   font-weight: 900;
-  background: linear-gradient(135deg, #00eaff, #00ffbb);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 25px rgba(0, 255, 255, 0.45);
+  font-size: 22px;
+  line-height: 0.8;
 }
 
-.header-underline {
-  display: block;
-  width: 120px;
-  height: 6px;
-  background: linear-gradient(90deg, #00f2fe, #4facfe);
-  margin: 12px auto 0;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+.ep-myq__cta--ghost {
+  background: transparent;
+  color: var(--ep-ink);
+  border: 1px solid rgba(20, 18, 26, 0.18);
+  box-shadow: none;
+}
+.ep-myq__cta--ghost:hover {
+  background: rgba(20, 18, 26, 0.05);
+  transform: translateY(-2px);
+  box-shadow: none;
 }
 
-
-/* ===== מצב אין חידונים ===== */
-.empty-state {
-  margin-top: 80px;
-  text-align: center;
-  font-size: 1.5rem;
-  opacity: 0.8;
-  animation: fadeInUp 0.8s ease;
-}
-
-.empty-illustration {
-  width: 180px;
-  height: 180px;
-  margin: 25px auto 0;
-  border-radius: 50%;
-  background: radial-gradient(circle, #00f2fe44, #0044ff00 70%);
-  box-shadow: 0 0 45px rgba(0, 255, 255, 0.3);
-  animation: floating 3s ease-in-out infinite;
-}
-
-
-/* ===== גריד של החידונים ===== */
-.quizzes-grid {
+/* =========================
+   גריד חידונים
+   ========================= */
+.ep-myq__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 35px;
-  padding: 10px;
-  animation: fadeInUp 0.7s ease;
+  gap: 22px;
 }
 
-
-/* ===== עיטוף הכרטיס ===== */
-.quiz-wrapper {
-  transform: perspective(800px) translateZ(0);
-  transition: 0.3s ease;
+/* =========================
+   מצב ריק
+   ========================= */
+.ep-myq__empty {
+  margin-top: 40px;
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.06);
+  border-radius: var(--ep-r-xl);
+  padding: 56px 32px 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
-.quiz-wrapper:hover {
-  transform: perspective(800px) translateZ(35px) scale(1.05);
-  filter: drop-shadow(0 0 18px rgba(0, 255, 255, 0.4));
+.ep-myq__empty-art {
+  position: relative;
+  width: 220px;
+  height: 140px;
+  margin-bottom: 28px;
+}
+.ep-myq__empty-shape {
+  position: absolute;
+  display: inline-flex;
+  opacity: 0.85;
+  animation: ep-myq-float 4s ease-in-out infinite;
+}
+.ep-myq__empty-shape--1 { top: 0;    left: 20px;  animation-delay: 0s; }
+.ep-myq__empty-shape--2 { top: 30px; right: 0;   animation-delay: 0.6s; transform: rotate(8deg); }
+.ep-myq__empty-shape--3 { bottom: 0;  left: 50px;  animation-delay: 1.2s; }
+.ep-myq__empty-shape--4 { top: 20px; left: 80px; animation-delay: 1.8s; transform: rotate(-12deg); }
+
+@keyframes ep-myq-float {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-12px) rotate(var(--r, 0deg)); }
 }
 
-
-/* ===== אנימציות ===== */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.ep-myq__empty-title {
+  margin: 0 0 10px;
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+}
+.ep-myq__empty-sub {
+  margin: 0 0 28px;
+  max-width: 440px;
+  color: var(--ep-ink-3);
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+.ep-myq__empty-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-@keyframes slideDown {
-  from { transform: translateY(-40px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+/* =========================
+   Responsive
+   ========================= */
+@media (max-width: 768px) {
+  .ep-myq { padding: 32px 20px 60px; }
+  .ep-myq__head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .ep-myq__title { font-size: 36px; }
+  .ep-myq__empty { padding: 44px 22px 52px; }
+  .ep-myq__empty-title { font-size: 24px; }
 }
 
-@keyframes fadeInUp {
-  from { transform: translateY(35px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes floating {
-  0%   { transform: translateY(0); }
-  50%  { transform: translateY(-10px); }
-  100% { transform: translateY(0); }
-}
-
-
-/* ===== רספונסיביות ===== */
 @media (max-width: 480px) {
-  .myquizzes-header h1 {
-    font-size: 2.3rem;
-  }
-
-  .quizzes-grid {
+  .ep-myq__grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
+  .ep-myq__title { font-size: 30px; }
 }

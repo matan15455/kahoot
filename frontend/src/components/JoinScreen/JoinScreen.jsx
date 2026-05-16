@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { getSocket, connectSocket } from "../../socket";
-import "./JoinScreen.css";
 import { useNavigate } from "react-router-dom";
+import { EpShape } from "../_shared/EpBrand";
+import "./JoinScreen.css";
 
 export default function JoinScreen() {
   const [socket, setSocket] = useState(null);
@@ -11,7 +12,6 @@ export default function JoinScreen() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-
 
   useEffect(() => {
     let s = getSocket();
@@ -25,8 +25,8 @@ export default function JoinScreen() {
 
 
   useEffect(() => {
-    if (!socket) 
-      return;   
+    if (!socket)
+      return;
 
     const handleRoomUpdated = (roomData) => {
       if (roomData.roomId !== roomId) return;
@@ -43,13 +43,13 @@ export default function JoinScreen() {
     return () => {
       socket.off("roomUpdated", handleRoomUpdated);
     };
-  }, [socket, roomId, navigate]);  
+  }, [socket, roomId, navigate]);
 
   /* ==========================
      Join
   ========================== */
   const handleJoin = () => {
-    if (!socket) return;  
+    if (!socket) return;
 
     if (!nickname.trim() || !roomId.trim()) {
       setError("אנא מלא שם וקוד חדר");
@@ -57,7 +57,7 @@ export default function JoinScreen() {
     }
 
     setError("");
-    
+
     socket.emit("joinRoom", { roomId, nickname }, (res) => {
       if (!res.ok) {
         setError(res.message);
@@ -65,63 +65,130 @@ export default function JoinScreen() {
     });
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleJoin();
+  };
 
+  /* ============ Lobby (אחרי הצטרפות) ============ */
   if (room) {
     return (
-      <div className="room-page">
-        <div className="room-card">
-          <p className="players-label">
-            👥 שחקנים בחדר: <span>{room.players.length}</span>
-          </p>
+      <div className="ep-join">
+        <div className="ep-join__shell">
 
-          <ul className="players-grid">
-            {room.players.map((p) => (
-              <li key={p.socketId} className="player-card">
-                <div className="player-avatar">
-                  {p.nickname.charAt(0)}
-                </div>
-                <div className="player-info">
-                  <span className="player-name">{p.nickname}</span>
-                </div>
-              </li>
-            ))}
-          </ul>
+          {/* כרטיס "אתה" */}
+          <div className="ep-join__you">
+            <p className="ep-join__you-label">השם שלך בחדר</p>
+            <p className="ep-join__you-name">{nickname}</p>
+            <div className="ep-join__you-status">
+              <span className="ep-join__pulse" />
+              ממתינים שהמנחה יתחיל את החידון
+            </div>
+          </div>
 
-          <p className="waiting-text">
-            ⏳ מחכים שהמארח יתחיל את החידון
-            <span className="dots">
-              <span>.</span><span>.</span><span>.</span>
-            </span>
-          </p>
+          {/* רשימת שחקנים */}
+          <div className="ep-join__roster">
+            <div className="ep-join__roster-head">
+              <span className="ep-join__roster-title">בחדר עכשיו</span>
+              <span className="ep-join__roster-count">
+                {room.players.length} שחקנים
+              </span>
+            </div>
+
+            <ul className="ep-join__players">
+              {room.players.map((p) => {
+                const isYou = p.nickname === nickname;
+                return (
+                  <li
+                    key={p.socketId}
+                    className={"ep-join__player" + (isYou ? " is-you" : "")}
+                  >
+                    <div className="ep-join__avatar">{p.nickname.charAt(0)}</div>
+                    <span className="ep-join__player-name">{p.nickname}</span>
+                    {isYou && <span className="ep-join__player-tag">אתה</span>}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
         </div>
       </div>
     );
   }
 
-  /* ==========================
-     Join Form UI
-  ========================== */
+  /* ============ טופס הצטרפות ============ */
   return (
-    <div className="join-container">
-      <h1>הצטרף לחדר</h1>
+    <div className="ep-join">
+      <form className="ep-join__form" onSubmit={handleSubmit} noValidate>
 
-      <input
-        type="text"
-        placeholder="NickName"
-        value={nickname}
-        onChange={(e) => setNickname(e.target.value)}
-      />
+        <div className="ep-join__hero">
+          <span className="ep-join__kicker">
+            <span className="ep-join__kicker-mark" style={{ color: "var(--ep-ans-2)" }}>
+              <EpShape kind="hex" size={14} />
+            </span>
+            הצטרפות לחדר
+          </span>
+          <h1 className="ep-join__title">
+            מצטרפים<br />
+            <span className="ep-join__title-accent">למשחק.</span>
+          </h1>
+          <p className="ep-join__sub">
+            הזינו את קוד החדר שקיבלתם מהמנחה ובחרו לעצמכם שם.
+          </p>
+        </div>
 
-      <input
-        type="text"
-        placeholder="קוד חדר"
-        value={roomId}
-        onChange={(e) => setRoomId(e.target.value)}
-      />
+        <div className="ep-join__fields">
+          {/* קוד חדר */}
+          <div className="ep-field">
+            <label className="ep-field__label" htmlFor="join-pin">קוד חדר</label>
+            <input
+              id="join-pin"
+              className="ep-field__input ep-join__pin"
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              placeholder="000000"
+              value={roomId}
+              onChange={(e) => setRoomId(e.target.value)}
+              autoComplete="off"
+              autoFocus
+            />
+          </div>
 
-      <button onClick={handleJoin}>הצטרף</button>
+          {/* שם */}
+          <div className="ep-field">
+            <label className="ep-field__label" htmlFor="join-name">השם שלך</label>
+            <input
+              id="join-name"
+              className="ep-field__input"
+              type="text"
+              placeholder="לדוגמה: יעל"
+              value={nickname}
+              onChange={(e) => setNickname(e.target.value)}
+              autoComplete="off"
+              maxLength={20}
+            />
+          </div>
 
-      {error && <p className="error">{error}</p>}
+          {error && (
+            <div className="ep-join__error" role="alert" aria-live="polite">
+              <span className="ep-join__error-icon">!</span>
+              <span>{error}</span>
+            </div>
+          )}
+        </div>
+
+        <button className="ep-join__submit" type="submit">
+          <span>להצטרפות למשחק</span>
+          <span className="ep-join__submit-arrow" aria-hidden="true">←</span>
+        </button>
+
+        <p className="ep-join__footer">
+          אין לך חשבון? <span className="ep-join__footer-em">לא צריך</span> —
+          המנחה יוצר את החדר, אתם רק מצטרפים.
+        </p>
+      </form>
     </div>
   );
 }

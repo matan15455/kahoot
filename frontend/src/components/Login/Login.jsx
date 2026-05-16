@@ -1,13 +1,15 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { EpBrandMark, EpShape } from "../_shared/EpBrand";
 import "./Login.css";
 
 export default function Login() {
   const [idUser, setIdUser] = useState("");  // המזהה שהמשתמש הזין
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showPwd, setShowPwd] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -16,14 +18,14 @@ export default function Login() {
   const handleSubmit = async (e) => {
     //מונע רענון של הדפדפן ומחיקת הSTATE
     e.preventDefault();
-    
+
     //מוחק שגיאות קודמות
     setError("");
 
     try {
       const res = await axios.get("http://localhost:5000/auth/login", {
         params: {
-          id: idUser,   // <-- השתנה
+          id: idUser,
           password
         }
       });
@@ -31,9 +33,8 @@ export default function Login() {
       //שומר את הטוקן
       login({ token: res.data.token });
 
-
       //עובר לעמוד "החידונים שלי"
-      navigate("/my-quizzes"); 
+      navigate("/my-quizzes");
     } catch (err) {
       setError(
         err.response?.data?.message || "שגיאה בהתחברות"
@@ -42,116 +43,133 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-bg">
-        <span className="auth-orb auth-orb--a" />
-        <span className="auth-orb auth-orb--b" />
-        <span className="auth-orb auth-orb--c" />
-        <span className="auth-grid" />
-        <span className="auth-noise" />
-      </div>
+    <div className="ep-login">
+      <div className="ep-login__grid">
 
-      <div className="auth-shell">
+        {/* ── צד שמאל: מותג + הצהרת ערך ── */}
+        <aside className="ep-login__brand">
+          {/* כתמי רקע דקורטיביים */}
+          <span className="ep-login__blob ep-login__blob--a" aria-hidden="true" />
+          <span className="ep-login__blob ep-login__blob--b" aria-hidden="true" />
 
-        <form className="auth-card" onSubmit={handleSubmit}>
-          <div className="auth-card__top">
-            <div className="auth-kicker">התחברות</div>
-            <h1 className="auth-title">התחבר למשתמש שלך</h1>
-            <div className="auth-subtitle">הכנס תעודת זהות וסיסמה</div>
+          <div className="ep-login__brand-top">
+            <EpBrandMark />
           </div>
 
-          <div className="auth-fields">
-            <div className="input-group">
-              <input
-                className="auth-input"
-                type="text"
-                required
-                value={idUser}
-                onChange={(e) => setIdUser(e.target.value)}
-                placeholder=" "
-                autoComplete="id"
-              />
-              <label className="auth-label">תעודת זהות</label>
-              <span className="input-ring" />
+          <div className="ep-login__brand-body">
+            <p className="ep-login__kicker">
+              <span className="ep-login__kicker-dot" />
+              פלטפורמת חידונים בזמן אמת
+            </p>
+            <h1 className="ep-login__hero">
+              לימוד שמרגיש<br />
+              כמו <span className="ep-login__hero-accent">משחק.</span>
+            </h1>
+            <p className="ep-login__lead">
+              צרו חידונים אינטראקטיביים, נהלו חדרים בזמן אמת,
+              וגלו מה התלמידים באמת יודעים — בלי לפתוח 30 טאבים.
+            </p>
+          </div>
+
+          <ul className="ep-login__chips">
+            <li className="ep-login__chip">
+              <span style={{ color: "var(--ep-ans-1)" }}>
+                <EpShape kind="burst" size={14} />
+              </span>
+              חידונים מבוססי AI
+            </li>
+            <li className="ep-login__chip">
+              <span style={{ color: "var(--ep-ans-3)" }}>
+                <EpShape kind="plus" size={14} />
+              </span>
+              סטטיסטיקות חיות
+            </li>
+            <li className="ep-login__chip">
+              <span style={{ color: "var(--ep-ans-4)" }}>
+                <EpShape kind="wave" size={14} />
+              </span>
+              ללא הורדה
+            </li>
+          </ul>
+        </aside>
+
+        {/* ── צד ימין: טופס ── */}
+        <main className="ep-login__form-wrap">
+          <form className="ep-login__form" onSubmit={handleSubmit} noValidate>
+            <div className="ep-login__form-top">
+              <p className="ep-login__form-kicker">התחברות</p>
+              <h2 className="ep-login__form-title">ברוכים השבים</h2>
+              <p className="ep-login__form-sub">הזינו תעודת זהות וסיסמה כדי להמשיך</p>
             </div>
 
-            <div className="input-group">
-              <input
-                className="auth-input"
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder=" "
-                autoComplete="current-password"
-              />
-              <label className="auth-label">סיסמה</label>
-              <span className="input-ring" />
-            </div>
-
-            {error && (
-              <div className="auth-error" role="alert" aria-live="polite">
-                <span className="auth-error__icon">!</span>
-                <span className="auth-error__text">{error}</span>
+            <div className="ep-login__fields">
+              <div className="ep-field">
+                <label className="ep-field__label" htmlFor="login-id">תעודת זהות</label>
+                <input
+                  id="login-id"
+                  className="ep-field__input"
+                  type="text"
+                  required
+                  inputMode="numeric"
+                  autoComplete="username"
+                  placeholder="9 ספרות"
+                  value={idUser}
+                  onChange={(e) => setIdUser(e.target.value)}
+                />
               </div>
-            )}
-          </div>
 
-          <button className="auth-button" type="submit">
-            <span className="auth-button__shine" />
-            <span className="auth-button__text">התחבר</span>
-            <span className="auth-button__arrow">→</span>
-          </button>
-
-          <div className="auth-divider">
-            <span />
-            <p>התחברות מוגנת</p>
-            <span />
-          </div>
-
-
-        </form>
-
-
-        <div className="auth-left">
-          <div className="brand-chip">
-            <span className="brand-dot" />
-          </div>
-
-          <h1 className="hero-title">
-            ברוך השב
-            <span className="hero-title__glow">.</span>
-          </h1>
-          <p className="hero-subtitle">
-            התחבר כדי להמשיך - ליצור חידונים , לקבל סטטיסטיקות, ולנהל את המשתמש
-          </p>
-
-          
-
-          <div className="hero-stats">
-            <div className="stat-card">
-              <div className="stat-num">⚡</div>
-              <div className="stat-meta">
-                <div className="stat-title">לייב</div>
-                <div className="stat-desc">חדרים חיים</div>
+              <div className="ep-field">
+                <div className="ep-field__label-row">
+                  <label className="ep-field__label" htmlFor="login-pwd">סיסמה</label>
+                  <button
+                    type="button"
+                    className="ep-field__toggle"
+                    onClick={() => setShowPwd(s => !s)}
+                  >
+                    {showPwd ? "הסתר" : "הצג"}
+                  </button>
+                </div>
+                <input
+                  id="login-pwd"
+                  className="ep-field__input"
+                  type={showPwd ? "text" : "password"}
+                  required
+                  autoComplete="current-password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
+
+              {error && (
+                <div className="ep-login__error" role="alert" aria-live="polite">
+                  <span className="ep-login__error-icon">!</span>
+                  <span>{error}</span>
+                </div>
+              )}
             </div>
-            <div className="stat-card">
-              <div className="stat-num">🛡️</div>
-              <div className="stat-meta">
-                <div className="stat-title">מוגן</div>
-                <div className="stat-desc">התחברות מאובטחת</div>
-              </div>
+
+            <button className="ep-login__submit" type="submit">
+              <span>התחבר</span>
+              <span className="ep-login__submit-arrow" aria-hidden="true">←</span>
+            </button>
+
+            <div className="ep-login__divider">
+              <span /><p>או</p><span />
             </div>
-            <div className="stat-card">
-              <div className="stat-num">🎯</div>
-              <div className="stat-meta">
-                <div className="stat-title">AI</div>
-                <div className="stat-desc"> יצירת חידונים באמצעות בינה מלאכותית</div>
-              </div>
-            </div>
-          </div>
-        </div>
+
+            <p className="ep-login__footer">
+              חדש כאן?{" "}
+              <Link to="/register" className="ep-login__link ep-login__link--primary">
+                צרו חשבון
+              </Link>
+              {"  ·  "}
+              <Link to="/join-room" className="ep-login__link">
+                הצטרפו לחדר ללא הרשמה ←
+              </Link>
+            </p>
+          </form>
+        </main>
       </div>
     </div>
   );

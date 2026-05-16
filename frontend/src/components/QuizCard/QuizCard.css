@@ -1,73 +1,141 @@
-/* ===================================== */
-/*  QUIZ CARD – PREMIUM GLASS STYLE      */
-/* ===================================== */
+/* ===================================================================
+   EduPlay — QuizCard (redesign)
+   כרטיס חידון יחיד — פס צבע עליון + גוף לבן
+   =================================================================== */
 
-.quiz-card {
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(14px);
-  border-radius: 18px;
-
-  border: 1px solid rgba(255,255,255,0.12);
-
-  padding: 26px;
-  transition: 0.25s ease;
+.ep-qcard {
+  position: relative;
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.06);
+  border-radius: var(--ep-r-lg);
+  overflow: hidden;
   cursor: pointer;
-
-  box-shadow: 0 8px 22px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  outline: none;
+}
+.ep-qcard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(20, 18, 26, 0.1);
+  border-color: rgba(20, 18, 26, 0.12);
+}
+.ep-qcard:focus-visible {
+  border-color: var(--ep-primary);
+  box-shadow: 0 0 0 4px rgba(79, 63, 245, 0.18);
 }
 
-/* Hover – עדין, כבד, יוקרתי */
-.quiz-card:hover {
-  transform: translateY(-6px);
-
-  box-shadow:
-    0 15px 35px rgba(0,0,0,0.35),
-    0 0 18px rgba(108, 99, 255, 0.35); /* סגול-כחול */
-  
-  border-color: rgba(72, 113, 237, 0.35);
-
-  background: rgba(255,255,255,0.09);
+/* =========================
+   פס צבעוני עליון
+   ========================= */
+.ep-qcard__band {
+  position: relative;
+  height: 120px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  overflow: hidden;
 }
 
-/* ===================================== */
-/*               TITLE                   */
-/* ===================================== */
-
-.quiz-title {
-  font-size: 22px;
-  font-weight: 800;
-  margin-bottom: 14px;
-  color: #ffffff;
-
-  -webkit-text-fill-color:#ffffff
-}
-
-/* ===================================== */
-/*            DESCRIPTION                */
-/* ===================================== */
-
-.quiz-description {
-  font-size: 15px;
-  color: rgba(255,255,255,0.85);
-  margin-bottom: 18px;
-  line-height: 1.45;
-}
-
-/* ===================================== */
-/*               FOOTER                  */
-/* ===================================== */
-
-.quiz-info {
-  margin-top: 10px;
-  padding-top: 12px;
-
-  font-size: 14px;
-  color: rgba(255,255,255,0.75);
-
-  border-top: 1px solid rgba(255,255,255,0.1);
-}
-
-.quiz-info span {
-  color: #8a84ff; /* סגול תואם מערכת */
+.ep-qcard__band-tag {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-num);
+  font-size: 12px;
   font-weight: 700;
+  letter-spacing: 0.02em;
+  color: inherit;
+}
+
+.ep-qcard__band-glyph {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  opacity: 0.92;
+}
+
+/* צורה דקורטיבית גדולה ברקע */
+.ep-qcard__band-bg {
+  position: absolute;
+  inset-block-end: -60px;
+  inset-inline-start: -30px;
+  z-index: 1;
+  display: inline-flex;
+  opacity: 0.15;
+}
+
+/* =========================
+   גוף
+   ========================= */
+.ep-qcard__body {
+  padding: 20px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.ep-qcard__title {
+  margin: 0;
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--ep-ink);
+  /* limit to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ep-qcard__desc {
+  margin: 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ep-ink-3);
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* =========================
+   Footer
+   ========================= */
+.ep-qcard__foot {
+  margin-top: 12px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(20, 18, 26, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ep-qcard__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ep-ink);
+  transition: gap 0.15s, color 0.15s;
+}
+.ep-qcard:hover .ep-qcard__action {
+  gap: 10px;
+  color: var(--ep-primary);
+}
+
+.ep-qcard__arrow {
+  font-size: 18px;
+  line-height: 1;
 }

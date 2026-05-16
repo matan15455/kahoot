@@ -1,142 +1,186 @@
-/* ===== ROOT ===== */
-.navbar {
+/* ===================================================================
+   EduPlay — Navbar (redesign)
+   נקי, מודרני, ללא גרדיאנטים — נצמד למעלה, רוחב מלא
+   =================================================================== */
+
+.ep-nav {
   position: fixed;
   top: 0;
   inset-inline: 0;
-  height: 72px;
+  height: 70px;
   z-index: 1000;
   direction: rtl;
+  background: var(--ep-paper);
+  border-bottom: 1px solid rgba(20, 18, 26, 0.08);
+  font-family: var(--ep-f-body);
+  color: var(--ep-ink);
 }
 
-/* Blur layer – עובד גם בלי scroll */
-.navbar-blur {
-  position: absolute;
-  inset: 0;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  background: linear-gradient(
-    90deg,
-    rgba(124,58,237,0.45),
-    rgba(34,211,238,0.35)
-  );
-  box-shadow: 0 10px 40px rgba(0,0,0,0.45);
-  border-bottom: 1px solid rgba(255,255,255,0.15);
-}
-
-/* CONTENT */
-.navbar-inner {
-  position: relative;
+.ep-nav__inner {
   height: 100%;
-  max-width: 1300px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 24px;
 }
 
-/* ===== LOGO ===== */
-.nav-logo {
-  font-size: 22px;
-  font-weight: 900;
-  cursor: pointer;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  color: white;
-}
-
-.logo-glow {
-  background: linear-gradient(90deg, #ffffff, #7dfbf3);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  text-shadow: 0 0 18px rgba(255, 255, 255, 0.9);
-}
-
-.logo-sub {
-  font-size: 14px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.18);
-  border: 1px solid rgba(255,255,255,0.25);
-}
-
-/* ===== LINKS ===== */
-.nav-links {
+/* =========================
+   מותג
+   ========================= */
+.ep-nav__brand {
   display: flex;
   align-items: center;
-  gap: 14px;
-}
-
-.nav-link {
-  position: relative;
-  padding: 10px 16px;
-  border-radius: 999px;
-  color: rgba(255,255,255,0.9);
+  gap: 12px;
+  color: var(--ep-ink);
   text-decoration: none;
-  font-weight: 600;
-  transition: 0.25s ease;
-}
-
-.nav-link::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(90deg, #22d3ee, #7c3aed);
-  opacity: 0;
-  z-index: -1;
-  transition: 0.25s;
-}
-
-.nav-link:hover::after {
-  opacity: 0.25;
-}
-
-.nav-link:hover {
-  transform: translateY(-2px);
-}
-
-
-
-/* ===== LOGOUT ===== */
-.logout-btn {
-  padding: 10px 18px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
+  font-family: var(--ep-f-display);
   font-weight: 800;
-  color: white;
-  background: linear-gradient(90deg, #ef4444, #f97316);
-  box-shadow: 0 6px 20px rgba(239,68,68,0.5);
-  transition: 0.25s ease;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  transition: opacity 0.15s;
+}
+.ep-nav__brand:hover { opacity: 0.85; }
+
+.ep-nav__brand-wordmark {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  gap: 3px;
+}
+.ep-nav__brand-credit {
+  font-family: var(--ep-f-num);
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--ep-ink-mute);
+  text-transform: uppercase;
 }
 
-.logout-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 30px rgba(239,68,68,0.7);
+/* =========================
+   קישורים
+   ========================= */
+.ep-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-.nav-link.active {
-  font-weight: bold;
-  color: #ffd700;
-  border-bottom: 2px solid #ffd700;
+.ep-nav__link {
+  position: relative;
+  padding: 9px 16px;
+  border-radius: var(--ep-r-pill);
+  color: var(--ep-ink-3);
+  text-decoration: none;
+  font-family: var(--ep-f-body);
+  font-weight: 600;
+  font-size: 14.5px;
+  transition: color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+.ep-nav__link:hover {
+  color: var(--ep-ink);
+  background: rgba(20, 18, 26, 0.05);
+}
+.ep-nav__link.is-active {
+  color: var(--ep-paper);
+  background: var(--ep-ink);
+}
+.ep-nav__link.is-active:hover {
+  color: var(--ep-paper);
+  background: var(--ep-ink);
 }
 
+/* קישור משני (לא-משתמש: "התחבר") */
+.ep-nav__link--ghost {
+  border: 1px solid rgba(20, 18, 26, 0.12);
+}
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 900px) {
-  .nav-links {
-    gap: 8px;
+/* כפתור CTA (הרשמה) */
+.ep-nav__cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 18px;
+  border-radius: var(--ep-r-pill);
+  background: var(--ep-primary);
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 14.5px;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+  box-shadow: 0 3px 0 0 var(--ep-primary-deep);
+}
+.ep-nav__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 0 var(--ep-primary-deep);
+}
+.ep-nav__cta:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 0 var(--ep-primary-deep);
+}
+
+/* כפתור התנתקות */
+.ep-nav__logout {
+  padding: 9px 18px;
+  border-radius: var(--ep-r-pill);
+  border: 1px solid rgba(214, 58, 45, 0.25);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--ep-f-body);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ep-bad);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.ep-nav__logout:hover {
+  background: var(--ep-bad);
+  color: #fff;
+  border-color: var(--ep-bad);
+}
+
+.ep-nav__divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(20, 18, 26, 0.12);
+  margin: 0 8px;
+}
+
+/* =========================
+   Responsive
+   ========================= */
+@media (max-width: 1100px) {
+  .ep-nav__inner { padding: 0 20px; gap: 16px; }
+  .ep-nav__link { padding: 8px 12px; font-size: 13.5px; }
+  .ep-nav__cta { padding: 9px 14px; font-size: 13.5px; }
+  .ep-nav__logout { padding: 8px 14px; font-size: 13px; }
+}
+
+@media (max-width: 880px) {
+  .ep-nav__brand-credit { display: none; }
+  .ep-nav__links {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    max-width: 65%;
   }
+  .ep-nav__links::-webkit-scrollbar { display: none; }
+  .ep-nav__divider { display: none; }
+}
 
-  .nav-link {
-    padding: 8px 12px;
-    font-size: 14px;
+@media (max-width: 560px) {
+  .ep-nav { height: 60px; }
+  .ep-nav__inner { padding: 0 14px; gap: 8px; }
+  .ep-nav__brand { font-size: 17px; gap: 8px; }
+  .ep-nav__link {
+    padding: 6px 10px;
+    font-size: 12.5px;
   }
-
-  .logo-sub {
-    display: none;
+  .ep-nav__cta, .ep-nav__logout {
+    padding: 7px 12px;
+    font-size: 12.5px;
   }
 }

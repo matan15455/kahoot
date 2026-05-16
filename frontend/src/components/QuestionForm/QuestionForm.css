@@ -1,257 +1,327 @@
-/* ========================================================= */
-/*               ⚡ ULTRA PREMIUM GLASS INPUTS ⚡             */
-/* ========================================================= */
+/* ===================================================================
+   EduPlay — QuestionForm (redesign)
+   טופס הוספת/עריכת שאלה — מוצג כפנל בתוך QuizCreator
+   =================================================================== */
 
-/* בסיס כללי לכל השדות */
-.q-input,
-.q-select,
-.answer-input {
-  width: 100%;
-  padding: 15px 20px;
-
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.18);
-  border-radius: 14px;
-
-  color: #fff;
-  font-size: 1.08rem;
-
-  transition: 0.3s ease, box-shadow 0.5s ease;
-  backdrop-filter: blur(12px);
-
-  box-shadow:
-    inset 0 0 20px rgba(255,255,255,0.04),
-    0 4px 18px rgba(0,0,0,0.35);
-}
-
-.q-input::placeholder,
-.answer-input::placeholder {
-  color: rgba(255,255,255,0.45);
-  transition: 0.3s;
-}
-
-.q-input:hover,
-.q-select:hover,
-.answer-input:hover {
-  background: rgba(255,255,255,0.08);
-  transform: translateY(-2px);
-  box-shadow:
-    inset 0 0 25px rgba(255,255,255,0.05),
-    0 6px 20px rgba(108,99,255,0.4);
-}
-
-/* אפקט פוקוס מטורף */
-.q-input:focus,
-.q-select:focus,
-
-/* מרווח בין כל השדות */
-.q-input,
-.q-select,
-.answer-input {
-  margin-bottom: 14px;
-}
-
-/* מרווח בין קבוצות שדה */
-.field-group {
-  margin-bottom: 22px;
-}
-
-/* מרווח מוגבר בין תשובות */
-.answer-item {
-  margin-bottom: 16px;
-}
-
-/* מרווח בין כפתורים */
-.question-actions {
-  margin-top: 35px;
+.ep-qfq {
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.06);
+  border-radius: var(--ep-r-xl);
+  padding: 28px 30px 26px;
+  display: flex;
+  flex-direction: column;
   gap: 18px;
+  font-family: var(--ep-f-body);
+  color: var(--ep-ink);
+  direction: rtl;
+  box-shadow: 0 12px 32px rgba(20, 18, 26, 0.08);
+  animation: ep-qfq-pop 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+@keyframes ep-qfq-pop {
+  from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-
-/* ========================================================= */
-/*                   SELECT — יצירת-אלוהים                   */
-/* ========================================================= */
-
-.q-select {
-  appearance: none;
-  padding-left: 52px;
-
-  background-image: url("data:image/svg+xml,%3Csvg fill='white' width='22' height='22' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 8l7 7 7-7'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: left 18px center;
-  background-size: 20px;
-
-  cursor: pointer;
-}
-
-.q-select:hover {
-  background-color: rgba(255,255,255,0.1);
-}
-
-/* ========================================================= */
-/*                  ANSWER ITEM — אפקט כבד                   */
-/* ========================================================= */
-
-.answer-item {
+/* =========================
+   ראש
+   ========================= */
+.ep-qfq__head {
   display: flex;
-  align-items: center;
-  gap: 14px;
-
-  padding: 16px;
-  margin-bottom: 14px;
-
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 14px;
-
-  transition: 0.3s ease;
-  backdrop-filter: blur(12px);
-
-  box-shadow:
-    inset 0 0 20px rgba(255,255,255,0.03),
-    0 6px 18px rgba(0,0,0,0.35);
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
 }
-
-.answer-item:hover {
-  transform: translateX(-5px) scale(1.02);
-  background: rgba(255,255,255,0.1);
-  box-shadow:
-    0 8px 22px rgba(108,99,255,0.4),
-    inset 0 0 30px rgba(255,255,255,0.05);
+.ep-qfq__kicker {
+  margin: 0;
+  font-family: var(--ep-f-num);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ep-ink-mute);
 }
-
-/* טייטל של checkbox */
-.answer-check {
-  display: flex;
-  gap: 6px;
-  padding: 7px 12px;
-
-  background: rgba(255,255,255,0.08);
-  border-radius: 10px;
-
-  color: white;
-  align-items: center;
-
-  transition: 0.3s;
-}
-
-.answer-check:hover {
-  background: rgba(255,255,255,0.12);
-}
-
-/* ========================================================= */
-/*           DELETE BUTTON — כפתור הריסה אלגנטי              */
-/* ========================================================= */
-
-.delete-btn {
-  min-width: 45px;
-  min-height: 45px;
-
-  background: linear-gradient(135deg, #ffffff, #e36565);
-  border: none;
-  border-radius: 12px;
-
-  cursor: pointer;
-  color: white;
-  font-size: 1.25rem;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  transition: 0.25s ease;
-  box-shadow: 0 8px 20px rgba(196, 83, 104, 0.35);
-}
-
-.delete-btn:hover {
-  transform: scale(1.1) rotate(4deg);
-  box-shadow: 0 10px 28px rgba(255,45,85,0.55);
-}
-
-.delete-btn:active {
-  transform: scale(0.92) rotate(2deg);
-}
-
-/* ========================================================= */
-/*              ADD ANSWER — כפתור פרימיום ירוק              */
-/* ========================================================= */
-
-.add-answer-btn {
-  width: 100%;
-  padding: 15px;
-
-  background: linear-gradient(135deg, #43e97b, #38f9d7);
-  border: none;
-  border-radius: 14px;
-
-  color: white;
-  font-weight: 800;
-  font-size: 1.1rem;
-
-  cursor: pointer;
-  transition: 0.3s ease;
-
-  box-shadow: 0 8px 22px rgba(67,233,123,0.35);
-}
-
-.add-answer-btn:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(67,233,123,0.55);
-}
-
-.add-answer-btn:active {
-  transform: translateY(-2px) scale(0.97);
-}
-
-/* ========================================================= */
-/*              FORM BUTTONS — שמור / בטל                     */
-/* ========================================================= */
-
-.submit-btn,
-.cancel-btn {
-  flex: 1;
-  padding: 16px;
-
-  border: none;
-  border-radius: 14px;
+.ep-qfq__title {
+  margin: 4px 0 0;
+  font-family: var(--ep-f-display);
   font-weight: 700;
-  color: white;
-
+  font-size: 22px;
+  letter-spacing: -0.015em;
+}
+.ep-qfq__close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(20, 18, 26, 0.12);
+  color: var(--ep-ink-3);
+  font-weight: 700;
   cursor: pointer;
-  transition: 0.3s ease;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.ep-qfq__close:hover {
+  background: var(--ep-ink);
+  border-color: var(--ep-ink);
+  color: #fff;
 }
 
-.submit-btn {
-  background: linear-gradient(135deg, #6c63ff, #8a84ff);
-  box-shadow: 0 8px 22px rgba(108,99,255,0.45);
+/* =========================
+   טקסט השאלה
+   ========================= */
+.ep-qfq__text {
+  resize: vertical;
+  min-height: 70px;
+  line-height: 1.4;
+  font-family: var(--ep-f-display);
+  font-weight: 600;
+  font-size: 17px;
 }
 
-.submit-btn:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(108,99,255,0.65);
+/* =========================
+   זמן + נקודות
+   ========================= */
+.ep-qfq__row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
 }
 
-.cancel-btn {
-  background: rgba(255,255,255,0.12);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+/* =========================
+   תשובות
+   ========================= */
+.ep-qfq__answers-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+.ep-qfq__answers-count {
+  font-family: var(--ep-f-num);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ep-ink-mute);
 }
 
-.cancel-btn:hover {
-  background: rgba(255,255,255,0.15);
-  transform: translateY(-3px);
+.ep-qfq__answers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-/* ========================================================= */
-/*                  SMOOTH ANIMATION                        */
-/* ========================================================= */
+.ep-qfq__answer {
+  display: grid;
+  grid-template-columns: 56px 1fr 36px 36px;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+  background: var(--ep-cream);
+  border: 2px solid transparent;
+  border-radius: var(--ep-r-md);
+  transition: border-color 0.15s, background 0.15s;
+}
+.ep-qfq__answer.is-correct {
+  border-color: var(--ep-ok);
+  background: rgba(30, 158, 95, 0.06);
+}
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.98);
+.ep-qfq__answer-letter {
+  width: 100%;
+  height: 44px;
+  border-radius: var(--ep-r-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1;
+}
+.ep-qfq__answer-glyph {
+  display: inline-flex;
+  opacity: 0.8;
+}
+
+.ep-qfq__answer-input {
+  background: var(--ep-paper);
+  font-size: 15px;
+  padding: 12px 14px;
+}
+
+/* Radio "תשובה נכונה" — מעוצב */
+.ep-qfq__answer-mark {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.ep-qfq__answer-mark input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  margin: 0;
+}
+.ep-qfq__answer-mark-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ep-paper);
+  border: 2px solid rgba(20, 18, 26, 0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 14px;
+  color: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.ep-qfq__answer.is-correct .ep-qfq__answer-mark-circle {
+  background: var(--ep-ok);
+  border-color: var(--ep-ok);
+  color: #fff;
+}
+.ep-qfq__answer-mark:hover .ep-qfq__answer-mark-circle {
+  border-color: var(--ep-ok);
+}
+
+/* כפתור מחיקה */
+.ep-qfq__answer-del {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(20, 18, 26, 0.12);
+  color: var(--ep-ink-3);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.ep-qfq__answer-del:hover:not(:disabled) {
+  background: var(--ep-bad);
+  border-color: var(--ep-bad);
+  color: #fff;
+}
+.ep-qfq__answer-del:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* + הוסף תשובה */
+.ep-qfq__add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px dashed rgba(20, 18, 26, 0.18);
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-body);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--ep-ink-3);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.ep-qfq__add:hover {
+  border-color: var(--ep-primary);
+  color: var(--ep-primary);
+  background: rgba(79, 63, 245, 0.04);
+}
+.ep-qfq__add-plus {
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 0.8;
+}
+
+/* שגיאה */
+.ep-qfq__error {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 13px;
+  background: rgba(214, 58, 45, 0.08);
+  border: 1px solid rgba(214, 58, 45, 0.25);
+  border-radius: var(--ep-r-sm);
+  font-size: 13.5px;
+  color: var(--ep-bad);
+}
+.ep-qfq__error-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ep-bad);
+  color: #fff;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* =========================
+   כפתורים
+   ========================= */
+.ep-qfq__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(20, 18, 26, 0.06);
+}
+.ep-qfq__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 22px;
+  background: var(--ep-paper);
+  color: var(--ep-ink);
+  border: 1px solid rgba(20, 18, 26, 0.12);
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 14.5px;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.ep-qfq__btn--ghost {
+  background: transparent;
+}
+.ep-qfq__btn--ghost:hover {
+  background: rgba(20, 18, 26, 0.05);
+}
+.ep-qfq__btn--primary {
+  flex: 1;
+  background: var(--ep-ink);
+  color: var(--ep-paper);
+  border-color: var(--ep-ink);
+  box-shadow: 0 3px 0 0 #000;
+}
+.ep-qfq__btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 0 #000;
+}
+
+/* =========================
+   Responsive
+   ========================= */
+@media (max-width: 640px) {
+  .ep-qfq { padding: 22px 20px; gap: 14px; }
+  .ep-qfq__title { font-size: 18px; }
+  .ep-qfq__answer {
+    grid-template-columns: 48px 1fr auto;
+    grid-template-rows: auto auto;
+    row-gap: 8px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  .ep-qfq__answer-input { grid-column: 2 / span 2; grid-row: 1; }
+  .ep-qfq__answer-mark { grid-column: 2; grid-row: 2; justify-self: end; }
+  .ep-qfq__answer-del { grid-column: 3; grid-row: 2; justify-self: end; }
 }

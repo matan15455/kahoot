@@ -1,561 +1,347 @@
-/* JoinScreen.css */
-
-.join-container {
-  max-width: 550px;
-  margin: 0 auto;
-  padding: 50px 45px;
-  background: linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 242, 254, 0.15) 100%);
-  backdrop-filter: blur(25px);
-  border-radius: 30px;
-  border: 2px solid rgba(79, 172, 254, 0.35);
-  box-shadow: 0 20px 60px rgba(79, 172, 254, 0.4);
-  animation: zoomInFloat 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-  overflow: hidden;
-}
-
-/* אפקט רקע מנצנץ */
-.join-container::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(79, 172, 254, 0.12) 0%, transparent 70%);
-  animation: rotate 20s linear infinite;
-  pointer-events: none;
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes zoomInFloat {
-  0% {
-    opacity: 0;
-    transform: scale(0.6) translateY(30px);
-  }
-  70% {
-    transform: scale(1.05) translateY(-10px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-/* כותרת */
-.join-container h1 {
-  font-size: 3rem;
-  font-weight: 900;
-  color: #ffffff;
-  text-align: center;
-  margin-bottom: 45px;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  position: relative;
-  padding-bottom: 25px;
-  z-index: 1;
-  text-shadow: 0 0 30px rgba(79, 172, 254, 0.5);
-}
-
-.join-container h1::after {
-  content: '🎮';
-  position: absolute;
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 2.5rem;
-  animation: bounce 2s ease-in-out infinite;
-  filter: drop-shadow(0 5px 15px rgba(79, 172, 254, 0.6));
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateX(-50%) translateY(0);
-  }
-  50% {
-    transform: translateX(-50%) translateY(-15px);
-  }
-}
-
-/* שדות קלט */
-.join-container input {
-  width: 100%;
-  padding: 20px 28px;
-  margin-bottom: 25px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.25);
-  border-radius: 16px;
-  color: #ffffff;
-  font-size: 1.2rem;
-  font-weight: 600;
-  font-family: inherit;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-  z-index: 1;
-}
-
-.join-container input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-  font-weight: 500;
-}
-
-.join-container input:focus {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: #4facfe;
-  box-shadow: 0 0 0 5px rgba(79, 172, 254, 0.25), 0 10px 35px rgba(79, 172, 254, 0.4);
-  transform: translateY(-4px);
-  outline: none;
-}
-
-/* אייקונים לשדות */
-.join-container input:nth-of-type(1)::before {
-  content: '👤';
-}
-
-.join-container input:nth-of-type(2)::before {
-  content: '🔑';
-}
-
-/* כפתור הצטרף */
-.join-container button {
-  width: 100%;
-  padding: 22px;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color: white;
-  border: none;
-  border-radius: 16px;
-  font-size: 1.6rem;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 12px 40px rgba(79, 172, 254, 0.5);
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  letter-spacing: 0.5px;
-  margin-top: 10px;
-}
-
-/* אפקט זוהר בכפתור */
-.join-container button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  transition: left 0.7s ease;
-}
-
-.join-container button:hover::before {
-  left: 100%;
-}
-
-.join-container button::after {
-  content: '→';
-  position: absolute;
-  left: 30px;
-  opacity: 0;
-  transition: all 0.3s ease;
-  font-size: 1.8rem;
-}
-
-.join-container button:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 18px 50px rgba(79, 172, 254, 0.7);
-}
-
-.join-container button:hover::after {
-  opacity: 1;
-  left: 20px;
-}
-
-.join-container button:active {
-  transform: translateY(-3px) scale(0.98);
-}
-
-/* תיבת מידע */
-.join-info {
-  margin-bottom: 30px;
-  padding: 18px 24px;
-  background: linear-gradient(135deg, rgba(255, 235, 59, 0.12) 0%, rgba(255, 193, 7, 0.12) 100%);
-  border-radius: 14px;
-  border: 2px solid rgba(255, 235, 59, 0.35);
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.7;
-  font-size: 1rem;
-  position: relative;
-  z-index: 1;
-  text-align: center;
-}
-
-.join-info::before {
-  content: '💡';
-  font-size: 1.4rem;
-  margin-left: 8px;
-}
-
-/* אנימציות כניסה לשדות */
-.join-container input,
-.join-container button {
-  animation: fadeInUp 0.6s ease-out backwards;
-}
-
-.join-container input:nth-of-type(1) { animation-delay: 0.1s; }
-.join-container input:nth-of-type(2) { animation-delay: 0.2s; }
-.join-container button { animation-delay: 0.3s; }
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* סטטוס חיבור */
-.connection-status {
-  text-align: center;
-  margin-top: 25px;
-  padding: 12px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  position: relative;
-  z-index: 1;
-}
-
-.connection-status.connected {
-  background: rgba(67, 233, 123, 0.15);
-  color: #43e97b;
-  border: 1px solid rgba(67, 233, 123, 0.3);
-}
-
-.connection-status.connected::before {
-  content: '🟢 ';
-}
-
-.connection-status.disconnected {
-  background: rgba(245, 87, 108, 0.15);
-  color: #f5576c;
-  border: 1px solid rgba(245, 87, 108, 0.3);
-}
-
-.connection-status.disconnected::before {
-  content: '🔴 ';
-}
-
-/* ולידציה */
-.join-container input:invalid {
-  border-color: rgba(245, 87, 108, 0.5);
-}
-
-.join-container input:valid {
-  border-color: rgba(67, 233, 123, 0.5);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .join-container {
-    padding: 40px 35px;
-    border-radius: 25px;
-  }
-
-  .join-container h1 {
-    font-size: 2.5rem;
-    margin-bottom: 35px;
-    padding-bottom: 20px;
-  }
-
-  .join-container h1::after {
-    font-size: 2rem;
-  }
-
-  .join-container input {
-    padding: 18px 24px;
-    font-size: 1.1rem;
-  }
-
-  .join-container button {
-    padding: 20px;
-    font-size: 1.4rem;
-  }
-
-  .join-info {
-    padding: 16px 20px;
-    font-size: 0.95rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .join-container {
-    padding: 35px 28px;
-    border-radius: 22px;
-  }
-
-  .join-container h1 {
-    font-size: 2.2rem;
-    margin-bottom: 30px;
-  }
-
-  .join-container h1::after {
-    font-size: 1.8rem;
-  }
-
-  .join-container input {
-    padding: 16px 22px;
-    font-size: 1.05rem;
-  }
-
-  .join-container button {
-    padding: 18px;
-    font-size: 1.3rem;
-  }
-
-  .join-info {
-    padding: 14px 18px;
-    font-size: 0.9rem;
-  }
-}
-
-/* אפקט טעינה */
-.join-container button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.join-container button.loading::after {
-  content: '⏳';
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* הודעת שגיאה */
-.error-message {
-  margin-top: 20px;
-  padding: 15px 20px;
-  background: rgba(245, 87, 108, 0.15);
-  border: 2px solid rgba(245, 87, 108, 0.4);
-  border-radius: 12px;
-  color: #f5576c;
-  font-weight: 700;
-  text-align: center;
-  animation: shake 0.5s ease;
-  position: relative;
-  z-index: 1;
-}
-
-.error-message::before {
-  content: '⚠️ ';
-  font-size: 1.2rem;
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
-}
-
-/* ——— עמוד מלא עם רקע אנימציה ——— */
-
-.room-page {
-  min-height: 100vh;
-  padding-top: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  animation: bgMove 6s infinite alternate ease-in-out;
-}
-
-@keyframes bgMove {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
-}
-
-
-/* ——— כרטיס מרכזי ——— */
-
-.room-card {
-  width: 90%;
-  max-width: 550px;
-  background: #ffffffee;
-  backdrop-filter: blur(12px);
-  border-radius: 22px;
-  padding: 35px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-  animation: fadeIn 0.6s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.room-title {
-  text-align: center;
-  font-size: 32px;
-  color: #222;
-  margin-bottom: 10px;
-}
-
-.players-label {
-  text-align: center;
-  font-size: 18px;
-  margin-bottom: 20px;
-  font-weight: 600;
-  color: #1a1a1a;
-}
-
-.players-label span {
-  color: #0088ff;
-}
-
-
-/* ——— רשימת שחקנים ——— */
-
-.players-grid {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.player-card {
-  background: #f7f7f7;
-  padding: 18px;
-  border-radius: 16px;
-  box-shadow: 0 8px 15px rgba(0,0,0,0.12);
-
+/* ===================================================================
+   EduPlay — JoinScreen (redesign)
+   מסך ציבורי: הצטרפות לחדר + לובי המתנה
+   =================================================================== */
+
+.ep-join {
+  min-height: calc(100vh - 70px);
+  background: var(--ep-cream);
+  color: var(--ep-ink);
+  font-family: var(--ep-f-body);
+  direction: rtl;
   display: flex;
   align-items: center;
-  gap: 12px;
-
-  transition: 0.2s ease;
-  cursor: pointer;
-  border: 3px solid transparent;
-}
-
-/* ריחוף אפקטיבי */
-.player-card:hover {
-  transform: translateY(-4px);
-  background: #fff;
-}
-
-
-/* ——— אווטאר עגול ——— */
-
-.player-avatar {
-  width: 50px;
-  height: 50px;
-  background: #00aeff;
-  color: #fff;
-  font-size: 22px;
-  font-weight: bold;
-
-  border-radius: 50%;
-  display: flex;
   justify-content: center;
-  align-items: center;
-
-  box-shadow: 0 6px 12px rgba(31, 133, 223, 0.854);
+  padding: 40px 24px 60px;
 }
 
-
-/* ——— פרטי שחקן ——— */
-
-.player-info {
+/* =========================
+   טופס הצטרפות
+   ========================= */
+.ep-join__form {
+  width: 100%;
+  max-width: 440px;
   display: flex;
   flex-direction: column;
+  gap: 28px;
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.06);
+  border-radius: var(--ep-r-xl);
+  padding: 36px 32px;
+  box-shadow: 0 12px 32px rgba(20, 18, 26, 0.06);
 }
 
-.player-name {
-  font-size: 18px;
+.ep-join__hero {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ep-join__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--ep-f-num);
+  font-size: 12px;
   font-weight: 600;
-  color: #222;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ep-ink-mute);
+  align-self: flex-start;
+}
+.ep-join__kicker-mark {
+  display: inline-flex;
+  align-items: center;
 }
 
-.player-score {
-  color: #7928ca;
-  font-weight: bold;
+.ep-join__title {
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+.ep-join__title-accent { color: var(--ep-primary); }
+
+.ep-join__sub {
+  margin: 0;
   font-size: 15px;
+  line-height: 1.55;
+  color: var(--ep-ink-3);
 }
 
+.ep-join__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
-.waiting-text{
-  margin-top: 14px;
+/* קוד חדר — input מסוגנן */
+.ep-join__pin {
+  font-family: var(--ep-f-num);
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.5em;
+  padding: 18px 18px;
+  /* RTL fix — keep digits LTR */
+  direction: ltr;
+}
+.ep-join__pin::placeholder {
+  font-size: 26px;
+  letter-spacing: 0.5em;
+  color: rgba(20, 18, 26, 0.18);
+  font-weight: 600;
+}
+
+/* שגיאה */
+.ep-join__error {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
   padding: 12px 14px;
+  background: rgba(214, 58, 45, 0.08);
+  border: 1px solid rgba(214, 58, 45, 0.25);
+  border-radius: var(--ep-r-sm);
+  font-size: 14px;
+  color: var(--ep-bad);
+}
+.ep-join__error-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ep-bad);
+  color: #fff;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+}
 
+/* כפתור CTA — בסגנון הפלטפורמה */
+.ep-join__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 18px 22px;
+  background: var(--ep-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 5px 0 0 var(--ep-primary-deep);
+}
+.ep-join__submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 0 var(--ep-primary-deep);
+}
+.ep-join__submit:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 0 0 var(--ep-primary-deep);
+}
+.ep-join__submit-arrow {
+  font-size: 22px;
+  transition: transform 0.15s;
+}
+.ep-join__submit:hover .ep-join__submit-arrow { transform: translateX(-4px); }
+
+.ep-join__footer {
+  margin: 0;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--ep-ink-mute);
+  line-height: 1.5;
+}
+.ep-join__footer-em {
+  color: var(--ep-ink);
+  font-weight: 700;
+}
+
+/* =========================
+   לובי המתנה (אחרי הצטרפות)
+   ========================= */
+.ep-join__shell {
+  width: 100%;
+  max-width: 540px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* כרטיס "אתה" — dark */
+.ep-join__you {
+  background: var(--ep-ink);
+  color: var(--ep-paper);
+  border-radius: var(--ep-r-xl);
+  padding: 28px 28px 24px;
+  position: relative;
+  overflow: hidden;
+}
+.ep-join__you::before {
+  content: "";
+  position: absolute;
+  inset-block-start: -40px;
+  inset-inline-end: -60px;
+  width: 220px;
+  height: 220px;
+  background: var(--ep-ans-3);
+  border-radius: 50%;
+  opacity: 0.18;
+  z-index: 0;
+}
+.ep-join__you > * { position: relative; z-index: 1; }
+
+.ep-join__you-label {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.6;
+  font-weight: 500;
+}
+.ep-join__you-name {
+  margin: 6px 0 16px;
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ep-ans-3);
+}
+.ep-join__you-status {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  font-size: 14px;
+  opacity: 0.85;
+  padding-block-start: 16px;
+  border-block-start: 1px solid rgba(255, 255, 255, 0.12);
+  width: 100%;
+}
+.ep-join__pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ep-ans-3);
+  animation: ep-join-pulse 1.6s ease-in-out infinite;
+}
+@keyframes ep-join-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
 
-  font-size: 0.95rem;
+/* רשימת שחקנים */
+.ep-join__roster {
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.06);
+  border-radius: var(--ep-r-xl);
+  padding: 22px 22px 24px;
+}
+.ep-join__roster-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 16px;
+}
+.ep-join__roster-title {
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--ep-ink);
+}
+.ep-join__roster-count {
+  font-family: var(--ep-f-num);
+  font-size: 13px;
+  color: var(--ep-ink-mute);
   font-weight: 600;
-  letter-spacing: 0.2px;
-
-  color: rgba(0, 0, 0, 0.92);
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.14);
-  border-radius: 14px;
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.18),
-    inset 0 1px 0 rgba(255,255,255,0.10);
-
-  animation: waitingFloat 1.6s ease-in-out infinite;
 }
 
-/* תנועה עדינה */
-@keyframes waitingFloat{
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-2px); }
+.ep-join__players {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
 }
 
-/* 3 נקודות "טוען" */
-.waiting-text .dots{
-  display: inline-flex;
-  gap: 2px;
-  opacity: 0.9;
+.ep-join__player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 8px;
+  background: var(--ep-cream);
+  border: 1px solid rgba(20, 18, 26, 0.05);
+  border-radius: var(--ep-r-md);
+  transition: transform 0.15s;
+}
+.ep-join__player.is-you {
+  background: var(--ep-primary-soft);
+  border-color: var(--ep-primary);
 }
 
-.waiting-text .dots span{
-  display: inline-block;
-  transform: translateY(0);
-  animation: dotPulse 1s infinite ease-in-out;
+.ep-join__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--ep-ink);
+  color: var(--ep-ans-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 18px;
+}
+.ep-join__player.is-you .ep-join__avatar {
+  background: var(--ep-primary);
+  color: #fff;
 }
 
-.waiting-text .dots span:nth-child(2){ animation-delay: 0.15s; }
-.waiting-text .dots span:nth-child(3){ animation-delay: 0.30s; }
-
-@keyframes dotPulse{
-  0%, 100% { opacity: 0.35; transform: translateY(0); }
-  50%      { opacity: 1;    transform: translateY(-3px); }
+.ep-join__player-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ep-ink);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
 }
 
-/* אם המשתמש ביקש reduced motion */
-@media (prefers-reduced-motion: reduce){
-  .waiting-text{ animation: none; }
-  .waiting-text .dots span{ animation: none; }
+.ep-join__player-tag {
+  font-family: var(--ep-f-num);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ep-primary);
+  padding: 2px 8px;
+  background: #fff;
+  border-radius: var(--ep-r-pill);
 }
 
+/* =========================
+   Responsive
+   ========================= */
+@media (max-width: 480px) {
+  .ep-join { padding: 24px 16px 48px; }
+  .ep-join__form { padding: 28px 22px; gap: 24px; border-radius: var(--ep-r-lg); }
+  .ep-join__title { font-size: 38px; }
+  .ep-join__pin { font-size: 24px; letter-spacing: 0.4em; }
+  .ep-join__pin::placeholder { font-size: 22px; letter-spacing: 0.4em; }
+  .ep-join__submit { padding: 16px 18px; font-size: 16px; }
+
+  .ep-join__you { padding: 22px 22px 20px; }
+  .ep-join__you-name { font-size: 36px; }
+  .ep-join__roster { padding: 18px 18px 20px; }
+  .ep-join__players { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+}
