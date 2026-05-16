@@ -1,6 +1,5 @@
 /* ===================================================================
    EduPlay — AI Create Quiz
-   מבוסס על ה-Design System של מותג EduPlay
    =================================================================== */
 
 .ep-ai {
@@ -57,6 +56,19 @@
   margin-bottom: 32px;
 }
 
+.ep-ai__editor-head {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.ep-ai__editor-count {
+  margin: 6px 0 0;
+  font-family: var(--ep-f-num);
+  font-size: 13px;
+  color: var(--ep-ink-mute);
+  font-weight: 600;
+}
+
 /* =========================
    Cards & Surfaces
    ========================= */
@@ -70,14 +82,14 @@
 
 .ep-ai__q-card {
   background: var(--ep-paper);
-  border: 1px solid rgba(20, 18, 26, 0.08);
+  border: 2px solid rgba(20, 18, 26, 0.07);
   border-radius: var(--ep-r-lg);
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   box-shadow: var(--ep-sh-1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .ep-ai__q-card:focus-within {
@@ -85,15 +97,17 @@
   box-shadow: 0 0 0 4px var(--ep-primary-soft);
 }
 
-.ep-ai__editor-head {
-  text-align: center;
-  margin-bottom: 24px;
+/* כרטיס במצב עריכה פעילה */
+.ep-ai__q-card.is-editing {
+  border-color: var(--ep-primary);
+  box-shadow: 0 0 0 4px var(--ep-primary-soft);
+  background: #fefcff;
 }
 
 .ep-ai__questions {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 /* =========================
@@ -160,14 +174,15 @@
 
 .ep-textarea {
   resize: vertical;
-  min-height: 100px;
+  min-height: 80px;
   font-family: var(--ep-f-display);
   font-weight: 600;
-  font-size: 18px;
+  font-size: 17px;
+  line-height: 1.4;
 }
 
 /* =========================
-   Question Meta (Time & Points)
+   Question Header & Actions
    ========================= */
 .ep-ai__q-header {
   display: flex;
@@ -176,38 +191,80 @@
   flex-wrap: wrap;
   gap: 12px;
   padding-bottom: 12px;
-  border-bottom: 2px dashed rgba(20, 18, 26, 0.05);
+  border-bottom: 2px dashed rgba(20, 18, 26, 0.06);
 }
 
 .ep-ai__q-num {
   font-family: var(--ep-f-display);
   font-weight: 800;
-  font-size: 20px;
+  font-size: 18px;
   color: var(--ep-ink);
 }
 
-.ep-ai__q-meta {
-  display: flex;
-  gap: 12px;
-}
-
-.ep-ai__meta-item {
+.ep-ai__q-actions {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
+.ep-ai__meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .ep-ai__meta-item label {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
   color: var(--ep-ink-mute);
 }
 
 .ep-ai__meta-item input {
-  width: 80px;
+  width: 72px;
   text-align: center;
   font-family: var(--ep-f-num);
   font-weight: 700;
+}
+
+/* =========================
+   Icon Buttons (edit / delete)
+   ========================= */
+.ep-ai__icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(20, 18, 26, 0.12);
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+  flex-shrink: 0;
+}
+
+.ep-ai__icon-btn--edit {
+  color: var(--ep-ink-3);
+}
+.ep-ai__icon-btn--edit:hover,
+.ep-ai__icon-btn--edit.is-active {
+  background: var(--ep-primary);
+  border-color: var(--ep-primary);
+  color: #fff;
+}
+
+.ep-ai__icon-btn--del {
+  color: var(--ep-ink-mute);
+}
+.ep-ai__icon-btn--del:hover:not(:disabled) {
+  background: var(--ep-bad);
+  border-color: var(--ep-bad);
+  color: #fff;
+  transform: scale(1.08);
+}
+.ep-ai__icon-btn--del:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 /* =========================
@@ -216,14 +273,14 @@
 .ep-ai__answers {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .ep-ai__ans-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px;
+  gap: 10px;
+  padding: 8px 10px;
   border-radius: var(--ep-r-md);
   border: 2px solid transparent;
   transition: all 0.2s;
@@ -231,16 +288,17 @@
 }
 
 .ep-ai__ans-row.is-correct {
-  background: rgba(30, 158, 95, 0.08); /* ep-ok with opacity */
+  background: rgba(30, 158, 95, 0.08);
   border-color: var(--ep-ok);
 }
 
-/* Custom Radio Button */
+/* Custom Radio */
 .ep-ai__ans-radio {
   position: relative;
   display: inline-flex;
   cursor: pointer;
   padding: 4px;
+  flex-shrink: 0;
 }
 
 .ep-ai__ans-radio input {
@@ -270,13 +328,101 @@
 .ep-ai__ans-radio input:checked ~ .ep-ai__ans-custom-radio::after {
   content: "✓";
   color: #fff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 900;
 }
 
 .ep-ai__ans-input {
   flex: 1;
-  border-left: 6px solid var(--ans-color); /* Color tag from Meta */
+  border-left: 5px solid var(--ans-color);
+}
+
+/* כפתור מחיקת תשובה */
+.ep-ai__ans-del {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(20, 18, 26, 0.12);
+  background: transparent;
+  color: var(--ep-ink-mute);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+.ep-ai__ans-del:hover:not(:disabled) {
+  background: var(--ep-bad);
+  border-color: var(--ep-bad);
+  color: #fff;
+}
+.ep-ai__ans-del:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+/* כפתור הוספת תשובה */
+.ep-ai__add-ans {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px dashed rgba(20, 18, 26, 0.2);
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-body);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ep-ink-3);
+  cursor: pointer;
+  margin-top: 4px;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.ep-ai__add-ans:hover {
+  border-color: var(--ep-ok);
+  color: var(--ep-ok);
+  background: rgba(30, 158, 95, 0.05);
+}
+.ep-ai__add-ans span {
+  font-weight: 900;
+  font-size: 16px;
+  line-height: 0.8;
+}
+
+/* =========================
+   הוסף שאלה
+   ========================= */
+.ep-ai__add-q {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px;
+  background: transparent;
+  border: 2px dashed rgba(20, 18, 26, 0.18);
+  border-radius: var(--ep-r-lg);
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ep-ink-3);
+  cursor: pointer;
+  margin-top: 8px;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.ep-ai__add-q:hover {
+  border-color: var(--ep-primary);
+  background: rgba(79, 63, 245, 0.04);
+  color: var(--ep-primary);
+}
+.ep-ai__add-q span {
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 0.8;
 }
 
 /* =========================
@@ -335,7 +481,7 @@
 }
 
 /* =========================
-   Feedback Components
+   Feedback
    ========================= */
 .ep-ai__alert {
   display: flex;
@@ -366,10 +512,9 @@
 
 @keyframes ep-ai-fade-in {
   from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Custom Spinner (replaces MUI CircularProgress) */
 .ep-spinner {
   width: 24px;
   height: 24px;
@@ -384,12 +529,13 @@
 }
 
 /* =========================
-   Responsive Adjustments
+   Responsive
    ========================= */
 @media (max-width: 600px) {
   .ep-ai { padding: 16px; }
   .ep-ai__card { padding: 24px 16px; }
   .ep-ai__row { flex-direction: column; gap: 20px; }
   .ep-ai__q-header { flex-direction: column; align-items: flex-start; }
-  .ep-ai__q-meta { width: 100%; justify-content: space-between; }
+  .ep-ai__q-actions { width: 100%; justify-content: space-between; }
+  .ep-ai__meta-item input { width: 60px; }
 }

@@ -29,9 +29,10 @@ button {
   box-sizing: border-box;
 }
 
+/* אחרי */
 body {
-  background: #111;
-  color: #fff;
+  background: var(--ep-cream);
+  color: var(--ep-ink);
   direction: rtl;
   overflow-x: hidden;
 }
