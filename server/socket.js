@@ -166,7 +166,10 @@ export default function initSocket(server) {
       }
 
       // יוצר מזהה ייחודי לחדר
-      const roomId = Math.random().toString(36).substring(2, 8);
+      let roomId;
+      do {
+        roomId = Math.random().toString(36).substring(2, 8);
+      } while (rooms[roomId]);
 
       rooms[roomId] = {
         id: roomId,                 // מזהה החדר (קוד הצטרפות)
