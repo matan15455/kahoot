@@ -1,11 +1,21 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { EpLogo } from "../_shared/EpBrand";
+import { useLocation } from "react-router-dom";
 import "./Navbar.css";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
+
+  const location = useLocation();
+
+  const hideNavbar =
+    location.pathname === "/host/game" ||
+    location.pathname === "/player/game";
+
+  if (hideNavbar) 
+    return null;
 
   const handleLogout = () => {
     const confirmLogout = window.confirm("⚠️ בטוח שאתה רוצה להתנתק?");

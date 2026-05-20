@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams,useNavigate } from "react-router-dom";
 import { getSocket } from "../../socket";
 import { EpShape, ANSWER_META } from "../_shared/EpBrand";
 import ScoreTable from "../ScoreTable/ScoreTable";
@@ -10,6 +10,8 @@ export default function HostGame() {
   const roomId = searchParams.get("roomId");
 
   const socket = getSocket();
+
+  const navigate = useNavigate();
 
   const [room, setRoom] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
@@ -76,6 +78,12 @@ export default function HostGame() {
           </h1>
         </div>
         <ScoreTable players={room.players} />
+        <button
+            className="ep-host__next"
+            onClick={() => navigate("/join-room")}
+          >
+            חזרה
+        </button>
       </div>
     );
   }
