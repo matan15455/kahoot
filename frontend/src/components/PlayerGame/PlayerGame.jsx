@@ -260,6 +260,10 @@ export default function PlayerGame() {
           )}
         </header>
 
+        <div className="ep-pg__qbox">
+          <h2 className="ep-pg__qtext">{room.question.text}</h2>
+        </div>
+
         {/* רמז: בחרו תשובה */}
         <div className="ep-pg__hint">
           <p className="ep-pg__hint-label">
