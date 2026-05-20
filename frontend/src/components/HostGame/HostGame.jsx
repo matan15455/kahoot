@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams , useNavigate } from "react-router-dom";
 import { getSocket } from "../../socket";
 import "./HostGame.css";
 import ScoreTable from "../ScoreTable/ScoreTable";
@@ -13,6 +13,8 @@ export default function HostGame() {
   const [room, setRoom] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
   const timerRef = useRef(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!roomId) 
@@ -46,12 +48,23 @@ export default function HostGame() {
       }
     };
 
+    const handleRoomNotFound = () => {     
+      navigate("/my-quizzes");
+    };
+
     socket.on("roomUpdated", handleRoomUpdated);
+    socket.on("roomNotFound", handleRoomNotFound);
 
     socket.emit("requestRoomState", { roomId });
 
+    // HostGame.jsx — בתוך useEffect
+    socket.on("roomNotFound", () => {
+      navigate("/my-quizzes");
+    });
+
     return () => {
       socket.off("roomUpdated", handleRoomUpdated);
+      socket.off("roomNotFound", handleRoomNotFound);
       clearInterval(timerRef.current);
     };
   }, [roomId]);

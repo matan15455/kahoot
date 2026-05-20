@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getSocket, connectSocket } from "../../socket";
+import { useLocation } from "react-router-dom";
 import "./JoinScreen.css";
 import { useNavigate } from "react-router-dom";
 
@@ -11,6 +12,9 @@ export default function JoinScreen() {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const message = location.state?.message;
 
 
   useEffect(() => {
@@ -69,6 +73,7 @@ export default function JoinScreen() {
   if (room) {
     return (
       <div className="room-page">
+
         <div className="room-card">
           <p className="players-label">
             👥 שחקנים בחדר: <span>{room.players.length}</span>
@@ -103,6 +108,14 @@ export default function JoinScreen() {
   ========================== */
   return (
     <div className="join-container">
+
+      {message && (
+          <div className="ep-join__error" role="alert">
+            <span className="ep-join__error-icon">!</span>
+            <span>{message}</span>
+          </div>
+      )}
+
       <h1>הצטרף לחדר</h1>
 
       <input

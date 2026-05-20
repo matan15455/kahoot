@@ -357,7 +357,12 @@ export default function initSocket(server) {
     });
 
     // כשנכנסים למסך המשחק, יש חלון זמן קצר בין רישום ה-listener לבין הרגע שה-socket מוכן — אם roomUpdated נשלח מהשרת בדיוק בחלון הזה, הלקוח לא יקבל אותו.
+    // server/socket.js
     socket.on("requestRoomState", ({ roomId }) => {
+      if (!rooms[roomId]) {
+        socket.emit("roomNotFound", { roomId });
+        return;
+      }
       emitRoom(roomId);
     });
 
@@ -373,7 +378,7 @@ export default function initSocket(server) {
         // אם המארח התנתק - סגור את החדר
         if (String(room.hostId) === String(socket.mongoId)) {
           clearTimeout(room.timer.timeoutId);
-          io.to(roomId).emit("roomUpdated", { ...room, phase: "END" });
+          io.to(roomId).emit("hostLeft");
           delete rooms[roomId];
           continue;
         }

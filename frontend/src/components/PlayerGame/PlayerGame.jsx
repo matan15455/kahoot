@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams , useNavigate} from "react-router-dom";
 import { getSocket } from "../../socket";
 import "./PlayerGame.css";
 import ScoreTable from "../ScoreTable/ScoreTable";
@@ -7,6 +7,7 @@ import ScoreTable from "../ScoreTable/ScoreTable";
 export default function PlayerGame() {
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get("roomId");
+  const navigate = useNavigate();
 
   const socket = getSocket();
 
@@ -53,15 +54,22 @@ export default function PlayerGame() {
       }
     };
 
+    const handleHostLeft = () => {
+      navigate("/join-room", { state: { message: "המארח עזב את המשחק" } });
+    };
+
+    socket.on("hostLeft", handleHostLeft);
+
     socket.emit("requestRoomState", { roomId });
 
     socket.on("roomUpdated", handleRoomUpdated);
 
     return () => {
       socket.off("roomUpdated", handleRoomUpdated);
+      socket.off("hostLeft", handleHostLeft);
       clearInterval(timerRef.current);
     };
-  }, [roomId]);
+  }, [roomId,navigate]);
 
   /* =====================================================
      Answer
