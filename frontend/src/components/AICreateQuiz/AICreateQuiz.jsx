@@ -1,16 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { EpShape, ANSWER_META } from "../_shared/EpBrand";
+import CircularProgress from "@mui/material/CircularProgress";
 import "./AICreateQuiz.css";
 
-const ANSWER_COLORS = [
-  "var(--ep-ans-1)",
-  "var(--ep-ans-2)",
-  "var(--ep-ans-3)",
-  "var(--ep-ans-4)",
-];
-
 export default function AICreateQuiz() {
+
   const { token } = useAuth();
 
   const [topic, setTopic] = useState("");
@@ -22,16 +18,17 @@ export default function AICreateQuiz() {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
-  // אינדקס השאלה שנמצאת במצב עריכה (null = אין)
-  const [editingIndex, setEditingIndex] = useState(null);
+  const generateQuiz = async (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    if (loading) return;
 
-  /* ── Generate ── */
-  const generateQuiz = async () => {
-    if (loading) 
+    if (!topic.trim()) {
+      setError("יש להזין נושא");
       return;
-    if (!topic.trim()) 
-      return alert("יש להזין נושא");
+    }
+    setError("");
 
     try {
       setLoading(true);
@@ -43,36 +40,37 @@ export default function AICreateQuiz() {
 
       setQuiz({
         title: res.data.title || topic,
-        description: res.data.description || "AI quiz",
+        description: res.data.description || "AI quiz"
       });
 
-      const generated = res.data.questions.map((q) => ({
+      const generated = res.data.questions.map(q => ({
         text: q.text,
         type: "multiple-choice",
         time: 30,
         points: 1,
         answers: q.options.map((opt, i) => ({
           text: opt,
-          isCorrect: i === q.correctIndex,
-        })),
+          isCorrect: i === q.correctIndex
+        }))
       }));
 
       setQuestions(generated);
-      setEditingIndex(null);
+
     } catch (err) {
       console.error(err);
-      alert("בעיה ביצירת החידון");
+      setError("בעיה ביצירת החידון. נסו שוב או שנו את הנושא.");
     }
 
     setLoading(false);
   };
 
-  /* ── Field updates (non-edit mode) ── */
+
   const updateQuestionField = (index, field, value) => {
     const updated = [...questions];
     updated[index][field] = field === "text" ? value : Number(value);
     setQuestions(updated);
   };
+
 
   const updateAnswer = (qIndex, aIndex, value) => {
     const updated = [...questions];
@@ -80,95 +78,92 @@ export default function AICreateQuiz() {
     setQuestions(updated);
   };
 
+
   const updateCorrectAnswer = (qIndex, aIndex) => {
     const updated = [...questions];
-    updated[qIndex].answers = updated[qIndex].answers.map((a, i) => ({
-      ...a,
-      isCorrect: i === aIndex,
-    }));
+
+    updated[qIndex].answers =
+      updated[qIndex].answers.map((a, i) => ({
+        ...a,
+        isCorrect: i === aIndex
+      }));
+
     setQuestions(updated);
   };
 
-  /* ── Delete question ── */
-  const deleteQuestion = (index) => {
-    if (questions.length <= 1) 
-      return alert("חייבת להיות לפחות שאלה אחת");
-    setQuestions(questions.filter((_, i) => i !== index));
-    if (editingIndex === index) 
-      setEditingIndex(null);
-    else if (editingIndex > index) 
-      setEditingIndex(editingIndex - 1);
-  };
-
-  /* ── Add blank question ── */
-  const addQuestion = () => {
-    const blank = {
-      text: "",
-      type: "multiple-choice",
-      time: 30,
-      points: 1,
-      answers: [
-        { text: "", isCorrect: true },
-        { text: "", isCorrect: false },
-        { text: "", isCorrect: false },
-        { text: "", isCorrect: false },
-      ],
-    };
-    const newQuestions = [...questions, blank];
-    setQuestions(newQuestions);
-    setEditingIndex(newQuestions.length - 1); // פותח עריכה על השאלה החדשה
-  };
-
-  /* ── Edit-mode helpers ── */
-  const startEditing = (index) =>
-    setEditingIndex(editingIndex === index ? null : index);
-
-  const addAnswerToQuestion = (qIndex) => {
+  const addAnswer = (qIndex) => {
     const updated = [...questions];
     if (updated[qIndex].answers.length >= 8) return;
     updated[qIndex].answers.push({ text: "", isCorrect: false });
     setQuestions(updated);
   };
 
-  const removeAnswerFromQuestion = (qIndex, aIndex) => {
+  const removeAnswer = (qIndex, aIndex) => {
     const updated = [...questions];
     if (updated[qIndex].answers.length <= 2) return;
-    updated[qIndex].answers = updated[qIndex].answers.filter(
-      (_, i) => i !== aIndex
-    );
-    // וודא שיש תשובה נכונה
-    const hasCorrect = updated[qIndex].answers.some((a) => a.isCorrect);
-    if (!hasCorrect) updated[qIndex].answers[0].isCorrect = true;
+
+    const wasCorrect = updated[qIndex].answers[aIndex].isCorrect;
+    updated[qIndex].answers = updated[qIndex].answers.filter((_, i) => i !== aIndex);
+
+    // אם מחקנו את הנכונה — נסמן את הראשונה כנכונה
+    if (wasCorrect && !updated[qIndex].answers.some(a => a.isCorrect)) {
+      updated[qIndex].answers[0].isCorrect = true;
+    }
+
     setQuestions(updated);
   };
 
-  /* ── Save ── */
+  const removeQuestion = (qIndex) => {
+    if (!window.confirm("למחוק את השאלה?")) return;
+    setQuestions(questions.filter((_, i) => i !== qIndex));
+  };
+
+  const addQuestion = () => {
+    setQuestions([
+      ...questions,
+      {
+        text: "",
+        type: "multiple-choice",
+        time: 30,
+        points: 1,
+        answers: [
+          { text: "", isCorrect: true },
+          { text: "", isCorrect: false },
+          { text: "", isCorrect: false },
+          { text: "", isCorrect: false },
+        ]
+      }
+    ]);
+  };
+
+
   const handleSubmit = async () => {
+
     if (!quiz) return alert("חסר חידון");
     if (questions.length === 0) return alert("אין שאלות");
-
-    const invalid = questions.find(
-      (q) =>
-        !q.text.trim() ||
-        q.answers.some((a) => !a.text.trim()) ||
-        !q.answers.some((a) => a.isCorrect)
-    );
-    if (invalid) return alert("יש שאלות עם שדות ריקים או ללא תשובה נכונה");
 
     try {
       setSaving(true);
 
       await axios.post(
         "http://localhost:5000/quizzes",
-        { ...quiz, questions },
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          ...quiz,
+          questions
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
 
       setSuccess(true);
-      setTimeout(() => setSuccess(false), 2000);
+      setTimeout(() => setSuccess(false), 1500);
+
       setQuiz(null);
       setQuestions([]);
-      setEditingIndex(null);
+
     } catch (err) {
       console.error(err);
       alert("שגיאה בשמירה");
@@ -177,258 +172,339 @@ export default function AICreateQuiz() {
     setSaving(false);
   };
 
-  /* ================================================================
-     RENDER
-  ================================================================ */
+  const difficultyLabels = {
+    easy: "קל",
+    medium: "בינוני",
+    hard: "קשה"
+  };
+
+  /* ============ Step 1: Generate form ============ */
+  if (!quiz) {
+    return (
+      <div className="ep-ai">
+        {success && (
+          <div className="ep-ai__toast" role="status">
+            <span className="ep-ai__toast-icon">✓</span>
+            החידון נשמר בהצלחה
+          </div>
+        )}
+
+        <form className="ep-ai__form" onSubmit={generateQuiz} noValidate>
+
+          <div className="ep-ai__form-head">
+            <p className="ep-ai__kicker">
+              <span className="ep-ai__sparkle">✦</span>
+              חידון חדש · בעזרת AI
+            </p>
+            <h1 className="ep-ai__title">
+              תנו ל-AI<br />
+              <span className="ep-ai__title-accent">להציע.</span>
+            </h1>
+            <p className="ep-ai__sub">
+              הזינו נושא, בחרו רמת קושי וכמות שאלות.
+              ה-AI ייצור טיוטה ואתם תערכו לפני השמירה.
+            </p>
+          </div>
+
+          <div className="ep-ai__fields">
+            <div className="ep-field">
+              <label className="ep-field__label" htmlFor="ai-topic">
+                נושא החידון
+              </label>
+              <textarea
+                id="ai-topic"
+                className="ep-field__input ep-ai__topic"
+                placeholder="לדוגמה: מלחמות העולם, פיזיקה כיתה י', ספרי בראשית…"
+                value={topic}
+                onChange={(e) => { setTopic(e.target.value); if (error) setError(""); }}
+                rows={3}
+                maxLength={500}
+                autoFocus
+              />
+              <p className="ep-field__hint">
+                ככל שהנושא יותר ספציפי — השאלות יותר מדויקות.
+              </p>
+            </div>
+
+            <div className="ep-ai__row-2">
+              <div className="ep-field">
+                <label className="ep-field__label">רמת קושי</label>
+                <div className="ep-ai__segmented" role="radiogroup">
+                  {["easy", "medium", "hard"].map((d) => (
+                    <button
+                      key={d}
+                      type="button"
+                      className={"ep-ai__seg" + (difficulty === d ? " is-active" : "")}
+                      onClick={() => setDifficulty(d)}
+                      role="radio"
+                      aria-checked={difficulty === d}
+                    >
+                      {difficultyLabels[d]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="ep-field">
+                <label className="ep-field__label" htmlFor="ai-num">
+                  מספר שאלות
+                </label>
+                <div className="ep-ai__stepper">
+                  <button
+                    type="button"
+                    className="ep-ai__stepper-btn"
+                    onClick={() => setNumQuestions(Math.max(1, numQuestions - 1))}
+                    aria-label="הפחת"
+                  >
+                    −
+                  </button>
+                  <input
+                    id="ai-num"
+                    className="ep-ai__stepper-input"
+                    type="number"
+                    min={1}
+                    max={50}
+                    value={numQuestions}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      if (v >= 1 && v <= 50) setNumQuestions(v);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="ep-ai__stepper-btn"
+                    onClick={() => setNumQuestions(Math.min(50, numQuestions + 1))}
+                    aria-label="הגדל"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {error && (
+              <div className="ep-ai__error" role="alert">
+                <span className="ep-ai__error-icon">!</span>
+                <span>{error}</span>
+              </div>
+            )}
+          </div>
+
+          <button
+            className="ep-ai__submit"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <span className="ep-ai__loader" />
+                <span>ה-AI חושב…</span>
+              </>
+            ) : (
+              <>
+                <span className="ep-ai__sparkle">✦</span>
+                <span>צרו עבורי חידון</span>
+              </>
+            )}
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  /* ============ Step 2: Review & edit ============ */
+  const totalPoints = questions.reduce((s, q) => s + (q.points || 0), 0);
+  const totalTime = questions.reduce((s, q) => s + (q.time || 0), 0);
+
   return (
     <div className="ep-ai">
-      <div className="ep-ai__container">
 
-        {success && (
-          <div className="ep-ai__alert">
-            <span className="ep-ai__alert-icon">✓</span>
-            החידון נשמר בהצלחה במערכת!
-          </div>
-        )}
+      <header className="ep-ai__head">
+        <div className="ep-ai__head-text">
+          <p className="ep-ai__kicker">
+            <span className="ep-ai__sparkle">✦</span>
+            טיוטה של AI · עריכה לפני שמירה
+          </p>
+          <h1 className="ep-ai__rev-title">{quiz.title}</h1>
+          {quiz.description && quiz.description !== "AI quiz" && (
+            <p className="ep-ai__rev-desc">{quiz.description}</p>
+          )}
+        </div>
+        <div className="ep-ai__head-actions">
+          <button
+            className="ep-ai__btn ep-ai__btn--ghost"
+            onClick={() => {
+              if (!window.confirm("לזרוק את הטיוטה ולהתחיל מחדש?")) return;
+              setQuiz(null);
+              setQuestions([]);
+            }}
+          >
+            ← התחל מחדש
+          </button>
+          <button
+            className="ep-ai__btn ep-ai__btn--primary"
+            onClick={handleSubmit}
+            disabled={saving}
+          >
+            {saving ? <CircularProgress size={20} sx={{ color: "currentColor" }} /> : "שמור חידון"}
+          </button>
+        </div>
+      </header>
 
-        {/* ══════════ שלב 1: טופס יצירה ══════════ */}
-        {!quiz ? (
-          <div className="ep-ai__card ep-ai__setup">
-            <div className="ep-ai__header">
-              <span className="ep-ai__kicker">מחולל ה-AI</span>
-              <h2 className="ep-ai__title">יצירת חידון חכם</h2>
-              <p className="ep-ai__subtitle">
-                הזינו נושא והבינה המלאכותית שלנו תעשה את השאר.
-              </p>
+      {/* סטטיסטיקה */}
+      <div className="ep-ai__stats">
+        <div className="ep-ai__stat">
+          <span className="ep-ai__stat-label">שאלות</span>
+          <span className="ep-ai__stat-value">{questions.length}</span>
+        </div>
+        <div className="ep-ai__stat">
+          <span className="ep-ai__stat-label">סה"כ נקודות</span>
+          <span className="ep-ai__stat-value">{totalPoints}</span>
+        </div>
+        <div className="ep-ai__stat">
+          <span className="ep-ai__stat-label">משך משוער</span>
+          <span className="ep-ai__stat-value">{Math.ceil(totalTime / 60)} <small>דק'</small></span>
+        </div>
+      </div>
+
+      {/* רשימת שאלות לעריכה */}
+      <ul className="ep-ai__qlist">
+        {questions.map((q, i) => (
+          <li className="ep-ai__qcard" key={i}>
+
+            <div className="ep-ai__qcard-head">
+              <span className="ep-ai__qcard-num">שאלה {String(i + 1).padStart(2, "0")}</span>
+              <div className="ep-ai__qcard-head-end">
+                <span className="ep-ai__qcard-badge">
+                  <span className="ep-ai__sparkle">✦</span> AI
+                </span>
+                <button
+                  type="button"
+                  className="ep-ai__qcard-del"
+                  onClick={() => removeQuestion(i)}
+                  aria-label="מחק שאלה"
+                  title="מחק שאלה"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
-            <div className="ep-ai__form">
-              <div className="ep-ai__field">
-                <label>נושא החידון</label>
+            <div className="ep-field">
+              <label className="ep-field__label">טקסט השאלה</label>
+              <textarea
+                className="ep-field__input ep-ai__qcard-text"
+                value={q.text}
+                onChange={(e) => updateQuestionField(i, "text", e.target.value)}
+                rows={2}
+                maxLength={200}
+              />
+            </div>
+
+            <div className="ep-ai__row-2">
+              <div className="ep-field">
+                <label className="ep-field__label">זמן (שניות)</label>
                 <input
-                  className="ep-input"
-                  placeholder="לדוגמה: היסטוריה של האינטרנט..."
-                  value={topic}
-                  onChange={(e) => setTopic(e.target.value)}
-                  disabled={loading}
+                  className="ep-field__input"
+                  type="number"
+                  min={5}
+                  max={300}
+                  value={q.time}
+                  onChange={(e) => updateQuestionField(i, "time", e.target.value)}
                 />
               </div>
-
-              <div className="ep-ai__row">
-                <div className="ep-ai__field">
-                  <label>רמת קושי</label>
-                  <select
-                    className="ep-input"
-                    value={difficulty}
-                    onChange={(e) => setDifficulty(e.target.value)}
-                    disabled={loading}
-                  >
-                    <option value="easy">קל</option>
-                    <option value="medium">בינוני</option>
-                    <option value="hard">קשה</option>
-                  </select>
-                </div>
-
-                <div className="ep-ai__field">
-                  <label>מספר שאלות</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="50"
-                    className="ep-input"
-                    value={numQuestions}
-                    onChange={(e) => setNumQuestions(Number(e.target.value))}
-                    disabled={loading}
-                  />
-                </div>
+              <div className="ep-field">
+                <label className="ep-field__label">נקודות</label>
+                <input
+                  className="ep-field__input"
+                  type="number"
+                  min={1}
+                  max={5000}
+                  value={q.points}
+                  onChange={(e) => updateQuestionField(i, "points", e.target.value)}
+                />
               </div>
-
-              <button
-                className={`ep-btn ep-btn--primary ${loading ? "is-loading" : ""}`}
-                onClick={generateQuiz}
-                disabled={loading}
-              >
-                {loading ? (
-                  <div className="ep-spinner ep-spinner--white" />
-                ) : (
-                  <>✨ צור חידון</>
-                )}
-              </button>
-            </div>
-          </div>
-
-        ) : (
-
-          /* ══════════ שלב 2: עורך שאלות ══════════ */
-          <div className="ep-ai__editor">
-            <div className="ep-ai__editor-head">
-              <span className="ep-ai__kicker">עריכה מקדימה</span>
-              <h2 className="ep-ai__title">{quiz.title}</h2>
-              <p className="ep-ai__editor-count">
-                {questions.length} שאלות
-              </p>
             </div>
 
-            <div className="ep-ai__questions">
-              {questions.map((q, i) => {
-                const isEditing = editingIndex === i;
+            <div className="ep-ai__answers-head">
+              <span className="ep-field__label">תשובות · סמנו את הנכונה</span>
+              <span className="ep-ai__answers-count">
+                {q.answers.length} {q.answers.length === 1 ? "תשובה" : "תשובות"}
+              </span>
+            </div>
 
+            <ul className="ep-ai__answers">
+              {q.answers.map((a, aIndex) => {
+                const meta = ANSWER_META[aIndex % ANSWER_META.length];
                 return (
-                  <div
-                    className={`ep-ai__q-card ${isEditing ? "is-editing" : ""}`}
-                    key={i}
+                  <li
+                    key={aIndex}
+                    className={"ep-ai__answer" + (a.isCorrect ? " is-correct" : "")}
                   >
-                    {/* ── ראש כרטיס ── */}
-                    <div className="ep-ai__q-header">
-                      <span className="ep-ai__q-num">שאלה {i + 1}</span>
-
-                      <div className="ep-ai__q-actions">
-                        {/* זמן + נקודות — תמיד נגישים */}
-                        <div className="ep-ai__meta-item">
-                          <label>⏱</label>
-                          <input
-                            type="number"
-                            min="5"
-                            max="120"
-                            className="ep-input ep-input--sm"
-                            value={q.time}
-                            onChange={(e) =>
-                              updateQuestionField(i, "time", e.target.value)
-                            }
-                          />
-                        </div>
-                        <div className="ep-ai__meta-item">
-                          <label>⭐</label>
-                          <input
-                            type="number"
-                            min="1"
-                            max="1000"
-                            className="ep-input ep-input--sm"
-                            value={q.points}
-                            onChange={(e) =>
-                              updateQuestionField(i, "points", e.target.value)
-                            }
-                          />
-                        </div>
-
-                        {/* עריכה */}
-                        <button
-                          className={`ep-ai__icon-btn ep-ai__icon-btn--edit ${isEditing ? "is-active" : ""}`}
-                          onClick={() => startEditing(i)}
-                          title={isEditing ? "סגור עריכה" : "ערוך שאלה"}
-                        >
-                          {isEditing ? "✕" : "✏️"}
-                        </button>
-
-                        {/* מחיקה */}
-                        <button
-                          className="ep-ai__icon-btn ep-ai__icon-btn--del"
-                          onClick={() => deleteQuestion(i)}
-                          title="מחק שאלה"
-                          disabled={questions.length <= 1}
-                        >
-                          🗑
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* ── טקסט שאלה ── */}
-                    <textarea
-                      className="ep-input ep-textarea"
-                      value={q.text}
-                      onChange={(e) =>
-                        updateQuestionField(i, "text", e.target.value)
-                      }
-                      placeholder="כתבו את השאלה כאן..."
+                    <span
+                      className="ep-ai__answer-letter"
+                      style={{ background: meta.color, color: meta.textOn }}
+                    >
+                      <span>{meta.letter}</span>
+                      <span className="ep-ai__answer-glyph" aria-hidden="true">
+                        <EpShape kind={meta.shape} size={12} />
+                      </span>
+                    </span>
+                    <input
+                      className="ep-field__input ep-ai__answer-input"
+                      type="text"
+                      value={a.text}
+                      onChange={(e) => updateAnswer(i, aIndex, e.target.value)}
+                      placeholder={`תשובה ${aIndex + 1}`}
                     />
-
-                    {/* ── תשובות ── */}
-                    <div className="ep-ai__answers">
-                      {q.answers.map((a, aIndex) => {
-                        const color =
-                          ANSWER_COLORS[aIndex % ANSWER_COLORS.length];
-                        return (
-                          <div
-                            key={aIndex}
-                            className={`ep-ai__ans-row ${a.isCorrect ? "is-correct" : ""}`}
-                            style={{ "--ans-color": color }}
-                          >
-                            {/* רדיו תשובה נכונה */}
-                            <label className="ep-ai__ans-radio">
-                              <input
-                                type="radio"
-                                name={`correct-${i}`}
-                                checked={a.isCorrect}
-                                onChange={() => updateCorrectAnswer(i, aIndex)}
-                              />
-                              <span className="ep-ai__ans-custom-radio" />
-                            </label>
-
-                            {/* טקסט תשובה */}
-                            <input
-                              className="ep-input ep-ai__ans-input"
-                              value={a.text}
-                              onChange={(e) =>
-                                updateAnswer(i, aIndex, e.target.value)
-                              }
-                              placeholder={`תשובה ${aIndex + 1}`}
-                            />
-
-                            {/* מחיקת תשובה — רק במצב עריכה */}
-                            {isEditing && (
-                              <button
-                                className="ep-ai__ans-del"
-                                onClick={() =>
-                                  removeAnswerFromQuestion(i, aIndex)
-                                }
-                                disabled={q.answers.length <= 2}
-                                title="מחק תשובה"
-                              >
-                                ✕
-                              </button>
-                            )}
-                          </div>
-                        );
-                      })}
-
-                      {/* הוסף תשובה — רק במצב עריכה */}
-                      {isEditing && q.answers.length < 8 && (
-                        <button
-                          className="ep-ai__add-ans"
-                          onClick={() => addAnswerToQuestion(i)}
-                        >
-                          <span>+</span> הוסף תשובה
-                        </button>
-                      )}
-                    </div>
-                  </div>
+                    <label className="ep-ai__answer-mark" title="התשובה הנכונה">
+                      <input
+                        type="radio"
+                        name={`correct-${i}`}
+                        checked={a.isCorrect}
+                        onChange={() => updateCorrectAnswer(i, aIndex)}
+                      />
+                      <span className="ep-ai__answer-mark-circle">
+                        {a.isCorrect ? "✓" : ""}
+                      </span>
+                    </label>
+                    <button
+                      type="button"
+                      className="ep-ai__answer-del"
+                      onClick={() => removeAnswer(i, aIndex)}
+                      disabled={q.answers.length <= 2}
+                      aria-label="מחק תשובה"
+                      title={q.answers.length <= 2 ? "חייבות לפחות 2 תשובות" : "מחק תשובה"}
+                    >
+                      ✕
+                    </button>
+                  </li>
                 );
               })}
-            </div>
+            </ul>
 
-            {/* ── הוסף שאלה ── */}
-            <button className="ep-ai__add-q" onClick={addQuestion}>
-              <span>+</span>
-              הוסף שאלה ידנית
-            </button>
-
-            {/* ── שמור ── */}
-            <div className="ep-ai__actions">
+            {q.answers.length < 8 && (
               <button
-                className={`ep-btn ep-btn--primary ep-btn--lg ${saving ? "is-loading" : ""}`}
-                onClick={handleSubmit}
-                disabled={saving}
+                type="button"
+                className="ep-ai__add-answer"
+                onClick={() => addAnswer(i)}
               >
-                {saving ? (
-                  <div className="ep-spinner ep-spinner--white" />
-                ) : (
-                  "שמור חידון במערכת"
-                )}
+                <span className="ep-ai__add-plus">+</span>
+                הוסף תשובה
               </button>
-            </div>
-          </div>
-        )}
-      </div>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      <button
+        type="button"
+        className="ep-ai__add-question"
+        onClick={addQuestion}
+      >
+        <span className="ep-ai__add-plus">+</span>
+        הוסף שאלה
+      </button>
     </div>
   );
 }

@@ -1,541 +1,682 @@
 /* ===================================================================
-   EduPlay — AI Create Quiz
+   EduPlay — AICreateQuiz (redesign)
+   2 שלבים: טופס יצירה (נושא + קושי + כמות) → טיוטה לעריכה
    =================================================================== */
 
 .ep-ai {
   min-height: calc(100vh - 70px);
-  padding: 32px 16px;
+  padding: 36px 28px 80px;
   background: var(--ep-cream);
   color: var(--ep-ink);
   font-family: var(--ep-f-body);
   direction: rtl;
-}
-
-.ep-ai__container {
-  max-width: 680px;
+  max-width: 960px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  position: relative;
 }
 
-/* =========================
-   Typography & Headers
-   ========================= */
-.ep-ai__kicker {
-  font-family: var(--ep-f-num);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--ep-primary);
-  background: var(--ep-primary-soft);
-  padding: 4px 10px;
-  border-radius: var(--ep-r-pill);
+/* ניצוץ AI */
+.ep-ai__sparkle {
   display: inline-block;
-  margin-bottom: 12px;
+  color: var(--ep-primary);
+  font-weight: 900;
+  animation: ep-ai-twinkle 2s ease-in-out infinite;
+}
+@keyframes ep-ai-twinkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85) rotate(10deg); }
 }
 
-.ep-ai__title {
-  margin: 0 0 8px;
-  font-family: var(--ep-f-display);
-  font-weight: 800;
-  font-size: 32px;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-}
-
-.ep-ai__subtitle {
-  margin: 0;
-  font-size: 16px;
-  color: var(--ep-ink-mute);
-}
-
-.ep-ai__header {
-  text-align: center;
-  margin-bottom: 32px;
-}
-
-.ep-ai__editor-head {
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.ep-ai__editor-count {
-  margin: 6px 0 0;
-  font-family: var(--ep-f-num);
-  font-size: 13px;
-  color: var(--ep-ink-mute);
-  font-weight: 600;
-}
-
-/* =========================
-   Cards & Surfaces
-   ========================= */
-.ep-ai__card {
-  background: var(--ep-paper);
-  border: 1px solid rgba(20, 18, 26, 0.06);
-  border-radius: var(--ep-r-xl);
-  padding: 32px;
-  box-shadow: var(--ep-sh-2);
-}
-
-.ep-ai__q-card {
-  background: var(--ep-paper);
-  border: 2px solid rgba(20, 18, 26, 0.07);
-  border-radius: var(--ep-r-lg);
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  box-shadow: var(--ep-sh-1);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.ep-ai__q-card:focus-within {
-  border-color: var(--ep-primary);
-  box-shadow: 0 0 0 4px var(--ep-primary-soft);
-}
-
-/* כרטיס במצב עריכה פעילה */
-.ep-ai__q-card.is-editing {
-  border-color: var(--ep-primary);
-  box-shadow: 0 0 0 4px var(--ep-primary-soft);
-  background: #fefcff;
-}
-
-.ep-ai__questions {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-/* =========================
-   Forms & Inputs
-   ========================= */
-.ep-ai__form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.ep-ai__row {
-  display: flex;
-  gap: 16px;
-}
-.ep-ai__row > * {
-  flex: 1;
-}
-
-.ep-ai__field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.ep-ai__field label {
+/* Toast */
+.ep-ai__toast {
+  position: fixed;
+  top: 88px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  background: var(--ep-ok);
+  color: #fff;
+  border-radius: var(--ep-r-pill);
   font-family: var(--ep-f-display);
   font-weight: 700;
-  font-size: 14px;
-  color: var(--ep-ink-2);
-}
-
-/* Shared Input Style */
-.ep-input {
-  width: 100%;
-  padding: 14px 16px;
-  background: #fff;
-  border: 2px solid rgba(20, 18, 26, 0.1);
-  border-radius: var(--ep-r-md);
-  font-family: var(--ep-f-body);
-  font-size: 16px;
-  color: var(--ep-ink);
-  transition: all 0.2s ease;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.ep-input:focus {
-  border-color: var(--ep-primary);
-  background: #fff;
-  box-shadow: 0 0 0 4px var(--ep-primary-soft);
-}
-
-.ep-input:disabled {
-  opacity: 0.6;
-  background: var(--ep-cream-2);
-  cursor: not-allowed;
-}
-
-.ep-input--sm {
-  padding: 8px 12px;
-  font-size: 14px;
-}
-
-.ep-textarea {
-  resize: vertical;
-  min-height: 80px;
-  font-family: var(--ep-f-display);
-  font-weight: 600;
-  font-size: 17px;
-  line-height: 1.4;
-}
-
-/* =========================
-   Question Header & Actions
-   ========================= */
-.ep-ai__q-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding-bottom: 12px;
-  border-bottom: 2px dashed rgba(20, 18, 26, 0.06);
-}
-
-.ep-ai__q-num {
-  font-family: var(--ep-f-display);
-  font-weight: 800;
-  font-size: 18px;
-  color: var(--ep-ink);
-}
-
-.ep-ai__q-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.ep-ai__meta-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.ep-ai__meta-item label {
-  font-size: 14px;
-  color: var(--ep-ink-mute);
-}
-
-.ep-ai__meta-item input {
-  width: 72px;
-  text-align: center;
-  font-family: var(--ep-f-num);
-  font-weight: 700;
-}
-
-/* =========================
-   Icon Buttons (edit / delete)
-   ========================= */
-.ep-ai__icon-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid rgba(20, 18, 26, 0.12);
-  background: transparent;
-  cursor: pointer;
   font-size: 15px;
+  box-shadow: 0 8px 24px rgba(30, 158, 95, 0.3);
+  z-index: 100;
+  animation: ep-ai-toast 0.3s ease-out;
+}
+.ep-ai__toast-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+  font-weight: 900;
+}
+@keyframes ep-ai-toast {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* =========================
+   STEP 1 — Generate form
+   ========================= */
+.ep-ai__form {
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.06);
+  border-radius: var(--ep-r-xl);
+  padding: 44px 44px 36px;
+  max-width: 640px;
+  margin: 24px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  box-shadow: 0 12px 32px rgba(20, 18, 26, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+/* shimmer רקע עדין */
+.ep-ai__form::before {
+  content: "";
+  position: absolute;
+  inset-block-start: -120px;
+  inset-inline-end: -120px;
+  width: 280px;
+  height: 280px;
+  background: var(--ep-primary);
+  border-radius: 50%;
+  opacity: 0.06;
+  filter: blur(2px);
+  z-index: 0;
+}
+.ep-ai__form > * { position: relative; z-index: 1; }
+
+.ep-ai__form-head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ep-ai__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  margin: 0 0 4px;
+  font-family: var(--ep-f-num);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ep-ink-mute);
+  letter-spacing: 0.04em;
+}
+
+.ep-ai__title {
+  margin: 0;
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 48px;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.ep-ai__title-accent { color: var(--ep-primary); }
+
+.ep-ai__sub {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ep-ink-3);
+}
+
+.ep-ai__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.ep-ai__topic {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.5;
+  font-family: var(--ep-f-body);
+  font-size: 16px;
+}
+
+.ep-ai__row-2 {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 14px;
+}
+
+/* Segmented control — קושי */
+.ep-ai__segmented {
+  display: flex;
+  background: var(--ep-cream);
+  border: 2px solid rgba(20, 18, 26, 0.08);
+  border-radius: var(--ep-r-md);
+  padding: 4px;
+  gap: 4px;
+}
+.ep-ai__seg {
+  flex: 1;
+  padding: 12px 8px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  font-family: var(--ep-f-body);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ep-ink-3);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.ep-ai__seg:hover:not(.is-active) {
+  background: rgba(20, 18, 26, 0.04);
+  color: var(--ep-ink);
+}
+.ep-ai__seg.is-active {
+  background: var(--ep-ink);
+  color: var(--ep-paper);
+}
+
+/* Stepper — כמות שאלות */
+.ep-ai__stepper {
+  display: flex;
+  align-items: stretch;
+  background: var(--ep-paper);
+  border: 2px solid rgba(20, 18, 26, 0.08);
+  border-radius: var(--ep-r-md);
+  overflow: hidden;
+  height: 50px;
+}
+.ep-ai__stepper-btn {
+  width: 44px;
+  background: transparent;
+  border: none;
+  font-family: var(--ep-f-display);
+  font-weight: 900;
+  font-size: 22px;
+  color: var(--ep-ink-3);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.ep-ai__stepper-btn:hover {
+  background: var(--ep-cream-2);
+  color: var(--ep-ink);
+}
+.ep-ai__stepper-input {
+  flex: 1;
+  width: 0;
+  background: transparent;
+  border: none;
+  border-inline: 1px solid rgba(20, 18, 26, 0.08);
+  text-align: center;
+  font-family: var(--ep-f-num);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--ep-ink);
+  outline: none;
+  -moz-appearance: textfield;
+}
+.ep-ai__stepper-input::-webkit-outer-spin-button,
+.ep-ai__stepper-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* שגיאה */
+.ep-ai__error {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: rgba(214, 58, 45, 0.08);
+  border: 1px solid rgba(214, 58, 45, 0.25);
+  border-radius: var(--ep-r-sm);
+  font-size: 14px;
+  color: var(--ep-bad);
+}
+.ep-ai__error-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ep-bad);
+  color: #fff;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
   flex-shrink: 0;
 }
 
-.ep-ai__icon-btn--edit {
-  color: var(--ep-ink-3);
-}
-.ep-ai__icon-btn--edit:hover,
-.ep-ai__icon-btn--edit.is-active {
+/* Submit */
+.ep-ai__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 18px 22px;
   background: var(--ep-primary);
-  border-color: var(--ep-primary);
   color: #fff;
+  border: none;
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 17px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+  box-shadow: 0 5px 0 0 var(--ep-primary-deep);
+}
+.ep-ai__submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 0 var(--ep-primary-deep);
+}
+.ep-ai__submit:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 3px 0 0 var(--ep-primary-deep);
+}
+.ep-ai__submit:disabled {
+  background: var(--ep-ink-mute);
+  box-shadow: 0 3px 0 0 rgba(20, 18, 26, 0.2);
+  cursor: not-allowed;
+}
+.ep-ai__submit .ep-ai__sparkle {
+  color: var(--ep-ans-3);
+}
+.ep-ai__submit:disabled .ep-ai__sparkle { color: rgba(255, 255, 255, 0.5); }
+
+/* Loader spinner */
+.ep-ai__loader {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  display: inline-block;
+  animation: ep-ai-spin 0.7s linear infinite;
+}
+@keyframes ep-ai-spin { to { transform: rotate(360deg); } }
+
+/* =========================
+   STEP 2 — Review & edit
+   ========================= */
+.ep-ai__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 22px;
+  margin-bottom: 22px;
+}
+.ep-ai__head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.ep-ai__rev-title {
+  margin: 0;
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 38px;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+}
+.ep-ai__rev-desc {
+  margin: 4px 0 0;
+  font-size: 14.5px;
+  color: var(--ep-ink-3);
+  line-height: 1.5;
+}
+.ep-ai__head-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
-.ep-ai__icon-btn--del {
+.ep-ai__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 20px;
+  background: var(--ep-paper);
+  color: var(--ep-ink);
+  border: 1px solid rgba(20, 18, 26, 0.12);
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-body);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.ep-ai__btn--ghost { background: transparent; }
+.ep-ai__btn--ghost:hover { background: rgba(20, 18, 26, 0.05); }
+
+.ep-ai__btn--primary {
+  background: var(--ep-primary);
+  color: #fff;
+  border-color: var(--ep-primary);
+  box-shadow: 0 3px 0 0 var(--ep-primary-deep);
+}
+.ep-ai__btn--primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 0 var(--ep-primary-deep);
+  background: var(--ep-primary-deep);
+  border-color: var(--ep-primary-deep);
+}
+
+/* סטטיסטיקה */
+.ep-ai__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.06);
+  border-radius: var(--ep-r-lg);
+  padding: 18px 8px;
+  margin-bottom: 24px;
+}
+.ep-ai__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0 16px;
+  border-inline-start: 1px solid rgba(20, 18, 26, 0.08);
+}
+.ep-ai__stat:first-child { border-inline-start: none; }
+.ep-ai__stat-label {
+  font-family: var(--ep-f-num);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ep-ink-mute);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.ep-ai__stat-value {
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 28px;
+  color: var(--ep-ink);
+  line-height: 1;
+}
+.ep-ai__stat-value small {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ep-ink-3);
+}
+
+/* רשימת שאלות */
+.ep-ai__qlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ep-ai__qcard {
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.06);
+  border-radius: var(--ep-r-xl);
+  padding: 24px 26px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ep-ai__qcard-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ep-ai__qcard-num {
+  font-family: var(--ep-f-num);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--ep-ink-mute);
 }
-.ep-ai__icon-btn--del:hover:not(:disabled) {
+.ep-ai__qcard-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: rgba(79, 63, 245, 0.1);
+  border: 1px solid rgba(79, 63, 245, 0.22);
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-num);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ep-primary);
+}
+
+.ep-ai__qcard-text {
+  resize: vertical;
+  min-height: 64px;
+  line-height: 1.4;
+  font-family: var(--ep-f-display);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* תשובות בכרטיס */
+.ep-ai__answers {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ep-ai__answer {
+  display: grid;
+  grid-template-columns: 44px 1fr 36px 32px;
+  align-items: center;
+  gap: 10px;
+  padding: 4px;
+  background: var(--ep-cream);
+  border: 2px solid transparent;
+  border-radius: var(--ep-r-md);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+/* כפתור מחיקת תשובה */
+.ep-ai__answer-del {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(20, 18, 26, 0.12);
+  color: var(--ep-ink-3);
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.ep-ai__answer-del:hover:not(:disabled) {
   background: var(--ep-bad);
   border-color: var(--ep-bad);
   color: #fff;
-  transform: scale(1.08);
 }
-.ep-ai__icon-btn--del:disabled {
+.ep-ai__answer-del:disabled {
   opacity: 0.3;
   cursor: not-allowed;
 }
 
-/* =========================
-   Answers List
-   ========================= */
-.ep-ai__answers {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.ep-ai__ans-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: var(--ep-r-md);
-  border: 2px solid transparent;
-  transition: all 0.2s;
-  background: var(--ep-cream);
-}
-
-.ep-ai__ans-row.is-correct {
-  background: rgba(30, 158, 95, 0.08);
-  border-color: var(--ep-ok);
-}
-
-/* Custom Radio */
-.ep-ai__ans-radio {
-  position: relative;
-  display: inline-flex;
-  cursor: pointer;
-  padding: 4px;
-  flex-shrink: 0;
-}
-
-.ep-ai__ans-radio input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.ep-ai__ans-custom-radio {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 3px solid var(--ep-ink-mute);
-  background: #fff;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.ep-ai__ans-radio input:checked ~ .ep-ai__ans-custom-radio {
-  border-color: var(--ep-ok);
-  background: var(--ep-ok);
-}
-
-.ep-ai__ans-radio input:checked ~ .ep-ai__ans-custom-radio::after {
-  content: "✓";
-  color: #fff;
-  font-size: 13px;
-  font-weight: 900;
-}
-
-.ep-ai__ans-input {
-  flex: 1;
-  border-left: 5px solid var(--ans-color);
-}
-
-/* כפתור מחיקת תשובה */
-.ep-ai__ans-del {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid rgba(20, 18, 26, 0.12);
-  background: transparent;
-  color: var(--ep-ink-mute);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
+/* "הוסף תשובה" / "הוסף שאלה" */
+.ep-ai__add-answer,
+.ep-ai__add-question {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-  flex-shrink: 0;
-}
-.ep-ai__ans-del:hover:not(:disabled) {
-  background: var(--ep-bad);
-  border-color: var(--ep-bad);
-  color: #fff;
-}
-.ep-ai__ans-del:disabled {
-  opacity: 0.25;
-  cursor: not-allowed;
-}
-
-/* כפתור הוספת תשובה */
-.ep-ai__add-ans {
-  display: inline-flex;
-  align-items: center;
   gap: 6px;
-  align-self: flex-start;
-  padding: 8px 14px;
+  padding: 10px 18px;
   background: transparent;
-  border: 1px dashed rgba(20, 18, 26, 0.2);
+  border: 1.5px dashed rgba(20, 18, 26, 0.18);
   border-radius: var(--ep-r-pill);
   font-family: var(--ep-f-body);
   font-weight: 600;
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--ep-ink-3);
   cursor: pointer;
-  margin-top: 4px;
   transition: border-color 0.15s, color 0.15s, background 0.15s;
+  align-self: flex-start;
 }
-.ep-ai__add-ans:hover {
-  border-color: var(--ep-ok);
-  color: var(--ep-ok);
-  background: rgba(30, 158, 95, 0.05);
+.ep-ai__add-answer:hover,
+.ep-ai__add-question:hover {
+  border-color: var(--ep-primary);
+  color: var(--ep-primary);
+  background: rgba(79, 63, 245, 0.04);
 }
-.ep-ai__add-ans span {
-  font-weight: 900;
-  font-size: 16px;
-  line-height: 0.8;
-}
-
-/* =========================
-   הוסף שאלה
-   ========================= */
-.ep-ai__add-q {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+.ep-ai__add-question {
   width: 100%;
+  margin-top: 4px;
   padding: 16px;
-  background: transparent;
-  border: 2px dashed rgba(20, 18, 26, 0.18);
   border-radius: var(--ep-r-lg);
   font-family: var(--ep-f-display);
   font-weight: 700;
   font-size: 15px;
-  color: var(--ep-ink-3);
-  cursor: pointer;
-  margin-top: 8px;
-  transition: border-color 0.15s, background 0.15s, color 0.15s;
 }
-.ep-ai__add-q:hover {
-  border-color: var(--ep-primary);
-  background: rgba(79, 63, 245, 0.04);
-  color: var(--ep-primary);
-}
-.ep-ai__add-q span {
-  font-size: 20px;
+.ep-ai__add-plus {
+  font-family: var(--ep-f-display);
   font-weight: 900;
+  font-size: 18px;
   line-height: 0.8;
 }
 
-/* =========================
-   Buttons & Actions
-   ========================= */
-.ep-ai__actions {
-  margin-top: 24px;
-  text-align: center;
-}
-
-.ep-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 14px 24px;
-  font-family: var(--ep-f-display);
-  font-weight: 700;
-  font-size: 16px;
-  border: none;
-  border-radius: var(--ep-r-md);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  user-select: none;
-}
-
-.ep-btn--primary {
-  background: var(--ep-primary);
-  color: #fff;
-  box-shadow: 0 4px 0 0 var(--ep-primary-deep);
-}
-
-.ep-btn--primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 0 0 var(--ep-primary-deep);
-}
-
-.ep-btn--primary:active:not(:disabled) {
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 0 var(--ep-primary-deep);
-}
-
-.ep-btn--lg {
-  width: 100%;
-  padding: 18px 32px;
-  font-size: 18px;
-  border-radius: var(--ep-r-lg);
-}
-
-.ep-btn:disabled,
-.ep-btn.is-loading {
-  opacity: 0.7;
-  cursor: not-allowed;
-  transform: translateY(2px);
-  box-shadow: 0 2px 0 0 var(--ep-primary-deep);
-}
-
-/* =========================
-   Feedback
-   ========================= */
-.ep-ai__alert {
+/* ראש כרטיס שאלה + כפתור מחיקה */
+.ep-ai__qcard-head-end {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  background: rgba(30, 158, 95, 0.1);
-  border: 1px solid var(--ep-ok);
-  color: var(--ep-ok);
-  border-radius: var(--ep-r-md);
-  font-family: var(--ep-f-display);
+  gap: 8px;
+}
+.ep-ai__qcard-del {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(20, 18, 26, 0.12);
+  color: var(--ep-ink-3);
   font-weight: 700;
-  font-size: 16px;
-  animation: ep-ai-fade-in 0.3s ease-out;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.ep-ai__qcard-del:hover {
+  background: var(--ep-bad);
+  border-color: var(--ep-bad);
+  color: #fff;
 }
 
-.ep-ai__alert-icon {
-  background: var(--ep-ok);
-  color: #fff;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
+/* ראש קבוצת התשובות */
+.ep-ai__answers-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+.ep-ai__answers-count {
+  font-family: var(--ep-f-num);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ep-ink-mute);
+}
+.ep-ai__answer.is-correct {
+  border-color: var(--ep-ok);
+  background: rgba(30, 158, 95, 0.06);
+}
+
+.ep-ai__answer-letter {
+  width: 100%;
+  height: 36px;
+  border-radius: var(--ep-r-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 17px;
+  line-height: 1;
+}
+.ep-ai__answer-glyph {
+  display: inline-flex;
+  opacity: 0.8;
+}
+.ep-ai__answer-input {
+  background: var(--ep-paper);
+  font-size: 14.5px;
+  padding: 10px 12px;
+}
+
+.ep-ai__answer-mark {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  cursor: pointer;
 }
-
-@keyframes ep-ai-fade-in {
-  from { opacity: 0; transform: translateY(-10px); }
-  to   { opacity: 1; transform: translateY(0); }
+.ep-ai__answer-mark input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  margin: 0;
 }
-
-.ep-spinner {
-  width: 24px;
-  height: 24px;
+.ep-ai__answer-mark-circle {
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
-  animation: ep-ai-spin 0.8s linear infinite;
+  background: var(--ep-paper);
+  border: 2px solid rgba(20, 18, 26, 0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 13px;
+  color: transparent;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
-
-@keyframes ep-ai-spin {
-  to { transform: rotate(360deg); }
+.ep-ai__answer.is-correct .ep-ai__answer-mark-circle {
+  background: var(--ep-ok);
+  border-color: var(--ep-ok);
+  color: #fff;
+}
+.ep-ai__answer-mark:hover .ep-ai__answer-mark-circle {
+  border-color: var(--ep-ok);
 }
 
 /* =========================
    Responsive
    ========================= */
-@media (max-width: 600px) {
-  .ep-ai { padding: 16px; }
-  .ep-ai__card { padding: 24px 16px; }
-  .ep-ai__row { flex-direction: column; gap: 20px; }
-  .ep-ai__q-header { flex-direction: column; align-items: flex-start; }
-  .ep-ai__q-actions { width: 100%; justify-content: space-between; }
-  .ep-ai__meta-item input { width: 60px; }
+@media (max-width: 768px) {
+  .ep-ai { padding: 24px 18px 60px; }
+  .ep-ai__form { padding: 32px 24px 28px; }
+  .ep-ai__title { font-size: 36px; }
+  .ep-ai__row-2 { grid-template-columns: 1fr; gap: 16px; }
+  .ep-ai__head { flex-direction: column; align-items: stretch; gap: 14px; }
+  .ep-ai__head-actions { width: 100%; }
+  .ep-ai__btn { flex: 1; }
+  .ep-ai__rev-title { font-size: 28px; }
+  .ep-ai__stats { padding: 14px 4px; }
+  .ep-ai__stat { padding: 0 8px; }
+  .ep-ai__stat-value { font-size: 22px; }
+  .ep-ai__qcard { padding: 18px 18px; }
+  .ep-ai__answer {
+    grid-template-columns: 36px 1fr 32px 28px;
+    gap: 6px;
+  }
 }
