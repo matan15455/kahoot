@@ -364,6 +364,20 @@ export default function initSocket(server) {
       emitRoom(roomId);
     });
 
+    socket.on("kickPlayer", ({ roomId, nickname }) => {
+      const room = rooms[roomId];
+      if (!room) return;
+      if (String(room.hostId) !== String(socket.mongoId)) return;
+      if (room.phase !== PHASES.LOBBY) return;
+
+      const player = room.players.find(p => p.nickname === nickname);
+      if (!player) return;
+
+      io.to(player.socketId).emit("kicked");
+      room.players = room.players.filter(p => p.nickname !== nickname);
+      emitRoom(roomId);
+    });
+
 
     /* =====================================================
        Disconnect

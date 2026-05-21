@@ -9,7 +9,15 @@ export default function JoinScreen() {
   const [nickname, setNickname] = useState("");
   const [roomId, setRoomId] = useState("");
   const [room, setRoom] = useState(null);
-  const [error, setError] = useState("");
+
+  const [error, setError] = useState(() => {
+  const msg = sessionStorage.getItem("kickedMessage");
+  if (msg) {
+      sessionStorage.removeItem("kickedMessage");
+      return msg;
+    }
+    return "";
+  });
 
   const navigate = useNavigate();
 
@@ -38,9 +46,17 @@ export default function JoinScreen() {
       }
     };
 
+    const handleKicked = () => {
+      sessionStorage.setItem("kickedMessage", "הוסרת מהחדר על ידי המארח");
+      window.location.reload();
+    };
+
+    socket.on("kicked", handleKicked);
+
     socket.on("roomUpdated", handleRoomUpdated);
 
     return () => {
+      socket.off("kicked", handleKicked);
       socket.off("roomUpdated", handleRoomUpdated);
     };
   }, [socket, roomId, navigate]);

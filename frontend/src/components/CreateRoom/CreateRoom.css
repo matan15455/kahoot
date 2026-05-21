@@ -384,6 +384,26 @@
 }
 .ep-cr__empty-glyph { display: inline-flex; }
 
+.ep-cr__kick {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-inline-start: auto;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.ep-cr__kick:hover {
+  background: var(--ep-bad);
+  border-color: var(--ep-bad);
+  color: #fff;
+}
+
 /* =========================
    Responsive
    ========================= */

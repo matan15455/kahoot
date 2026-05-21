@@ -161,6 +161,15 @@ export default function CreateRoom() {
                 <li key={p.userId || p.socketId || i} className="ep-cr__player">
                   <span className="ep-cr__avatar">{p.nickname.charAt(0)}</span>
                   <span className="ep-cr__player-name">{p.nickname}</span>
+                  <button
+                    className="ep-cr__kick"
+                    onClick={() => {
+                      if (!window.confirm(`להסיר את ${p.nickname}?`)) return;
+                      socket.emit("kickPlayer", { roomId: room.roomId, nickname: p.nickname });
+                    }}
+                  >
+                    ✕
+                  </button>
                 </li>
               ))}
             </ul>
