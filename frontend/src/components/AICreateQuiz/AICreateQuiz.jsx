@@ -10,8 +10,7 @@ export default function AICreateQuiz() {
   const { token } = useAuth();
 
   const [topic, setTopic] = useState("");
-  const [difficulty, setDifficulty] = useState("medium");
-  const [numQuestions, setNumQuestions] = useState(5);
+  const [instructions, setInstructions] = useState("");  const [numQuestions, setNumQuestions] = useState(5);
   const [saving, setSaving] = useState(false);
 
   const [quiz, setQuiz] = useState(null);
@@ -35,7 +34,7 @@ export default function AICreateQuiz() {
 
       const res = await axios.post(
         "http://localhost:5000/ai/generate-quiz",
-        { topic, difficulty, numQuestions }
+        { topic, instructions, numQuestions }
       );
 
       setQuiz({
@@ -207,6 +206,7 @@ export default function AICreateQuiz() {
           </div>
 
           <div className="ep-ai__fields">
+            {/* נושא */}
             <div className="ep-field">
               <label className="ep-field__label" htmlFor="ai-topic">
                 נושא החידון
@@ -226,59 +226,30 @@ export default function AICreateQuiz() {
               </p>
             </div>
 
-            <div className="ep-ai__row-2">
-              <div className="ep-field">
-                <label className="ep-field__label">רמת קושי</label>
-                <div className="ep-ai__segmented" role="radiogroup">
-                  {["easy", "medium", "hard"].map((d) => (
-                    <button
-                      key={d}
-                      type="button"
-                      className={"ep-ai__seg" + (difficulty === d ? " is-active" : "")}
-                      onClick={() => setDifficulty(d)}
-                      role="radio"
-                      aria-checked={difficulty === d}
-                    >
-                      {difficultyLabels[d]}
-                    </button>
-                  ))}
-                </div>
-              </div>
+            {/* הנחיות */}
+            <div className="ep-field">
+              <label className="ep-field__label">הנחיות לחידון (אופציונלי)</label>
+              <textarea
+                className="ep-field__input ep-ai__topic"
+                placeholder="לדוגמה: שאלות לכיתה ז', ברמה קשה, עם דגש על תאריכים…"
+                value={instructions}
+                onChange={(e) => setInstructions(e.target.value)}
+                rows={2}
+                maxLength={300}
+              />
+            </div>
 
-              <div className="ep-field">
-                <label className="ep-field__label" htmlFor="ai-num">
-                  מספר שאלות
-                </label>
-                <div className="ep-ai__stepper">
-                  <button
-                    type="button"
-                    className="ep-ai__stepper-btn"
-                    onClick={() => setNumQuestions(Math.max(1, numQuestions - 1))}
-                    aria-label="הפחת"
-                  >
-                    −
-                  </button>
-                  <input
-                    id="ai-num"
-                    className="ep-ai__stepper-input"
-                    type="number"
-                    min={1}
-                    max={50}
-                    value={numQuestions}
-                    onChange={(e) => {
-                      const v = Number(e.target.value);
-                      if (v >= 1 && v <= 50) setNumQuestions(v);
-                    }}
-                  />
-                  <button
-                    type="button"
-                    className="ep-ai__stepper-btn"
-                    onClick={() => setNumQuestions(Math.min(50, numQuestions + 1))}
-                    aria-label="הגדל"
-                  >
-                    +
-                  </button>
-                </div>
+            {/* מספר שאלות */}
+            <div className="ep-field">
+              <label className="ep-field__label" htmlFor="ai-num">מספר שאלות</label>
+              <div className="ep-ai__stepper">
+                <button type="button" className="ep-ai__stepper-btn"
+                  onClick={() => setNumQuestions(Math.max(1, numQuestions - 1))} aria-label="הפחת">−</button>
+                <input id="ai-num" className="ep-ai__stepper-input" type="number"
+                  min={1} max={50} value={numQuestions}
+                  onChange={(e) => { const v = Number(e.target.value); if (v >= 1 && v <= 50) setNumQuestions(v); }} />
+                <button type="button" className="ep-ai__stepper-btn"
+                  onClick={() => setNumQuestions(Math.min(50, numQuestions + 1))} aria-label="הגדל">+</button>
               </div>
             </div>
 

@@ -13,7 +13,7 @@ router.post("/generate-quiz", async (req, res) => {
 
   try {
 
-    const { topic, difficulty, numQuestions } = req.body;
+    const { topic, instructions, numQuestions } = req.body;
 
     const config = {
       thinkingConfig: {
@@ -77,7 +77,8 @@ Rules:
 - Each question must have exactly 4 answer options.
 - Only one option is correct.
 - Questions must match the requested topic.
-- Difficulty must match the requested level (easy, medium, hard).
+- If the user provides "Additional instructions", prioritize them to determine difficulty, tone, or style.
+- If no specific instructions are provided, maintain a balanced, educational tone suitable for general knowledge.
 - The language must match the topic language.
 - You must give a description for the quiz.
 `
@@ -94,7 +95,7 @@ Rules:
 Generate ${numQuestions} quiz questions.
 
 Topic: ${topic}
-Difficulty: ${difficulty}
+${instructions ? `Additional instructions: ${instructions}` : ""}
 `
           }
         ]
