@@ -103,7 +103,7 @@ ${instructions ? `Additional instructions: ${instructions}` : ""}
     ];
 
     const stream = await ai.models.generateContentStream({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.5-flash",
       config,
       contents
     });
