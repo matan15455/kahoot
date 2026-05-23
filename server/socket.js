@@ -78,7 +78,7 @@ export default function initSocket(server) {
       if (room.phase === PHASES.SUMMARY) {
         payload.summary = {
           answersCount: room.answersCount,
-          correctAnswer: getCorrectAnswer(room)
+          correctAnswer: getCorrectAnswer(room),
         };
       }
 
@@ -300,8 +300,15 @@ export default function initSocket(server) {
 
       // שולף את התשובה הנכונה ובודק שזה נכון
       const correct = getCorrectAnswer(room);
+      // אחרי — ניקוד לפי מהירות
       if (answerText === correct) {
-        player.score += q.points;
+        const timeLeft = Math.max(0, room.timer.endsAt - Date.now()) / 1000;
+        const ratio = timeLeft / q.time;
+        const earned = Math.round(q.points * (0.5 + 0.5 * ratio));
+        player.score += earned;
+
+        // שולח רק לשחקן הזה
+        socket.emit("scoreEarned", { earned });
       }
 
       // כולם ענו → סיום שאלה

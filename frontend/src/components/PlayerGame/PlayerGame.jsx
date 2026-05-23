@@ -17,6 +17,7 @@ export default function PlayerGame() {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
   const timerRef = useRef(null);
+  const [earned, setEarned] = useState(null);
 
   useEffect(() => {
     if (!roomId) return;
@@ -28,6 +29,7 @@ export default function PlayerGame() {
 
       if (roomData.phase === "QUESTION") {
         setSelectedAnswer(null);
+        setEarned(null); 
       }
 
       if (roomData.endsAt) {
@@ -49,9 +51,11 @@ export default function PlayerGame() {
 
     socket.emit("requestRoomState", { roomId });
     socket.on("roomUpdated", handleRoomUpdated);
+    socket.on("scoreEarned", handleScoreEarned);
 
     return () => {
       socket.off("roomUpdated", handleRoomUpdated);
+      socket.off("scoreEarned", handleScoreEarned);
       clearInterval(timerRef.current);
     };
   }, [roomId]);
@@ -62,6 +66,10 @@ export default function PlayerGame() {
 
     setSelectedAnswer(answerText);
     socket.emit("answerQuestion", { roomId, answerText });
+  };
+
+  const handleScoreEarned = ({ earned }) => {
+    setEarned(earned);
   };
 
   /* ============ Loading ============ */
@@ -125,17 +133,16 @@ export default function PlayerGame() {
               {!selectedAnswer && "לא ענית בזמן"}
             </p>
             <p className="ep-pg__verdict-sub">
-              {wasCorrect && "מהיר ומדויק. ✦"}
-              {wasWrong && (
+              {wasCorrect && (
                 <>
-                  התשובה הנכונה: <strong>{room.summary.correctAnswer}</strong>
+                  מהיר ומדויק. ✦
+                  {earned !== null && (
+                    <strong> +{earned} נק'</strong>
+                  )}
                 </>
               )}
-              {!selectedAnswer && (
-                <>
-                  התשובה הנכונה: <strong>{room.summary.correctAnswer}</strong>
-                </>
-              )}
+              {wasWrong && <>התשובה הנכונה: <strong>{room.summary.correctAnswer}</strong></>}
+              {!selectedAnswer && <>התשובה הנכונה: <strong>{room.summary.correctAnswer}</strong></>}
             </p>
           </div>
         </div>
