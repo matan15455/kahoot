@@ -6,7 +6,7 @@ export default function QuestionForm({ onAddQuestion, onCancel, index = 0 }) {
   const [text, setText] = useState("");
   const [type] = useState("multiple-choice");
   const [time, setTime] = useState(30);
-  const [points, setPoints] = useState(1);
+  const [points, setPoints] = useState(1000);
   const [answers, setAnswers] = useState([
     { text: "", isCorrect: false },
     { text: "", isCorrect: false },
@@ -112,20 +112,18 @@ export default function QuestionForm({ onAddQuestion, onCancel, index = 0 }) {
             }}
           />
         </div>
-        <div className="ep-field">
-          <label className="ep-field__label" htmlFor="qfq-pts">נקודות</label>
-          <input
-            id="qfq-pts"
-            className="ep-field__input"
-            type="number"
-            min={1}
-            max={5000}
-            value={points}
-            onChange={(e) => {
-              const val = +e.target.value;
-              if (val >= 1) setPoints(val);
-            }}
-          />
+          <div className="ep-field">
+            <label className="ep-field__label" htmlFor="qfq-pts">נקודות</label>
+            <select
+              id="qfq-pts"
+              className="ep-field__input"
+              value={points}
+              onChange={(e) => setPoints(Number(e.target.value))}
+            >
+              {[1000,2000,3000,4000,5000,6000,7000,8000,9000,10000].map(v => (
+                <option key={v} value={v}>{v.toLocaleString()}</option>
+              ))}
+            </select>
         </div>
       </div>
 

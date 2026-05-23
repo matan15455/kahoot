@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { EpShape, ANSWER_META } from "../_shared/EpBrand";
 import "./QuizCard.css";
 
-export default function QuizCard({ quiz, colorIndex = 0 }) {
+export default function QuizCard({ quiz, colorIndex = 0,onDelete  }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -57,6 +57,15 @@ export default function QuizCard({ quiz, colorIndex = 0 }) {
             <span>הפעל חדר</span>
             <span className="ep-qcard__arrow" aria-hidden="true">←</span>
           </span>
+          <button
+            className="ep-qcard__delete"
+            onClick={(e) => {
+              e.stopPropagation();  // לא לפתוח חדר
+              onDelete(quiz._id);
+            }}
+          >
+            מחק
+          </button>
         </div>
       </div>
     </article>

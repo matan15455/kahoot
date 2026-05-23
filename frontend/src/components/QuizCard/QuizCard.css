@@ -139,3 +139,21 @@
   font-size: 18px;
   line-height: 1;
 }
+
+.ep-qcard__delete {
+  padding: 6px 14px;
+  background: transparent;
+  border: 1px solid rgba(214, 58, 45, 0.25);
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-body);
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--ep-bad);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.ep-qcard__delete:hover {
+  background: var(--ep-bad);
+  border-color: var(--ep-bad);
+  color: #fff;
+}

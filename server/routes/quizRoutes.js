@@ -63,6 +63,30 @@ router.get("/my", authMiddleware, async (req, res) => {
   }
 });
 
+router.delete("/:quizId", authMiddleware, async (req, res) => {
+  try {
+    const quiz = await Quiz.findOne({
+      _id: req.params.quizId,
+      creatorId: req.user.mongoId
+    });
+
+    if (!quiz) return res.status(404).json({ message: "חידון לא נמצא" });
+
+    await Question.deleteMany({ _id: { $in: quiz.questions } });
+    await quiz.deleteOne();
+
+    await User.findByIdAndUpdate(req.user.mongoId, {
+      $pull: { quizzesCreated: quiz._id },
+      $inc: { "statistics.quizzesCreatedCount": -1 }
+    });
+
+    res.json({ message: "החידון נמחק" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 
 export default router;

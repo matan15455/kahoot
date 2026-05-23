@@ -24,15 +24,17 @@ router.post("/generate-quiz", async (req, res) => {
 
       responseSchema: {
         type: Type.OBJECT,
-        required: ["questions"],
+        required: ["title", "description", "questions"],
         properties: {
 
           title: {
-            type: Type.STRING
+            type: Type.STRING,
+            description: "שם קצר לחידון, מקסימום 5 מילים"
           },
 
           description: {
-            type: Type.STRING
+            type: Type.STRING,
+            description: "תיאור קצר של החידון בעברית, 1-2 משפטים"
           },
 
           questions: {
@@ -80,7 +82,8 @@ Rules:
 - If the user provides "Additional instructions", prioritize them to determine difficulty, tone, or style.
 - If no specific instructions are provided, maintain a balanced, educational tone suitable for general knowledge.
 - The language must match the topic language.
-- You must give a description for the quiz.
+- Always provide a short description (1-2 sentences) summarizing the quiz topic in the same language as the topic.
+- The quiz title must be short and concise - maximum 5 words.
 `
         }
       ]

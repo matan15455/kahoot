@@ -46,7 +46,7 @@ export default function AICreateQuiz() {
         text: q.text,
         type: "multiple-choice",
         time: 30,
-        points: 1,
+        points: 1000,
         answers: q.options.map((opt, i) => ({
           text: opt,
           isCorrect: i === q.correctIndex
@@ -124,7 +124,7 @@ export default function AICreateQuiz() {
         text: "",
         type: "multiple-choice",
         time: 30,
-        points: 1,
+        points: 1000,
         answers: [
           { text: "", isCorrect: true },
           { text: "", isCorrect: false },
@@ -386,14 +386,15 @@ export default function AICreateQuiz() {
               </div>
               <div className="ep-field">
                 <label className="ep-field__label">נקודות</label>
-                <input
+                <select                                         // ← זה במקומו
                   className="ep-field__input"
-                  type="number"
-                  min={1}
-                  max={5000}
                   value={q.points}
                   onChange={(e) => updateQuestionField(i, "points", e.target.value)}
-                />
+                >
+                  {[1000,2000,3000,4000,5000,6000,7000,8000,9000,10000].map(v => (
+                    <option key={v} value={v}>{v.toLocaleString()}</option>
+                  ))}
+                </select>
               </div>
             </div>
 

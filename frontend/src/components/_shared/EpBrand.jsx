@@ -78,4 +78,8 @@ export const ANSWER_META = [
   { letter: "ב", color: "var(--ep-ans-2)", inkColor: "var(--ep-ans-2-ink)", shape: "hex",   textOn: "#fff" },
   { letter: "ג", color: "var(--ep-ans-3)", inkColor: "var(--ep-ans-3-ink)", shape: "plus",  textOn: "var(--ep-ink)" },
   { letter: "ד", color: "var(--ep-ans-4)", inkColor: "var(--ep-ans-4-ink)", shape: "wave",  textOn: "#0c2a2c" },
+  { letter: "ה", color: "#9B59B6",         inkColor: "#6C3483",             shape: "burst", textOn: "#fff" },
+  { letter: "ו", color: "#E67E22",         inkColor: "#A04000",             shape: "hex",   textOn: "#fff" },
+  { letter: "ז", color: "#1ABC9C",         inkColor: "#0E6655",             shape: "plus",  textOn: "#fff" },
+  { letter: "ח", color: "#E74C3C",         inkColor: "#922B21",             shape: "wave",  textOn: "#fff" },
 ];

@@ -54,6 +54,19 @@ export default function MyQuizzes() {
     0
   );
 
+  const handleDelete = async (quizId) => {
+      if (!window.confirm("למחוק את החידון לצמיתות?")) return;
+      try {
+        await axios.delete(`http://localhost:5000/quizzes/${quizId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setQuizzes(quizzes.filter(q => q._id !== quizId));
+      } catch (err) {
+        console.error(err);
+        alert("שגיאה במחיקה");
+      }
+  };
+
   return (
     <div className="ep-myq">
 
@@ -136,7 +149,7 @@ export default function MyQuizzes() {
       ) : (
         <div className="ep-myq__grid">
           {quizzes.map((quiz, idx) => (
-            <QuizCard key={quiz._id} quiz={quiz} colorIndex={idx} />
+            <QuizCard key={quiz._id} quiz={quiz} colorIndex={idx} onDelete={handleDelete} />
           ))}
         </div>
       )}
