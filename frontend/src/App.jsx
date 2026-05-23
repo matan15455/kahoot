@@ -10,6 +10,8 @@ import PlayerGame from "./components/PlayerGame/PlayerGame";
 import Profile from "./components/Profile/Profile";
 import QuizCreationMode from "./components/QuizCreationMode/QuizCreationMode";
 import AICreateQuiz from "./components/AICreateQuiz/AICreateQuiz";
+import Statistics from "./components/Statistics/Statistics";
+import SessionView from "./components/Statistics/SessionView";
 
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
@@ -104,6 +106,21 @@ export default function App() {
                   <Profile />
                 </RequireAuth>
               }
+            />
+
+            <Route path="/statistics" 
+              element={
+                <RequireAuth>
+                  <Statistics />
+                </RequireAuth>
+              } 
+            />
+            <Route path="/statistics/:sessionId"
+               element={
+                <RequireAuth>
+                  <SessionView />
+                </RequireAuth>
+              } 
             />
 
           </Routes>

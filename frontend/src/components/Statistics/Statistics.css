@@ -1,0 +1,296 @@
+.ep-stat {
+  min-height: calc(100vh - 70px);
+  padding: 40px 32px 80px;
+  background: var(--ep-cream);
+  color: var(--ep-ink);
+  font-family: var(--ep-f-body);
+  direction: rtl;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.ep-stat--state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 70px);
+}
+
+/* ── כותרת ── */
+.ep-stat__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+
+.ep-stat__kicker {
+  font-family: var(--ep-f-num);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ep-ink-mute);
+  margin: 0 0 6px;
+}
+
+.ep-stat__title {
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 48px;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  margin: 0;
+}
+
+/* ── סיכום ── */
+.ep-stat__summary {
+  display: flex;
+  gap: 0;
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.06);
+  border-radius: var(--ep-r-lg);
+  overflow: hidden;
+  align-self: flex-end;
+}
+
+.ep-stat__summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 28px;
+  border-inline-start: 1px solid rgba(20, 18, 26, 0.06);
+}
+
+.ep-stat__summary-item:first-child {
+  border-inline-start: none;
+}
+
+.ep-stat__summary-val {
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 30px;
+  color: var(--ep-ink);
+  line-height: 1;
+}
+
+.ep-stat__summary-label {
+  font-family: var(--ep-f-num);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ep-ink-mute);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ── רשימה ── */
+.ep-stat__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ep-stat__row {
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.06);
+  border-radius: var(--ep-r-lg);
+  padding: 20px 24px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+
+.ep-stat__row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(20, 18, 26, 0.08);
+  border-color: rgba(20, 18, 26, 0.14);
+}
+
+.ep-stat__row-arrow {
+  position: absolute;
+  inset-inline-start: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: var(--ep-ink-mute);
+  transition: color 0.15s, transform 0.15s;
+}
+
+.ep-stat__row:hover .ep-stat__row-arrow {
+  color: var(--ep-primary);
+  transform: translateY(-50%) translateX(-4px);
+}
+
+.ep-stat__row-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding-inline-start: 8px;
+}
+
+.ep-stat__row-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ep-stat__row-run {
+  font-family: var(--ep-f-num);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ep-primary);
+}
+
+.ep-stat__row-title {
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--ep-ink);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.ep-stat__row-date {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  font-family: var(--ep-f-num);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ep-ink-3);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ep-stat__row-time {
+  font-size: 12px;
+  color: var(--ep-ink-mute);
+  font-weight: 500;
+}
+
+/* ── Chips ── */
+.ep-stat__row-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-inline-start: 8px;
+}
+
+.ep-stat__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--ep-cream);
+  border: 1px solid rgba(20, 18, 26, 0.07);
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-num);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ep-ink-3);
+}
+
+.ep-stat__chip-icon {
+  font-size: 13px;
+  line-height: 1;
+}
+
+.ep-stat__chip--pct {
+  font-weight: 700;
+}
+
+.ep-stat__chip--pct.is-good {
+  background: rgba(30, 158, 95, 0.1);
+  border-color: rgba(30, 158, 95, 0.25);
+  color: var(--ep-ok);
+}
+
+.ep-stat__chip--pct.is-mid {
+  background: rgba(229, 156, 0, 0.1);
+  border-color: rgba(229, 156, 0, 0.25);
+  color: var(--ep-warn);
+}
+
+.ep-stat__chip--pct.is-low {
+  background: rgba(214, 58, 45, 0.08);
+  border-color: rgba(214, 58, 45, 0.2);
+  color: var(--ep-bad);
+}
+
+/* ── Empty ── */
+.ep-stat__empty {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.ep-stat__empty-icon {
+  font-size: 56px;
+  line-height: 1;
+  margin-bottom: 8px;
+  filter: grayscale(0.3);
+}
+
+.ep-stat__empty-title {
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.ep-stat__empty-sub {
+  font-size: 15px;
+  color: var(--ep-ink-3);
+  margin: 0;
+  max-width: 360px;
+  line-height: 1.55;
+}
+
+.ep-stat__empty-btn {
+  margin-top: 8px;
+  padding: 12px 24px;
+  background: var(--ep-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 0 var(--ep-primary-deep);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.ep-stat__empty-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 0 var(--ep-primary-deep);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .ep-stat { padding: 28px 18px 60px; }
+  .ep-stat__title { font-size: 34px; }
+  .ep-stat__head { flex-direction: column; gap: 20px; }
+  .ep-stat__summary { align-self: stretch; }
+  .ep-stat__summary-item { flex: 1; padding: 14px 16px; }
+  .ep-stat__row { padding: 16px 18px; }
+  .ep-stat__row-arrow { display: none; }
+  .ep-stat__row-title { font-size: 17px; }
+}

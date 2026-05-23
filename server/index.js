@@ -7,6 +7,7 @@ import quizRoutes from './routes/quizRoutes.js';
 import authRoutes from './routes/auth.js'; // כאן נייבא את ה-router של Auth
 import userRoutes from './routes/userRoutes.js'
 import aiRoutes from './routes/aiRoutes.js'
+import statsRoutes from "./routes/statsRoutes.js";
 
 import initSocket from './socket.js';
 import http from 'http';
@@ -37,6 +38,7 @@ app.use('/auth', authRoutes); // מחברים את ה-Auth router
 app.use('/user', userRoutes);
 app.use('/quizzes', quizRoutes);
 app.use('/ai', aiRoutes);
+app.use("/stats", statsRoutes);
 
 
 app.get('/', (req, res) => {

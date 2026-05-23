@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 import Quiz from "./models/Quiz.js";
+import GameSession from "./models/GameSession.js";
 import jwt from "jsonwebtoken";
 
 
@@ -141,6 +142,48 @@ export default function initSocket(server) {
       emitRoom(roomId);
     }
 
+    async function saveSession(room) {
+      try {
+        const questionStats = room.questions.map((q, idx) => {
+          const correctText  = q.answers.find(a => a.isCorrect).text;
+
+          // ספור כמה ענו נכון לשאלה הזו מתוך כל התשובות של השחקנים
+          const totalCorrect = room.players.reduce((sum, p) => {
+            const ans = p.answers.find(a => a.questionIndex === idx);
+            return sum + (ans?.isCorrect ? 1 : 0);
+          }, 0);
+
+          return {
+            index:         idx,
+            text:          q.text,
+            correctAnswer: correctText,
+            totalAnswered: room.players.filter(p =>
+              p.answers.some(a => a.questionIndex === idx)
+            ).length,
+            totalCorrect
+          };
+        });
+
+        const quiz = await Quiz.findById(room.quizId).select("title");
+
+        await GameSession.create({
+          quizId:    room.quizId,
+          quizTitle: quiz?.title || "חידון",
+          hostId:    room.hostId,
+          players:   room.players.map(p => ({
+            nickname: p.nickname,
+            score:    p.score,
+            answers:  p.answers
+          })),
+          questions: questionStats
+        });
+
+        console.log("✅ GameSession saved");
+      } catch (err) {
+        console.error("❌ Failed to save GameSession:", err);
+      }
+    }
+
     /* =====================================================
         Create Room (Host)
     ===================================================== */
@@ -222,10 +265,11 @@ export default function initSocket(server) {
 
       // מכניס את המשתמש
       room.players.push({
-        socketId: socket.id,
-        userId: socket.mongoId || socket.id, // למקרה שזה אורח
+        socketId:    socket.id,
+        userId:      socket.mongoId || socket.id,
         nickname,
-        score: 0
+        score:       0,
+        answers:     []          // ← חדש
       });
 
       // מכניס את המשתמש לחדר
@@ -278,40 +322,39 @@ export default function initSocket(server) {
 
     //מתבצע כששחקן עונה על שאלה
     socket.on("answerQuestion", ({ roomId, answerText }) => {
-      const room = rooms[roomId];
+      const room  = rooms[roomId];
+      if (!room || room.phase !== PHASES.QUESTION) return;
 
-      // בודק שזה במצב שאלה
-      if (!room || room.phase !== PHASES.QUESTION) 
-        return;
-
-      // מוצא את השחקן בחדר
       const player = room.players.find(p => p.userId === (socket.mongoId || socket.id));
-      if (!player) 
-        return;
+      if (!player) return;
 
-      // שולף את השאלה הנוכחית
-      const q = room.questions[room.currentQuestionIndex];
-
-      // מעלה את כמות הבוחרים את התשובה
-      room.answersCount[answerText]++;
-
-      // מעלה את כמות העונים על השאלה
-      room.totalAnswers++;
-
-      // שולף את התשובה הנכונה ובודק שזה נכון
+      const q       = room.questions[room.currentQuestionIndex];
       const correct = getCorrectAnswer(room);
-      // אחרי — ניקוד לפי מהירות
-      if (answerText === correct) {
-        const timeLeft = Math.max(0, room.timer.endsAt - Date.now()) / 1000;
-        const ratio = timeLeft / q.time;
-        const earned = Math.round(q.points * (0.5 + 0.5 * ratio));
-        player.score += earned;
+      const isCorrect = answerText === correct;
 
-        // שולח רק לשחקן הזה
-        socket.emit("scoreEarned", { earned });
+      let pointsEarned = 0;
+      if (isCorrect) {
+        const timeLeft = Math.max(0, room.timer.endsAt - Date.now()) / 1000;
+        const ratio    = timeLeft / q.time;
+        pointsEarned   = Math.round(q.points * (0.5 + 0.5 * ratio));
+        player.score  += pointsEarned;
+        socket.emit("scoreEarned", { earned: pointsEarned });
       }
 
-      // כולם ענו → סיום שאלה
+      // ← חדש: שמור את התשובה
+      const timeToAnswer = q.time - Math.max(0, (room.timer.endsAt - Date.now()) / 1000);
+      player.answers.push({
+        questionIndex: room.currentQuestionIndex,
+        questionText:  q.text,
+        answered:      answerText,
+        isCorrect,
+        timeToAnswer:  Math.round(timeToAnswer * 10) / 10,
+        pointsEarned
+      });
+
+      room.answersCount[answerText]++;
+      room.totalAnswers++;
+
       if (room.totalAnswers === room.players.length) {
         finishQuestion(roomId);
       }
@@ -321,7 +364,7 @@ export default function initSocket(server) {
         Next Question (Host)
     ===================================================== */
     // ממאזין לסיום שאלה מהמארח
-    socket.on("nextQuestion", ({ roomId }) => {
+    socket.on("nextQuestion",async  ({ roomId }) => {
       const room = rooms[roomId];
       if (!room) 
         return;
@@ -348,6 +391,9 @@ export default function initSocket(server) {
         // אם זה סוף חידון
         if (room.currentQuestionIndex >= room.questions.length - 1) {
           room.phase = PHASES.END;
+
+          await saveSession(room);
+
           emitRoom(roomId);
           delete rooms[roomId];
           return;

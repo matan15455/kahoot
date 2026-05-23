@@ -1,0 +1,523 @@
+.ep-sv {
+  min-height: calc(100vh - 70px);
+  padding: 36px 32px 80px;
+  background: var(--ep-cream);
+  color: var(--ep-ink);
+  font-family: var(--ep-f-body);
+  direction: rtl;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.ep-sv--state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 70px);
+}
+
+/* ── ראש ── */
+.ep-sv__head {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.ep-sv__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  font-family: var(--ep-f-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ep-ink-3);
+  cursor: pointer;
+  padding: 0;
+  align-self: flex-start;
+  transition: color 0.15s;
+}
+.ep-sv__back:hover { color: var(--ep-ink); }
+
+.ep-sv__kicker {
+  font-family: var(--ep-f-num);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ep-ink-mute);
+  margin: 4px 0 0;
+}
+
+.ep-sv__title {
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 40px;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+.ep-sv__meta-chips {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ep-sv__meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.08);
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-num);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ep-ink-3);
+}
+
+/* ── טאבים ── */
+.ep-sv__tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid rgba(20, 18, 26, 0.08);
+  margin-bottom: 24px;
+}
+
+.ep-sv__tab {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ep-ink-3);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.ep-sv__tab.is-active {
+  color: var(--ep-ink);
+  border-bottom-color: var(--ep-ink);
+}
+
+.ep-sv__tab:hover:not(.is-active) {
+  color: var(--ep-ink);
+}
+
+/* ── Panel ── */
+.ep-sv__panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ep-sv__back-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1px solid rgba(20, 18, 26, 0.12);
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ep-ink-3);
+  cursor: pointer;
+  padding: 8px 16px;
+  align-self: flex-start;
+  transition: background 0.15s, color 0.15s;
+}
+.ep-sv__back-inner:hover {
+  background: var(--ep-paper);
+  color: var(--ep-ink);
+}
+
+/* ── טבלה ── */
+.ep-sv__table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.06);
+  border-radius: var(--ep-r-lg);
+  overflow: hidden;
+  font-size: 14px;
+}
+
+.ep-sv__table thead th {
+  padding: 13px 18px;
+  text-align: right;
+  font-family: var(--ep-f-num);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ep-ink-mute);
+  background: var(--ep-cream);
+  border-bottom: 1px solid rgba(20, 18, 26, 0.06);
+}
+
+.ep-sv__table tbody td {
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(20, 18, 26, 0.05);
+  vertical-align: middle;
+  color: var(--ep-ink);
+}
+
+.ep-sv__table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.ep-sv__tr--clickable {
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.ep-sv__tr--clickable:hover td {
+  background: var(--ep-cream);
+}
+
+/* ── שחקן ── */
+.ep-sv__player-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ep-sv__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--ep-ink);
+  color: var(--ep-ans-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.ep-sv__avatar--sm {
+  width: 28px;
+  height: 28px;
+  font-size: 13px;
+}
+
+.ep-sv__player-name {
+  font-family: var(--ep-f-display);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* ── דירוג ── */
+.ep-sv__rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-family: var(--ep-f-num);
+  font-weight: 700;
+  font-size: 13px;
+  background: var(--ep-cream);
+  color: var(--ep-ink-3);
+  border: 1px solid rgba(20, 18, 26, 0.1);
+}
+
+.ep-sv__rank--1 {
+  background: var(--ep-ans-3);
+  color: var(--ep-ink);
+  border-color: var(--ep-ans-3-ink);
+}
+
+.ep-sv__rank--2 {
+  background: var(--ep-ans-2);
+  color: #fff;
+  border-color: var(--ep-ans-2-ink);
+}
+
+.ep-sv__rank--3 {
+  background: var(--ep-ans-1);
+  color: #fff;
+  border-color: var(--ep-ans-1-ink);
+}
+
+/* ── Donut ── */
+.ep-sv__correct-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ep-sv__donut-wrap {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.ep-sv__donut {
+  width: 100%;
+  height: 100%;
+}
+
+.ep-sv__pct {
+  font-family: var(--ep-f-num);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ep-ink);
+}
+
+/* ── תוצאות ── */
+.ep-sv__result {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-num);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ep-sv__result.is-correct {
+  background: rgba(30, 158, 95, 0.12);
+  color: var(--ep-ok);
+}
+
+.ep-sv__result.is-wrong {
+  background: rgba(214, 58, 45, 0.1);
+  color: var(--ep-bad);
+}
+
+.ep-sv__result.is-neutral {
+  color: var(--ep-ink-mute);
+}
+
+.ep-sv__score {
+  font-family: var(--ep-f-num);
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--ep-ink);
+}
+
+.ep-sv__unanswered {
+  font-family: var(--ep-f-num);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ep-warn);
+}
+
+.ep-sv__dash { color: var(--ep-ink-mute); }
+
+.ep-sv__row-arrow {
+  color: var(--ep-ink-mute);
+  font-size: 16px;
+}
+
+.ep-sv__time-val {
+  font-family: var(--ep-f-num);
+  font-size: 13px;
+  color: var(--ep-ink-3);
+}
+
+.ep-sv__pts-val {
+  font-family: var(--ep-f-num);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ep-ink);
+}
+
+.ep-sv__answered-text {
+  font-size: 14px;
+  color: var(--ep-ink);
+}
+
+.ep-sv__no-answer {
+  font-size: 13px;
+  color: var(--ep-ink-mute);
+  font-style: italic;
+}
+
+.ep-sv__type-badge {
+  display: inline-flex;
+  padding: 3px 10px;
+  background: rgba(79, 63, 245, 0.1);
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-num);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ep-primary);
+}
+
+.ep-sv__q-num {
+  font-family: var(--ep-f-num);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ep-ink-mute);
+}
+
+.ep-sv__q-text-cell {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--ep-ink);
+  max-width: 460px;
+}
+
+/* ── Hero שחקן ── */
+.ep-sv__player-hero {
+  background: var(--ep-ink);
+  color: var(--ep-paper);
+  border-radius: var(--ep-r-xl);
+  padding: 28px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.ep-sv__player-hero-left {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.ep-sv__player-big-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--ep-ans-3);
+  color: var(--ep-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--ep-f-display);
+  font-weight: 900;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.ep-sv__player-hero-name {
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 28px;
+  margin: 0 0 6px;
+  letter-spacing: -0.02em;
+}
+
+.ep-sv__player-hero-meta {
+  display: flex;
+  gap: 8px;
+  font-size: 13.5px;
+  opacity: 0.75;
+  align-items: center;
+}
+
+.ep-sv__player-hero-score {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.ep-sv__player-hero-score-val {
+  font-family: var(--ep-f-num);
+  font-weight: 800;
+  font-size: 40px;
+  color: var(--ep-ans-3);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.ep-sv__player-hero-score-label {
+  font-size: 13px;
+  opacity: 0.65;
+}
+
+/* ── Hero שאלה ── */
+.ep-sv__q-hero {
+  background: var(--ep-paper);
+  border: 1px solid rgba(20, 18, 26, 0.06);
+  border-radius: var(--ep-r-xl);
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ep-sv__q-hero-num {
+  font-family: var(--ep-f-num);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ep-ink-mute);
+}
+
+.ep-sv__q-hero-text {
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  margin: 0;
+  color: var(--ep-ink);
+}
+
+.ep-sv__q-stats-row {
+  display: flex;
+  gap: 0;
+  background: var(--ep-cream);
+  border-radius: var(--ep-r-md);
+  overflow: hidden;
+  border: 1px solid rgba(20, 18, 26, 0.07);
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+.ep-sv__q-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 14px 24px;
+  border-inline-start: 1px solid rgba(20, 18, 26, 0.07);
+}
+
+.ep-sv__q-stat:first-child { border-inline-start: none; }
+
+.ep-sv__q-stat-val {
+  font-family: var(--ep-f-display);
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--ep-ink);
+}
+
+.ep-sv__q-stat-label {
+  font-family: var(--ep-f-num);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ep-ink-mute);
+  letter-spacing: 0.04em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .ep-sv { padding: 24px 16px 60px; }
+  .ep-sv__title { font-size: 28px; }
+  .ep-sv__table { font-size: 13px; }
+  .ep-sv__table thead th,
+  .ep-sv__table tbody td { padding: 10px 12px; }
+  .ep-sv__player-hero { flex-direction: column; align-items: flex-start; padding: 22px 20px; }
+  .ep-sv__player-hero-score { align-items: flex-start; }
+  .ep-sv__q-stats-row { flex-wrap: wrap; }
+  .ep-sv__q-stat { padding: 12px 16px; }
+}
