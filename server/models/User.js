@@ -2,35 +2,18 @@ import mongoose from 'mongoose';
 
 // סכמת משתמש
 const UserSchema = new mongoose.Schema({
-  
-  id: {
+
+  username: {
     type: String,
     required: true,
     unique: true
   },
-  
+
   password: {             // סיסמה
     type: String,         // מחרוזת
     required: true        // חובה למלא
   },
 
-  name: {
-    type: String,
-    required: true
-  },
-
-  email: {                // אימייל
-    type: String
-  },
-
-  phone: {                // טלפון
-    type: String
-  },
-
-  birthday: {             // תאריך לידה
-    type: String
-  },
-  
   quizzesCreated: [       // רשימת חידונים שהמשתמש יצר
     {
       type: mongoose.Schema.Types.ObjectId, // מזהה של חידון

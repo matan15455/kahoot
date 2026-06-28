@@ -2,26 +2,17 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import {
-  isValidEmail,
-  isValidPhone,
-  isAdult21,
-  isValidPassword,
-} from "../../utils/validators";
+import { isValidPassword } from "../../utils/validators";
 import { EpShape } from "../_shared/EpBrand";
 import "./Profile.css";
 
 export default function Profile() {
-  const { token, userId, logout } = useAuth();
+  const { token, username, logout } = useAuth();
   const navigate = useNavigate();
 
   const [userData, setUserData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    birthday: "",
     password: "",
-    id: "",
+    username: "",
   });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -31,21 +22,17 @@ export default function Profile() {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   useEffect(() => {
-    if (!userId) return;
+    if (!username) return;
 
     const fetchUser = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:5000/user/${userId}`, {
+        const res = await axios.get(`http://localhost:5000/user/${username}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUserData({
-          name: res.data.name,
-          email: res.data.email,
-          phone: res.data.phone,
-          birthday: res.data.birthday,
           password: "",
-          id: res.data.id,
+          username: res.data.username,
         });
       } catch (err) {
         setError(err.response?.data?.message || "שגיאה בטעינת הנתונים");
@@ -55,7 +42,7 @@ export default function Profile() {
     };
 
     fetchUser();
-  }, [token, userId]);
+  }, [token, username]);
 
   const handleChange = (e) => {
     setUserData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -63,28 +50,24 @@ export default function Profile() {
   };
 
   const handleUpdate = async () => {
-    if (!userId) return;
+    if (!username) return;
     setError("");
 
-    if (!isValidEmail(userData.email)) { setError("אימייל לא תקין"); return; }
-    if (!isValidPhone(userData.phone)) { setError("מספר טלפון לא תקין"); return; }
-    if (!isAdult21(userData.birthday)) { setError("המשתמש חייב להיות מעל גיל 21"); return; }
-    if (userData.password && !isValidPassword(userData.password)) {
+    if (!userData.password) {
+      setError("אין שינוי לשמירה");
+      return;
+    }
+
+    if (!isValidPassword(userData.password)) {
       setError("הסיסמה חייבת להכיל לפחות 8 תווים, אות גדולה, אות קטנה, ספרה ותו מיוחד");
       return;
     }
 
-    const updates = {
-      name: userData.name,
-      email: userData.email,
-      phone: userData.phone,
-      birthday: userData.birthday,
-    };
-    if (userData.password) updates.password = userData.password;
+    const updates = { password: userData.password };
 
     try {
       setSaving(true);
-      await axios.patch(`http://localhost:5000/user/${userId}`, updates, {
+      await axios.patch(`http://localhost:5000/user/${username}`, updates, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSuccess(true);
@@ -98,10 +81,10 @@ export default function Profile() {
   };
 
   const handleDelete = async () => {
-    if (!userId) return;
+    if (!username) return;
     try {
       setLoading(true);
-      await axios.delete(`http://localhost:5000/user/${userId}`, {
+      await axios.delete(`http://localhost:5000/user/${username}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       logout();
@@ -124,15 +107,13 @@ export default function Profile() {
     );
   }
 
-  const initials = userData.name
-    ? userData.name.trim().split(" ").map((w) => w[0]).join("").slice(0, 2)
-    : "?";
+  const initials = userData.username ? userData.username.trim().slice(0, 2).toUpperCase() : "?";
 
   return (
     <div className="ep-prof">
       <div className="ep-prof__container">
 
-        {/* ══ כרטיס כותרת — Avatar + שם + ת.ז ══ */}
+        {/* ══ כרטיס כותרת — Avatar + שם משתמש ══ */}
         <div className="ep-prof__hero">
           {/* בלובים דקורטיביים */}
           <span className="ep-prof__blob ep-prof__blob--a" aria-hidden="true" />
@@ -145,11 +126,7 @@ export default function Profile() {
 
           <div className="ep-prof__hero-body">
             <p className="ep-prof__hero-label">האזור האישי שלך</p>
-            <h1 className="ep-prof__hero-name">{userData.name || "—"}</h1>
-            <div className="ep-prof__id-badge">
-              <span className="ep-prof__id-label">ת.ז.</span>
-              <span className="ep-prof__id-value">{userData.id}</span>
-            </div>
+            <h1 className="ep-prof__hero-name">{userData.username || "—"}</h1>
           </div>
 
           {/* צורות גיאומטריות דקורטיביות */}
@@ -165,7 +142,7 @@ export default function Profile() {
         {success && (
           <div className="ep-prof__toast" role="status">
             <span className="ep-prof__toast-icon">✓</span>
-            הפרטים עודכנו בהצלחה!
+            הסיסמה עודכנה בהצלחה!
           </div>
         )}
 
@@ -181,63 +158,20 @@ export default function Profile() {
         <section className="ep-prof__card">
           <div className="ep-prof__section-head">
             <span className="ep-prof__section-kicker">פרטי חשבון</span>
-            <h2 className="ep-prof__section-title">עריכת פרטים</h2>
+            <h2 className="ep-prof__section-title">שינוי סיסמה</h2>
           </div>
 
           <div className="ep-prof__fields">
 
-            {/* שם */}
+            {/* שם משתמש (לקריאה בלבד) */}
             <div className="ep-field">
-              <label className="ep-field__label" htmlFor="prof-name">שם מלא</label>
+              <label className="ep-field__label" htmlFor="prof-username">שם משתמש</label>
               <input
-                id="prof-name"
-                name="name"
+                id="prof-username"
                 className="ep-field__input"
                 type="text"
-                placeholder="שם מלא"
-                value={userData.name || ""}
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* אימייל + טלפון */}
-            <div className="ep-prof__row-2">
-              <div className="ep-field">
-                <label className="ep-field__label" htmlFor="prof-email">אימייל</label>
-                <input
-                  id="prof-email"
-                  name="email"
-                  className="ep-field__input"
-                  type="email"
-                  placeholder="name@example.com"
-                  value={userData.email || ""}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="ep-field">
-                <label className="ep-field__label" htmlFor="prof-phone">טלפון</label>
-                <input
-                  id="prof-phone"
-                  name="phone"
-                  className="ep-field__input"
-                  type="tel"
-                  placeholder="05X-XXXXXXX"
-                  value={userData.phone || ""}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-
-            {/* תאריך לידה */}
-            <div className="ep-field">
-              <label className="ep-field__label" htmlFor="prof-bday">תאריך לידה</label>
-              <input
-                id="prof-bday"
-                name="birthday"
-                className="ep-field__input"
-                type="date"
-                value={userData.birthday || ""}
-                onChange={handleChange}
+                value={userData.username || ""}
+                disabled
               />
             </div>
 

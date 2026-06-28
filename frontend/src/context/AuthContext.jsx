@@ -6,7 +6,7 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const [username, setUsername] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // טעינה ראשונית מה־localStorage
@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
       setToken(storedToken);
 
       const decoded = jwtDecode(storedToken);
-      setUserId(decoded.id);
+      setUsername(decoded.username);
 
       connectSocket(storedToken);
     }
@@ -32,7 +32,7 @@ export function AuthProvider({ children }) {
     setToken(token);
 
     const decoded = jwtDecode(token);
-    setUserId(decoded.id);
+    setUsername(decoded.username);
 
     connectSocket(token);
   };
@@ -42,7 +42,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("token");
 
     setToken(null);
-    setUserId(null);
+    setUsername(null);
 
     disconnectSocket();
   };
@@ -51,7 +51,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         token,
-        userId,
+        username,
         isAuthenticated: !!token,
         login,
         logout

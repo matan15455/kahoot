@@ -6,7 +6,7 @@ import { EpBrandMark, EpShape } from "../_shared/EpBrand";
 import "./Login.css";
 
 export default function Login() {
-  const [idUser, setIdUser] = useState("");  // המזהה שהמשתמש הזין
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPwd, setShowPwd] = useState(false);
@@ -25,7 +25,7 @@ export default function Login() {
     try {
       const res = await axios.get("http://localhost:5000/auth/login", {
         params: {
-          id: idUser,
+          username,
           password
         }
       });
@@ -57,17 +57,12 @@ export default function Login() {
           </div>
 
           <div className="ep-login__brand-body">
-            <p className="ep-login__kicker">
-              <span className="ep-login__kicker-dot" />
-              פלטפורמת חידונים בזמן אמת
-            </p>
             <h1 className="ep-login__hero">
-              לימוד שמרגיש<br />
-              כמו <span className="ep-login__hero-accent">משחק.</span>
+              למידה<br />
+              <span className="ep-login__hero-accent">בכיף</span>
             </h1>
             <p className="ep-login__lead">
-              צרו חידונים אינטראקטיביים, נהלו חדרים בזמן אמת,
-              וגלו מה התלמידים באמת יודעים — בלי לפתוח 30 טאבים.
+             התחבר כדי ליצור חידונים, להפעיל אותם בזמן אמת ולעקוב אחר סטטיסטיקות המשחק.
             </p>
           </div>
 
@@ -82,13 +77,13 @@ export default function Login() {
               <span style={{ color: "var(--ep-ans-3)" }}>
                 <EpShape kind="plus" size={14} />
               </span>
-              סטטיסטיקות חיות
+              סטטיסטיקות
             </li>
             <li className="ep-login__chip">
               <span style={{ color: "var(--ep-ans-4)" }}>
                 <EpShape kind="wave" size={14} />
               </span>
-              ללא הורדה
+              משחק עם חברים
             </li>
           </ul>
         </aside>
@@ -99,22 +94,21 @@ export default function Login() {
             <div className="ep-login__form-top">
               <p className="ep-login__form-kicker">התחברות</p>
               <h2 className="ep-login__form-title">ברוכים השבים</h2>
-              <p className="ep-login__form-sub">הזינו תעודת זהות וסיסמה כדי להמשיך</p>
+              <p className="ep-login__form-sub">הזן שם משתמש וסיסמה כדי להמשיך</p>
             </div>
 
             <div className="ep-login__fields">
               <div className="ep-field">
-                <label className="ep-field__label" htmlFor="login-id">תעודת זהות</label>
+                <label className="ep-field__label" htmlFor="login-username">שם משתמש</label>
                 <input
-                  id="login-id"
+                  id="login-username"
                   className="ep-field__input"
                   type="text"
                   required
-                  inputMode="numeric"
                   autoComplete="username"
-                  placeholder="9 ספרות"
-                  value={idUser}
-                  onChange={(e) => setIdUser(e.target.value)}
+                  placeholder="הזן שם משתמש"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
 
@@ -151,7 +145,6 @@ export default function Login() {
 
             <button className="ep-login__submit" type="submit">
               <span>התחבר</span>
-              <span className="ep-login__submit-arrow" aria-hidden="true">←</span>
             </button>
 
             <div className="ep-login__divider">
@@ -161,11 +154,11 @@ export default function Login() {
             <p className="ep-login__footer">
               חדש כאן?{" "}
               <Link to="/register" className="ep-login__link ep-login__link--primary">
-                צרו חשבון
+                צור חשבון
               </Link>
               {"  ·  "}
               <Link to="/join-room" className="ep-login__link">
-                הצטרפו לחדר ללא הרשמה ←
+                הצטרפו לחדר ללא הרשמה
               </Link>
             </p>
           </form>

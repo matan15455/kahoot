@@ -16,8 +16,8 @@ export default function authMiddleware(req, res, next) {
 
     // מצמידים את המשתמש לבקשה
     req.user = {
-      mongoId: decoded.mongoId, // ObjectId של Mongo
-      id: decoded.id            // המזהה שהמשתמש הזין
+      mongoId: decoded.mongoId,   // ObjectId של Mongo
+      username: decoded.username  // שם המשתמש
     };
 
     next(); // ממשיכים ל־route

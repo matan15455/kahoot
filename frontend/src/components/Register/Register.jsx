@@ -2,13 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import {
-  isValidEmail,
-  isValidPhone,
-  isAdult21,
-  isValidPassword,
-  isValidID
-} from "../../utils/validators";
+import { isValidPassword } from "../../utils/validators";
 import { EpBrandMark, EpShape } from "../_shared/EpBrand";
 
 import "./Register.css";
@@ -17,14 +11,11 @@ export default function Register() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [idUser, setIdUser] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [birthday, setBirthday] = useState("");
   const [showPwd, setShowPwd] = useState(false);
 
   //טיפול בהגשת טופס ההרשמה
@@ -35,52 +26,28 @@ export default function Register() {
     //מנקה את השגיאה הקודמת
     setError("");
 
-    if (!idUser || !password || !name || !email || !phone || !birthday) {
-      setError("יש למלא את כל השדות");
+    if (!username || !password || !confirmPassword) {
+      setError("יש למלא שם משתמש וסיסמה");
       return;
     }
 
-    // if (!isValidID(idUser)) {
-    //   setError("תעודת זהות לא תקינה");
-    //   return;
-    // }
-
-    // if (!isValidEmail(email)) {
-    //   setError("אימייל לא תקין");
-    //   return;
-    // }
-
-    // if (!isValidPhone(phone)) {
-    //   setError("מספר טלפון לא תקין");
-    //   return;
-    // }
-
-    // if (!isAdult21(birthday)) {
-    //   setError("המשתמש חייב להיות מעל גיל 21");
-    //   return;
-    // }
-
-    // if (!isValidPassword(password)) {
-    //   setError("הסיסמה חייבת להכיל לפחות 8 תווים, אות גדולה, אות קטנה, ספרה ותו מיוחד");
-    //   return;
-    // }
+    if (password !== confirmPassword) {
+      setError("הסיסמאות אינן תואמות");
+      return;
+    }
 
     try {
       setLoading(true);
 
       await axios.post("http://localhost:5000/auth/register", {
-        id: idUser,
-        password,
-        name,
-        email,
-        phone,
-        birthday
+        username,
+        password
       });
 
       // התחברות אוטומטית אחרי הרשמה
       const res = await axios.get("http://localhost:5000/auth/login", {
         params: {
-          id: idUser,
+          username,
           password
         }
       });
@@ -111,17 +78,12 @@ export default function Register() {
           </div>
 
           <div className="ep-reg__brand-body">
-            <p className="ep-reg__kicker">
-              <span className="ep-reg__kicker-dot" />
-              הצטרפו לקהילה
-            </p>
             <h1 className="ep-reg__hero">
-              שני דקות להרשמה,<br />
-              שנים של <span className="ep-reg__hero-accent">חידונים.</span>
+             למידה<br />
+             <span className="ep-reg__hero-accent">בכיף</span>
             </h1>
             <p className="ep-reg__lead">
-              חשבון EduPlay בחינם פותח את כל הפלטפורמה —
-              יצירת חידונים, ניהול חדרים בזמן אמת, וצפייה בסטטיסטיקות אחרי כל משחק.
+             הירשם כדי ליצור חידונים, להפעיל אותם בזמן אמת ולעקוב אחר סטטיסטיקות המשחק.
             </p>
           </div>
 
@@ -152,78 +114,22 @@ export default function Register() {
           <form className="ep-reg__form" onSubmit={handleSubmit} noValidate>
             <div className="ep-reg__form-top">
               <p className="ep-reg__form-kicker">הרשמה</p>
-              <h2 className="ep-reg__form-title">יוצרים חשבון</h2>
-              <p className="ep-reg__form-sub">כל השדות חובה · יידרשו 30 שניות</p>
+              <h2 className="ep-reg__form-title">צור חשבון</h2>
             </div>
 
             <div className="ep-reg__fields">
 
-              {/* שם מלא */}
+              {/* שם משתמש */}
               <div className="ep-field">
-                <label className="ep-field__label" htmlFor="reg-name">שם מלא</label>
+                <label className="ep-field__label" htmlFor="reg-username">שם משתמש</label>
                 <input
-                  id="reg-name"
+                  id="reg-username"
                   className="ep-field__input"
                   type="text"
-                  autoComplete="name"
-                  placeholder="לדוגמה: מתן עמרם"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-
-              {/* ת.ז + תאריך לידה — 2 עמודות */}
-              <div className="ep-reg__row-2">
-                <div className="ep-field">
-                  <label className="ep-field__label" htmlFor="reg-id">תעודת זהות</label>
-                  <input
-                    id="reg-id"
-                    className="ep-field__input"
-                    type="text"
-                    inputMode="numeric"
-                    autoComplete="username"
-                    placeholder="9 ספרות"
-                    value={idUser}
-                    onChange={(e) => setIdUser(e.target.value)}
-                  />
-                </div>
-                <div className="ep-field">
-                  <label className="ep-field__label" htmlFor="reg-bday">תאריך לידה</label>
-                  <input
-                    id="reg-bday"
-                    className="ep-field__input"
-                    type="date"
-                    value={birthday}
-                    onChange={(e) => setBirthday(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* אימייל */}
-              <div className="ep-field">
-                <label className="ep-field__label" htmlFor="reg-email">אימייל</label>
-                <input
-                  id="reg-email"
-                  className="ep-field__input"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-
-              {/* טלפון */}
-              <div className="ep-field">
-                <label className="ep-field__label" htmlFor="reg-phone">טלפון</label>
-                <input
-                  id="reg-phone"
-                  className="ep-field__input"
-                  type="tel"
-                  autoComplete="tel"
-                  placeholder="05X-XXXXXXX"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  autoComplete="username"
+                  placeholder="בחרו שם משתמש"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
 
@@ -251,6 +157,20 @@ export default function Register() {
                 <p className="ep-field__hint">
                   לפחות 8 תווים, אות גדולה, ספרה ותו מיוחד
                 </p>
+              </div>
+
+              {/* אימות סיסמה */}
+              <div className="ep-field">
+                <label className="ep-field__label" htmlFor="reg-pwd-confirm">אימות סיסמה</label>
+                <input
+                  id="reg-pwd-confirm"
+                  className="ep-field__input"
+                  type={showPwd ? "text" : "password"}
+                  autoComplete="new-password"
+                  placeholder="הקלידו את הסיסמה שוב"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
               </div>
 
               {error && (

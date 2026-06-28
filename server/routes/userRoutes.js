@@ -7,16 +7,16 @@ import authMiddleware from '../middleware/authMiddleware.js';
 const router = express.Router();
 
 
-router.get('/:id', authMiddleware, async (req, res) => {
-  const { id } = req.params;
+router.get('/:username', authMiddleware, async (req, res) => {
+  const { username } = req.params;
 
   // רק המשתמש עצמו יכול לראות את הנתונים שלו
-  if (req.user.id !== id) {
+  if (req.user.username !== username) {
     return res.status(403).json({ message: "Access denied" });
   }
 
   try {
-    const user = await User.findOne({ id }).populate('quizzesCreated');
+    const user = await User.findOne({ username }).select('-password').populate('quizzesCreated');
     if (!user) {
       return res.status(404).json({ message: "משתמש לא נמצא בבסיס נתונים" });
     }
@@ -29,12 +29,12 @@ router.get('/:id', authMiddleware, async (req, res) => {
 });
 
 
-router.patch("/:id", authMiddleware, async (req, res) => {
-  const { id } = req.params;
+router.patch("/:username", authMiddleware, async (req, res) => {
+  const { username } = req.params;
   const updates = req.body;
 
   // רק המשתמש עצמו יכול לעדכן את הנתונים שלו
-  if (req.user.id !== id) {
+  if (req.user.username !== username) {
     return res.status(403).json({ message: "Access denied" });
   }
 
@@ -43,7 +43,7 @@ router.patch("/:id", authMiddleware, async (req, res) => {
   }
 
   // רשימת שדות שמותר לעדכן
-  const allowedFields = ["name", "email", "phone", "birthday", "password"];
+  const allowedFields = ["password"];
 
   // בדיקה אם יש שדות לא חוקיים
   const invalidFields = Object.keys(updates).filter(
@@ -53,27 +53,17 @@ router.patch("/:id", authMiddleware, async (req, res) => {
     return res.status(400).json({ message: `שדות לא חוקיים: ${invalidFields.join(", ")}` });
   }
 
-  // ולידציה לשדות ספציפיים
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const phoneRegex = /^(\+972|0)?-?5\d-?\d{7}$/;
+  // ולידציה לשדה הסיסמה
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
-
-  if (updates.email && !emailRegex.test(updates.email)) {
-    return res.status(400).json({ message: "אימייל לא תקין" });
-  }
-
-  if (updates.phone && !phoneRegex.test(updates.phone)) {
-    return res.status(400).json({ message: "מספר טלפון לא תקין" });
-  }
 
   if (updates.password && !passwordRegex.test(updates.password)) {
     return res.status(400).json({ message: "סיסמה לא עומדת בדרישות הבטיחות" });
   }
 
   try {
-    const user = await User.findOne({ id });
+    const user = await User.findOne({ username });
     if (!user) {
-      return res.status(404).json({ message: "ת.ז. לא קיימת במערכת" });
+      return res.status(404).json({ message: "שם משתמש לא קיים במערכת" });
     }
 
     // עדכון השדות החוקיים בלבד
@@ -95,16 +85,16 @@ router.patch("/:id", authMiddleware, async (req, res) => {
 });
 
 
-router.delete('/:id', authMiddleware, async (req, res) => {
-  const { id } = req.params;
+router.delete('/:username', authMiddleware, async (req, res) => {
+  const { username } = req.params;
 
   // רק המשתמש עצמו יכול למחוק את החשבון שלו
-  if (req.user.id !== id) {
+  if (req.user.username !== username) {
     return res.status(403).json({ message: "Access denied" });
   }
 
   try {
-    const user = await User.findOne({ id });
+    const user = await User.findOne({ username });
     if (!user) {
       return res.status(404).json({ message: "משתמש לא קיים במערכת" });
     }

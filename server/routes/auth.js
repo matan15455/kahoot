@@ -9,15 +9,15 @@ const router = express.Router();
 // הרשמה
 router.post("/register", async (req, res) => {
   try {
-    const { id, password, name, email, phone, birthday } = req.body;
+    const { username, password } = req.body;
 
-    if (!id || !password || !name || !email || !phone || !birthday) {
+    if (!username || !password) {
       return res.status(400).json({
-        message: "חסרה אחת מהשדות"
+        message: "נדרשים שם משתמש וסיסמה"
       });
     }
 
-    const existingUser = await User.findOne({ id });
+    const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(409).json({
         message: "המשתמש כבר קיים במערכת"
@@ -27,12 +27,8 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await User.create({
-      id,
+      username,
       password: hashedPassword,
-      name,
-      email,
-      phone,
-      birthday,
       quizzesCreated: [],
       statistics: {
         totalPoints: 0,
@@ -53,16 +49,16 @@ router.post("/register", async (req, res) => {
 
 router.get("/login", async (req, res) => {
   try {
-    const { id, password } = req.query;
+    const { username, password } = req.query;
 
-    if (!id || !password) {
+    if (!username || !password) {
       return res.status(400).json({
-        message: "נדרשים id וסיסמה"
+        message: "נדרשים שם משתמש וסיסמה"
       });
     }
 
 
-    const user = await User.findOne({ id });
+    const user = await User.findOne({ username });
     if (!user) {
       return res.status(404).json({
         message: "המשתמש לא קיים במערכת"
@@ -79,8 +75,8 @@ router.get("/login", async (req, res) => {
     //  יצירת JWT
     const token = jwt.sign(
       {
-        mongoId: user._id,  // ObjectId פנימי
-        id: user.id         // המזהה שהמשתמש הזין
+        mongoId: user._id,      // ObjectId פנימי
+        username: user.username // שם המשתמש
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" } // תוקף טוקן

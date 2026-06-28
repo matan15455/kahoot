@@ -29,7 +29,7 @@ export default function initSocket(server) {
     // אם אין אז אורח
     if (!token) {
       socket.mongoId = null;
-      socket.idUser = "Guest";
+      socket.username = "Guest";
       return next();
     }
 
@@ -37,7 +37,7 @@ export default function initSocket(server) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       socket.mongoId = decoded.mongoId; // ObjectId של Mongo
-      socket.idUser = decoded.id;       // המזהה שהמשתמש הזין
+      socket.username = decoded.id;       // המזהה שהמשתמש הזין
       next();
     } 
     catch (e) {
@@ -47,7 +47,7 @@ export default function initSocket(server) {
   });
 
   io.on("connection", (socket) => {
-    console.log("🟢 Connected:", socket.mongoId,socket.idUser);    
+    console.log("🟢 Connected:", socket.mongoId,socket.username);    
 
     /* =====================================================
         Helpers
