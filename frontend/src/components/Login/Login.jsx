@@ -83,7 +83,7 @@ export default function Login() {
               <span style={{ color: "var(--ep-ans-4)" }}>
                 <EpShape kind="wave" size={14} />
               </span>
-              משחק עם חברים
+             זמן אמת
             </li>
           </ul>
         </aside>

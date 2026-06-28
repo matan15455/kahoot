@@ -87,24 +87,24 @@ export default function Register() {
             </p>
           </div>
 
-          <ul className="ep-reg__chips">
-            <li className="ep-reg__chip">
+          <ul className="ep-login__chips">
+            <li className="ep-login__chip">
               <span style={{ color: "var(--ep-ans-1)" }}>
                 <EpShape kind="burst" size={14} />
               </span>
-              חינם לחלוטין
+              חידונים מבוססי AI
             </li>
-            <li className="ep-reg__chip">
+            <li className="ep-login__chip">
               <span style={{ color: "var(--ep-ans-3)" }}>
                 <EpShape kind="plus" size={14} />
               </span>
-              ללא הגבלת חידונים
+              סטטיסטיקות
             </li>
-            <li className="ep-reg__chip">
+            <li className="ep-login__chip">
               <span style={{ color: "var(--ep-ans-4)" }}>
                 <EpShape kind="wave" size={14} />
               </span>
-              עברית מלאה
+              זמן אמת
             </li>
           </ul>
         </aside>
