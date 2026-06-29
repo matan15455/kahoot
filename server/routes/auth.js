@@ -28,13 +28,7 @@ router.post("/register", async (req, res) => {
 
     await User.create({
       username,
-      password: hashedPassword,
-      quizzesCreated: [],
-      statistics: {
-        totalPoints: 0,
-        quizzesCreatedCount: 0,
-        quizzesPlayedCount: 0
-      }
+      password: hashedPassword
     });
 
     res.status(201).json({

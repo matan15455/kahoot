@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 const AnswerSchema = new mongoose.Schema({
   questionIndex: Number,
-  questionText:  String,
   answered:      String,   // מה השחקן בחר (null אם לא ענה)
   isCorrect:     Boolean,
   timeToAnswer:  Number,   // בשניות
@@ -16,7 +15,6 @@ const PlayerResultSchema = new mongoose.Schema({
 }, { _id: false });
 
 const QuestionStatSchema = new mongoose.Schema({
-  index:         Number,
   text:          String,
   correctAnswer: String,
   totalAnswered: Number,

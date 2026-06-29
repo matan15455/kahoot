@@ -18,7 +18,8 @@ const QuizSchema = new mongoose.Schema({
   creatorId: {       // מזהה היוצר של החידון
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',     // מתייחס למודל User
-    required: true
+    required: true,
+    index: true
   }
 }, { timestamps: true }); // מוסיף תאריכי יצירה ועדכון
 

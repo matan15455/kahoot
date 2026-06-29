@@ -18,11 +18,6 @@ const QuestionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  type: {             // סוג השאלה: אמריקאית או אמת/שקר
-    type: String,
-    enum: ['multiple-choice', 'true-false'], // רק שתי אפשרויות אפשריות
-    required: true
-  },
   time: {             // זמן לשאלה בשניות
     type: Number,
     required: true

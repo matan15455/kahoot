@@ -16,7 +16,7 @@ router.get('/:username', authMiddleware, async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ username }).select('-password').populate('quizzesCreated');
+    const user = await User.findOne({ username }).select('-password');
     if (!user) {
       return res.status(404).json({ message: "משתמש לא נמצא בבסיס נתונים" });
     }

@@ -343,6 +343,8 @@ export default function initSocket(server) {
 
       // ← חדש: שמור את התשובה
       const timeToAnswer = q.time - Math.max(0, (room.timer.endsAt - Date.now()) / 1000);
+
+      //מוסיף נתוני התשובה של השחקן למערך התשובות כדי שבסוף המשחק ייכנס לבסיס הנתונים
       player.answers.push({
         questionIndex: room.currentQuestionIndex,
         questionText:  q.text,

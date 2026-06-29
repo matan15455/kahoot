@@ -59,7 +59,7 @@ export default function QuestionForm({ onAddQuestion, onCancel, index = 0 }) {
       setError("יש לבחור תשובה נכונה אחת");
       return;
     }
-    onAddQuestion({ text, type, time, points, answers });
+    onAddQuestion({ text, time, points, answers });
   };
 
   return (

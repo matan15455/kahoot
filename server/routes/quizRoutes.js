@@ -26,12 +26,6 @@ router.post('/',authMiddleware, async (req, res) => {
 
     await quiz.save();
 
-    // מוסיפים את החידון לרשימת החידונים של המשתמש
-    await User.findByIdAndUpdate(creatorId, {
-      $push: { quizzesCreated: quiz._id },
-      $inc: { 'statistics.quizzesCreatedCount': 1 }
-    });
-
     res.status(201).json({
       message: "Quiz created successfully",
       quizId: quiz._id
@@ -49,14 +43,11 @@ router.get("/my", authMiddleware, async (req, res) => {
     // מגיע מה-JWT
     const userId = req.user.mongoId;
 
-    const user = await User.findById(userId)
-      .populate("quizzesCreated");
+    const quizzes = await Quiz.find({ creatorId: userId })
+    .sort({ createdAt: -1 });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    res.json(quizzes);
 
-    res.json(user.quizzesCreated);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -74,11 +65,6 @@ router.delete("/:quizId", authMiddleware, async (req, res) => {
 
     await Question.deleteMany({ _id: { $in: quiz.questions } });
     await quiz.deleteOne();
-
-    await User.findByIdAndUpdate(req.user.mongoId, {
-      $pull: { quizzesCreated: quiz._id },
-      $inc: { "statistics.quizzesCreatedCount": -1 }
-    });
 
     res.json({ message: "החידון נמחק" });
   } catch (err) {
