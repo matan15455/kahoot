@@ -86,15 +86,13 @@ export default function CreateRoom() {
               <span className="ep-cr__kicker-dot" />
               חדר פעיל
             </span>
-            <h1 className="ep-cr__title">החדר מוכן.</h1>
+            <h1 className="ep-cr__title">החדר נוצר</h1>
             <p className="ep-cr__sub">
-              שתפו את הקוד או הקישור.
-              המשחק יתחיל כשתלחצו על "התחל".
+שתף את הקוד המשחק יתחיל כשתלחץ על התחל משחק.
             </p>
           </div>
 
           <div className="ep-cr__pin-wrap">
-            <p className="ep-cr__pin-label">הצטרפו ב־<strong>eduplay.app</strong> · הקלידו</p>
             <div className="ep-cr__pin">
               {pinDigits.map((d, i) => (
                 <span key={i} className="ep-cr__pin-digit">{d}</span>
@@ -108,12 +106,6 @@ export default function CreateRoom() {
               onClick={copyRoomCode}
             >
               {copied === "pin" ? "✓ הועתק" : "העתק קוד"}
-            </button>
-            <button
-              className={"ep-cr__act" + (copied === "link" ? " is-copied" : "")}
-              onClick={copyInviteLink}
-            >
-              {copied === "link" ? "✓ הקישור הועתק" : "העתק קישור הזמנה"}
             </button>
           </div>
 
@@ -132,7 +124,7 @@ export default function CreateRoom() {
           {playerCount === 0 && (
             <p className="ep-cr__hint">
               <span className="ep-cr__hint-icon">!</span>
-              לא ניתן להתחיל משחק בלי שחקנים — חכו שמישהו יצטרף.
+              לא ניתן להתחיל משחק בלי שחקנים חכה שמישהו יצטרף.
             </p>
           )}
         </section>
@@ -144,7 +136,7 @@ export default function CreateRoom() {
             <p className="ep-cr__roster-count">{playerCount}</p>
             <div className="ep-cr__roster-status">
               <span className="ep-cr__pulse" />
-              ממתינים לעוד מצטרפים…
+              ממתין לעוד מצטרפים…
             </div>
           </div>
 

@@ -98,7 +98,7 @@ export default function JoinScreen() {
             <p className="ep-join__you-name">{nickname}</p>
             <div className="ep-join__you-status">
               <span className="ep-join__pulse" />
-              ממתינים שהמנחה יתחיל את החידון
+              ממתין שהמארח יתחיל את המשחק
             </div>
           </div>
 
@@ -140,17 +140,13 @@ export default function JoinScreen() {
 
         <div className="ep-join__hero">
           <span className="ep-join__kicker">
-            <span className="ep-join__kicker-mark" style={{ color: "var(--ep-ans-2)" }}>
-              <EpShape kind="hex" size={14} />
-            </span>
-            הצטרפות לחדר
           </span>
           <h1 className="ep-join__title">
-            מצטרפים<br />
-            <span className="ep-join__title-accent">למשחק.</span>
+            הצטרף<br />
+            <span className="ep-join__title-accent">לחדר.</span>
           </h1>
           <p className="ep-join__sub">
-            הזינו את קוד החדר שקיבלתם מהמנחה ובחרו לעצמכם שם.
+            הזן את קוד החדר שקיבלת מהמנחה ובחר לעצמך שם.
           </p>
         </div>
 
@@ -179,7 +175,7 @@ export default function JoinScreen() {
               id="join-name"
               className="ep-field__input"
               type="text"
-              placeholder="לדוגמה: יעל"
+              placeholder="לדוגמה: מתן עמרם"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               autoComplete="off"
@@ -197,13 +193,8 @@ export default function JoinScreen() {
 
         <button className="ep-join__submit" type="submit">
           <span>להצטרפות למשחק</span>
-          <span className="ep-join__submit-arrow" aria-hidden="true">←</span>
         </button>
 
-        <p className="ep-join__footer">
-          אין לך חשבון? <span className="ep-join__footer-em">לא צריך</span> —
-          המנחה יוצר את החדר, אתם רק מצטרפים.
-        </p>
       </form>
     </div>
   );

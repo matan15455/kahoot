@@ -42,7 +42,7 @@ export default function MyQuizzes() {
       <div className="ep-myq ep-myq--state">
         <div className="ep-myq__loader">
           <CircularProgress sx={{ color: "var(--ep-primary)" }} size={56} />
-          <p className="ep-myq__loader-text">טוען את הספרייה שלך…</p>
+          <p className="ep-myq__loader-text"></p>
         </div>
       </div>
     );
@@ -74,10 +74,9 @@ export default function MyQuizzes() {
       <header className="ep-myq__head">
         <div className="ep-myq__head-text">
           <p className="ep-myq__kicker">
-            הספרייה שלך
             {count > 0 && (
               <>
-                {" · "}
+                {"  "}
                 <span className="ep-myq__kicker-stat">
                   {count} {count === 1 ? "חידון" : "חידונים"}
                 </span>
@@ -127,8 +126,7 @@ export default function MyQuizzes() {
             אין כאן עדיין חידונים
           </h2>
           <p className="ep-myq__empty-sub">
-            צרו את החידון הראשון שלכם ב-2 דקות —
-            ידנית עם 4 תשובות לשאלה, או בעזרת בינה מלאכותית.
+          
           </p>
           <div className="ep-myq__empty-actions">
             <button

@@ -191,17 +191,12 @@ export default function AICreateQuiz() {
         <form className="ep-ai__form" onSubmit={generateQuiz} noValidate>
 
           <div className="ep-ai__form-head">
-            <p className="ep-ai__kicker">
-              <span className="ep-ai__sparkle">✦</span>
-              חידון חדש · בעזרת AI
-            </p>
             <h1 className="ep-ai__title">
-              תנו ל-AI<br />
+              תן ל-AI<br />
               <span className="ep-ai__title-accent">להציע.</span>
             </h1>
             <p className="ep-ai__sub">
-              הזינו נושא, בחרו רמת קושי וכמות שאלות.
-              ה-AI ייצור טיוטה ואתם תערכו לפני השמירה.
+             בחר נושא והנחיות וה-AI ייצור בשבילך את השאלות. תוכל גם לערוך אחרי זה
             </p>
           </div>
 
@@ -273,8 +268,7 @@ export default function AICreateQuiz() {
               </>
             ) : (
               <>
-                <span className="ep-ai__sparkle">✦</span>
-                <span>צרו עבורי חידון</span>
+                <span>צור חידון</span>
               </>
             )}
           </button>
@@ -292,10 +286,6 @@ export default function AICreateQuiz() {
 
       <header className="ep-ai__head">
         <div className="ep-ai__head-text">
-          <p className="ep-ai__kicker">
-            <span className="ep-ai__sparkle">✦</span>
-            טיוטה של AI · עריכה לפני שמירה
-          </p>
           <h1 className="ep-ai__rev-title">{quiz.title}</h1>
           {quiz.description && quiz.description !== "AI quiz" && (
             <p className="ep-ai__rev-desc">{quiz.description}</p>
@@ -310,7 +300,7 @@ export default function AICreateQuiz() {
               setQuestions([]);
             }}
           >
-            ← התחל מחדש
+           התחל מחדש
           </button>
           <button
             className="ep-ai__btn ep-ai__btn--primary"

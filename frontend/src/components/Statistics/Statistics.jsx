@@ -93,8 +93,8 @@ export default function Statistics() {
       {/* ── כותרת ── */}
       <header className="ep-stat__head">
         <div>
-          <p className="ep-stat__kicker">היסטוריה</p>
-          <h1 className="ep-stat__title">המשחקים שלי</h1>
+          <p className="ep-stat__kicker">סטטיסטיקות</p>
+          <h1 className="ep-stat__title">המשחקים שהפעלתי</h1>
         </div>
 
         {sessions.length > 0 && (
@@ -127,7 +127,7 @@ export default function Statistics() {
             className="ep-stat__empty-btn"
             onClick={() => navigate("/my-quizzes")}
           >
-            לחידונים שלי ←
+            לחידונים שלי
           </button>
         </div>
       ) : (
@@ -135,7 +135,6 @@ export default function Statistics() {
           {/* ── בקרי סינון ── */}
           <div className="ep-stat__controls">
             <div className="ep-stat__search">
-              <span className="ep-stat__search-icon" aria-hidden="true">⌕</span>
               <input
                 className="ep-stat__search-input"
                 type="text"
@@ -244,15 +243,12 @@ export default function Statistics() {
 
                     <div className="ep-stat__row-chips">
                       <span className="ep-stat__chip">
-                        <span className="ep-stat__chip-icon">👥</span>
                         {session.players.length} שחקנים
                       </span>
                       <span className="ep-stat__chip">
-                        <span className="ep-stat__chip-icon">❓</span>
                         {session.questions.length} שאלות
                       </span>
                       <span className="ep-stat__chip">
-                        <span className="ep-stat__chip-icon">⭐</span>
                         ממוצע {avgScore.toLocaleString()} נק'
                       </span>
                       <span
@@ -267,7 +263,6 @@ export default function Statistics() {
                       </span>
                     </div>
 
-                    <span className="ep-stat__row-arrow">←</span>
                   </li>
                 );
               })}

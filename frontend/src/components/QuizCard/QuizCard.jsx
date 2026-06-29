@@ -55,7 +55,6 @@ export default function QuizCard({ quiz, colorIndex = 0,onDelete  }) {
         <div className="ep-qcard__foot">
           <span className="ep-qcard__action">
             <span>הפעל חדר</span>
-            <span className="ep-qcard__arrow" aria-hidden="true">←</span>
           </span>
           <button
             className="ep-qcard__delete"

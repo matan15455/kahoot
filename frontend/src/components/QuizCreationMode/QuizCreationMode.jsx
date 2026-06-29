@@ -12,10 +12,10 @@ export default function QuizCreationMode() {
         <header className="ep-qcm__head">
           <p className="ep-qcm__kicker">יצירת חידון</p>
           <h1 className="ep-qcm__title">
-            איך נתחיל?
+          בחר את מה שמתאים לך
           </h1>
           <p className="ep-qcm__sub">
-            בחרו את הדרך שמתאימה לכם — אפשר להתחיל ידני, או לתת ל-AI להציע
+        אפשר להתחיל ידני, או לתת לAI להציע
             לכם שאלות לנושא שאתם בוחרים.
           </p>
         </header>
@@ -45,15 +45,9 @@ export default function QuizCreationMode() {
             <div className="ep-qcm__card-body">
               <h2 className="ep-qcm__card-title">יצירה ידנית</h2>
               <p className="ep-qcm__card-desc">
-                בנו את החידון שלכם שאלה-שאלה. שליטה מלאה בטקסט,
+                בנה את החידון שלך שאלה שאלה. שליטה מלאה בטקסט,
                 בתשובות, בזמן ובניקוד של כל שאלה.
               </p>
-
-              <ul className="ep-qcm__card-list">
-                <li><span className="ep-qcm__check">✓</span> שליטה מלאה</li>
-                <li><span className="ep-qcm__check">✓</span> ללא הגבלת אורך</li>
-                <li><span className="ep-qcm__check">✓</span> עריכה חופשית</li>
-              </ul>
             </div>
 
             <button
@@ -61,8 +55,7 @@ export default function QuizCreationMode() {
               tabIndex={-1}
               type="button"
             >
-              <span>התחילו ידנית</span>
-              <span className="ep-qcm__card-arrow" aria-hidden="true">←</span>
+              <span>צור ידנית</span>
             </button>
           </article>
 
@@ -79,7 +72,6 @@ export default function QuizCreationMode() {
               }
             }}
           >
-            <span className="ep-qcm__card-tag">חדש · AI</span>
 
             <div className="ep-qcm__card-art" aria-hidden="true">
               <span className="ep-qcm__card-glyph">
@@ -91,8 +83,7 @@ export default function QuizCreationMode() {
             <div className="ep-qcm__card-body">
               <h2 className="ep-qcm__card-title">יצירה עם AI</h2>
               <p className="ep-qcm__card-desc">
-                בחרו נושא ורמת קושי — בינה מלאכותית תייצר טיוטה
-                של חידון שלם, ואתם תערכו וישפרו לפני השמירה.
+               בחר נושא והנחיות וה-AI ייצור בשבילך את השאלות
               </p>
 
               <ul className="ep-qcm__card-list">
@@ -107,15 +98,11 @@ export default function QuizCreationMode() {
               tabIndex={-1}
               type="button"
             >
-              <span>צרו עם AI</span>
-              <span className="ep-qcm__card-arrow" aria-hidden="true">←</span>
+              <span>צור עם AI</span>
             </button>
           </article>
         </div>
 
-        <p className="ep-qcm__foot">
-          תוכלו לשנות הכל אחר כך — שתי הדרכים מובילות לאותו עורך.
-        </p>
       </div>
     </div>
   );

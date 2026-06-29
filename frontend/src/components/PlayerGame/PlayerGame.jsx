@@ -89,7 +89,7 @@ export default function PlayerGame() {
     return (
       <div className="ep-pg">
         <div className="ep-pg__hero">
-          <span className="ep-pg__kicker">סוף החידון</span>
+          <span className="ep-pg__kicker">סוף המשחק</span>
           <h1 className="ep-pg__hero-title">
             כל הכבוד!<br />
             <span className="ep-pg__hero-accent">הנה התוצאות.</span>
@@ -205,7 +205,7 @@ export default function PlayerGame() {
 
         <div className="ep-pg__wait">
           <span className="ep-pg__pulse" />
-          ממתינים שהמנחה ימשיך…
+          ממתינים שהמארח ימשיך…
         </div>
       </div>
     );
@@ -216,13 +216,13 @@ export default function PlayerGame() {
     return (
       <div className="ep-pg">
         <div className="ep-pg__top">
-          <span className="ep-pg__kicker">לוח ניקוד</span>
+          <span className="ep-pg__kicker">ניקוד</span>
           <h1 className="ep-pg__top-title">המצב הנוכחי</h1>
         </div>
         <ScoreTable players={room.players} />
         <div className="ep-pg__wait">
           <span className="ep-pg__pulse" />
-          ממתינים שהמנחה ימשיך…
+          ממתינים שהמארח ימשיך…
         </div>
       </div>
     );
@@ -277,7 +277,7 @@ export default function PlayerGame() {
             {selectedAnswer ? "תשובתך נשלחה" : "בחרו תשובה"}
           </p>
           {selectedAnswer && (
-            <p className="ep-pg__hint-sub">המתינו שהמנחה יסיים את השאלה</p>
+            <p className="ep-pg__hint-sub">המתינו שהמארח יסיים את השאלה</p>
           )}
         </div>
 
@@ -330,7 +330,7 @@ export default function PlayerGame() {
     <div className="ep-pg ep-pg--state">
       <div className="ep-pg__loader">
         <div className="ep-pg__spinner" />
-        <p className="ep-pg__loader-text">מחכים שהמנחה יתחיל…</p>
+        <p className="ep-pg__loader-text">מחכים שהמארח יתחיל…</p>
       </div>
     </div>
   );

@@ -140,17 +140,17 @@ export default function SessionView() {
       {/* ── ראש ── */}
       <header className="ep-sv__head">
         <button className="ep-sv__back" onClick={() => navigate("/statistics")}>
-          ← חזרה
+          חזרה
         </button>
         <div className="ep-sv__head-body">
           <p className="ep-sv__kicker">דוח משחק · {dateStr} · {timeStr}</p>
           <h1 className="ep-sv__title">{session.quizTitle}</h1>
         </div>
         <div className="ep-sv__meta-chips">
-          <span className="ep-sv__meta-chip">👥 {session.players.length} שחקנים</span>
-          <span className="ep-sv__meta-chip">❓ {session.questions.length} שאלות</span>
+          <span className="ep-sv__meta-chip">{session.players.length} שחקנים</span>
+          <span className="ep-sv__meta-chip"> {session.questions.length} שאלות</span>
           <span className="ep-sv__meta-chip">
-            ✓ {overallCorrectPct}% נכונות
+            {overallCorrectPct}% נכונות
           </span>
         </div>
       </header>

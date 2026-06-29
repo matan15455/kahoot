@@ -72,9 +72,9 @@ export default function HostGame() {
     return (
       <div className="ep-host">
         <div className="ep-host__hero">
-          <span className="ep-host__kicker">סוף החידון</span>
+          <span className="ep-host__kicker">נגמר המשחק</span>
           <h1 className="ep-host__hero-title">
-            ועכשיו — <span className="ep-host__hero-accent">הזוכים.</span>
+           ועכשיו <span className="ep-host__hero-accent">הזוכים</span>
           </h1>
         </div>
         <ScoreTable players={room.players} />
@@ -149,7 +149,7 @@ export default function HostGame() {
         </ul>
 
         <button onClick={handleNext} className="ep-host__next">
-          הצג ניקוד <span aria-hidden="true">←</span>
+          הצג ניקוד 
         </button>
       </div>
     );
@@ -160,12 +160,12 @@ export default function HostGame() {
     return (
       <div className="ep-host">
         <div className="ep-host__top">
-          <span className="ep-host__kicker">לוח ניקוד</span>
+          <span className="ep-host__kicker">ניקוד</span>
           <h1 className="ep-host__top-title">המצב הנוכחי</h1>
         </div>
         <ScoreTable players={room.players} />
         <button onClick={handleNext} className="ep-host__next">
-          המשך <span aria-hidden="true">←</span>
+          המשך
         </button>
       </div>
     );
@@ -214,7 +214,7 @@ export default function HostGame() {
 
           <div className="ep-host__qhead-right">
             <button onClick={handleNext} className="ep-host__next ep-host__next--inline">
-              סיים שאלה <span aria-hidden="true">←</span>
+              סיים שאלה 
             </button>
           </div>
         </header>

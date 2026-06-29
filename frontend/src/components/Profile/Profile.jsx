@@ -224,7 +224,7 @@ export default function Profile() {
           <div className="ep-prof__danger-body">
             <h3 className="ep-prof__danger-title">מחיקת חשבון</h3>
             <p className="ep-prof__danger-desc">
-              פעולה זו בלתי הפיכה — כל החידונים והנתונים שלך יימחקו לצמיתות.
+              כל החידונים והנתונים שלך יימחקו לצמיתות.
             </p>
           </div>
 
