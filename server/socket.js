@@ -37,7 +37,7 @@ export default function initSocket(server) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       socket.mongoId = decoded.mongoId; // ObjectId של Mongo
-      socket.username = decoded.id;       // המזהה שהמשתמש הזין
+      socket.username = decoded.username;       // המזהה שהמשתמש הזין
       next();
     } 
     catch (e) {
@@ -437,6 +437,9 @@ export default function initSocket(server) {
     ===================================================== */
 
     socket.on("disconnect", () => {
+
+      console.log("🔴 Disconnected:", socket.mongoId, socket.username);
+
       for (const roomId in rooms) {
         const room = rooms[roomId];
 
