@@ -54,7 +54,7 @@ router.patch("/:username", authMiddleware, async (req, res) => {
   }
 
   // ולידציה לשדה הסיסמה
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 
   if (updates.password && !passwordRegex.test(updates.password)) {
     return res.status(400).json({ message: "סיסמה לא עומדת בדרישות הבטיחות" });
