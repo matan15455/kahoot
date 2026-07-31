@@ -105,27 +105,55 @@ ${instructions ? `Additional instructions: ${instructions}` : ""}
       }
     ];
 
-    const stream = await ai.models.generateContentStream({
-      model: "gemini-3.5-flash",
-      config,
-      contents
-    });
+    let stream;
+    try {
+      stream = await ai.models.generateContentStream({
+        model: "gemini-3.5-flash",
+        config,
+        contents
+      });
+    } catch (googleErr) {
+      console.error("🔴 GOOGLE API ERROR", googleErr.message);
+      return res.status(502).json({
+        error: "שגיאה בשירות ה-AI של Google (Gemini) - הבעיה אינה באתר",
+        source: "google-api",
+        details: googleErr.message
+      });
+    }
 
     let fullText = "";
 
-    for await (const chunk of stream) {
-      if (chunk.text) {
-        fullText += chunk.text;
+    try {
+      for await (const chunk of stream) {
+        if (chunk.text) {
+          fullText += chunk.text;
+        }
       }
+    } catch (googleStreamErr) {
+      console.error("🔴 GOOGLE API STREAM ERROR", googleStreamErr);
+      return res.status(502).json({
+        error: "שגיאה בשירות ה-AI של Google (Gemini) - הבעיה אינה באתר",
+        source: "google-api",
+        details: googleStreamErr.message
+      });
     }
 
-    const data = JSON.parse(fullText);
+    let data;
+    try {
+      data = JSON.parse(fullText);
+    } catch (parseErr) {
+      console.error("🔴 GOOGLE RETURNED INVALID JSON", fullText);
+      return res.status(502).json({
+        error: "שירות ה-AI של Google החזיר תשובה לא תקינה - הבעיה אינה באתר",
+        source: "google-api"
+      });
+    }
 
     res.json(data);
 
   } catch (err) {
 
-    console.error("AI ERROR:", err);
+    console.error("AI ERROR (internal):", err);
 
     res.status(500).json({
       error: "AI generation failed"

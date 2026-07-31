@@ -57,7 +57,12 @@ export default function AICreateQuiz() {
 
     } catch (err) {
       console.error(err);
-      setError("בעיה ביצירת החידון. נסו שוב או שנו את הנושא.");
+
+      if (err.response?.data?.source === "google-api") {
+        setError("בעיה בשירות API של גמיני ");
+      } else {
+        setError("בעיה ביצירת החידון. נסו שוב או שנו את הנושא.");
+      }
     }
 
     setLoading(false);
@@ -104,7 +109,7 @@ export default function AICreateQuiz() {
     const wasCorrect = updated[qIndex].answers[aIndex].isCorrect;
     updated[qIndex].answers = updated[qIndex].answers.filter((_, i) => i !== aIndex);
 
-    // אם מחקנו את הנכונה — נסמן את הראשונה כנכונה
+    // אם מחקנו את הנכונה - נסמן את הראשונה כנכונה
     if (wasCorrect && !updated[qIndex].answers.some(a => a.isCorrect)) {
       updated[qIndex].answers[0].isCorrect = true;
     }
