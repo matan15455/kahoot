@@ -18,12 +18,41 @@ import Register from "./components/Register/Register";
 
 import RequireAuth from "./components/AccessComponents/RequireAuth";
 import RequirePlayer from "./components/AccessComponents/RequirePlayer";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider,useAuth  } from "./context/AuthContext";
+
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+
+// אם פג תוקף הטוקן נוציא את המשתמש להתחברות
+function AxiosInterceptor() {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+ 
+  useEffect(() => {
+    const interceptor = axios.interceptors.response.use(
+      (res) => res,
+      (err) => {
+        if (err.response?.status === 401) {
+          logout(); // מנקה גם localStorage וגם את ה-state של AuthContext (כולל ה-Navbar)
+          navigate("/login");
+        }
+        return Promise.reject(err);
+      }
+    );
+ 
+    return () => axios.interceptors.response.eject(interceptor);
+  }, [navigate, logout]);
+ 
+  return null;
+}
 
 export default function App() {
   return (
     <AuthProvider>
       <Router>
+        <AxiosInterceptor />
         <Navbar />
 
         <div style={{ paddingTop: "70px" }}>
