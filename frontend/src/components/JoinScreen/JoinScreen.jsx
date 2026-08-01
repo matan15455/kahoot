@@ -11,6 +11,8 @@ export default function JoinScreen() {
   const [room, setRoom] = useState(null);
 
   const [error, setError] = useState(() => {
+
+  // שולף את ההודעה ששמרנו כאשר משתמש מוסר מהחדר כדי להציג לו את הסיבה
   const msg = sessionStorage.getItem("kickedMessage");
   if (msg) {
       sessionStorage.removeItem("kickedMessage");
@@ -21,6 +23,7 @@ export default function JoinScreen() {
 
   const navigate = useNavigate();
 
+  // מקבל את מזהה החיבור 
   useEffect(() => {
     let s = getSocket();
 
@@ -35,9 +38,11 @@ export default function JoinScreen() {
   useEffect(() => {
     if (!socket)
       return;
-
+    
+    // מציג את החדר במידה ויש עדכון ומעביר לנתיב המשחק אם המשחק התחיל
     const handleRoomUpdated = (roomData) => {
-      if (roomData.roomId !== roomId) return;
+      if (roomData.roomId !== roomId) 
+        return;
 
       setRoom(roomData);
 
@@ -46,6 +51,7 @@ export default function JoinScreen() {
       }
     };
 
+    // אם השחקן הוסר נשמור את ההודעה כדי להציג אותה בהמשך
     const handleKicked = () => {
       sessionStorage.setItem("kickedMessage", "הוסרת מהחדר על ידי המארח");
       window.location.reload();
@@ -92,7 +98,7 @@ export default function JoinScreen() {
       <div className="ep-join">
         <div className="ep-join__shell">
 
-          {/* כרטיס "אתה" */}
+          {/* כרטיס " */}
           <div className="ep-join__you">
             <p className="ep-join__you-label">השם שלך בחדר</p>
             <p className="ep-join__you-name">{nickname}</p>

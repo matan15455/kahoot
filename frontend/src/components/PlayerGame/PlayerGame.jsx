@@ -13,6 +13,17 @@ export default function PlayerGame() {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!socket) {
+      navigate("/join-room");
+    }
+  }, [socket, navigate]);
+
+  const handleLeave = () => {
+    if (socket) socket.emit("leaveRoom", { roomId });
+    navigate("/join-room");
+  };
+
   const [room, setRoom] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
@@ -20,7 +31,7 @@ export default function PlayerGame() {
   const [earned, setEarned] = useState(null);
 
   useEffect(() => {
-    if (!roomId) return;
+    if (!roomId || !socket) return;
 
     const handleRoomUpdated = (roomData) => {
       if (roomData.roomId !== roomId) return;
@@ -53,9 +64,15 @@ export default function PlayerGame() {
     socket.on("roomUpdated", handleRoomUpdated);
     socket.on("scoreEarned", handleScoreEarned);
 
+    const handleBeforeUnload = () => {
+      socket.emit("leaveRoom", { roomId });
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
     return () => {
       socket.off("roomUpdated", handleRoomUpdated);
       socket.off("scoreEarned", handleScoreEarned);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
       clearInterval(timerRef.current);
     };
   }, [roomId]);
@@ -207,6 +224,9 @@ export default function PlayerGame() {
           <span className="ep-pg__pulse" />
           ממתינים שהמארח ימשיך…
         </div>
+        <button onClick={handleLeave} className="ep-pg__leave">
+          יציאה
+        </button>
       </div>
     );
   }
@@ -224,6 +244,9 @@ export default function PlayerGame() {
           <span className="ep-pg__pulse" />
           ממתינים שהמארח ימשיך…
         </div>
+        <button onClick={handleLeave} className="ep-pg__leave">
+          יציאה
+        </button>
       </div>
     );
   }
@@ -243,6 +266,9 @@ export default function PlayerGame() {
             שאלה {room.questionIndex + 1}
             {totalQ && <> · מתוך {totalQ}</>}
           </span>
+          <button onClick={handleLeave} className="ep-pg__leave ep-pg__leave--inline">
+            יציאה
+          </button>
           {timeLeft !== null && (
             <div
               className={
@@ -326,12 +352,16 @@ export default function PlayerGame() {
   }
 
   /* ============ Default — ממתין ============ */
+  /* ============ Default — ממתין ============ */
   return (
     <div className="ep-pg ep-pg--state">
       <div className="ep-pg__loader">
         <div className="ep-pg__spinner" />
         <p className="ep-pg__loader-text">מחכים שהמארח יתחיל…</p>
       </div>
+      <button onClick={handleLeave} className="ep-pg__leave">
+        יציאה
+      </button>
     </div>
   );
 }

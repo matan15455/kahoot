@@ -394,3 +394,41 @@
   .ep-host__answer-text { font-size: 18px; }
   .ep-host__top-title, .ep-host__hero-title { font-size: 32px; }
 }
+
+/* =========================
+   Leave button
+   ========================= */
+.ep-host__leave {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--ep-bad);
+  border: 2px solid var(--ep-bad);
+  border-radius: var(--ep-r-pill);
+  font-family: var(--ep-f-display);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  margin: 12px auto 0;
+  transition: transform 0.15s, background 0.15s;
+}
+.ep-host__leave:hover {
+  background: var(--ep-bad);
+  color: var(--ep-paper);
+  transform: translateY(-2px);
+}
+.ep-host__leave:active {
+  transform: translateY(0);
+}
+.ep-host__leave--inline {
+  margin: 0;
+  padding: 11px 20px;
+  font-size: 13.5px;
+}
+
+@media (max-width: 880px) {
+  .ep-host__leave--inline { width: auto; }
+}

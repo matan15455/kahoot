@@ -7,8 +7,11 @@ import "./HostGame.css";
 
 export default function HostGame() {
   const [searchParams] = useSearchParams();
+
+  // מקבל את מזהה החדר מהכתובת
   const roomId = searchParams.get("roomId");
 
+  // מקבל את החיבור
   const socket = getSocket();
 
   const navigate = useNavigate();
@@ -20,8 +23,11 @@ export default function HostGame() {
   useEffect(() => {
     if (!roomId) return;
 
+
+    // מעדכן את הממשק בהתאם לשינוי בחדר
     const handleRoomUpdated = (roomData) => {
-      if (roomData.roomId !== roomId) return;
+      if (roomData.roomId !== roomId) 
+        return;
 
       setRoom(roomData);
 
@@ -43,16 +49,29 @@ export default function HostGame() {
     };
 
     socket.on("roomUpdated", handleRoomUpdated);
+    // כדי שלא יהיה מירוץ תהליכים נבקש את המצב הנוכחי
     socket.emit("requestRoomState", { roomId });
+
+    const handleBeforeUnload = () => {
+      socket.emit("leaveRoom", { roomId });
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
       socket.off("roomUpdated", handleRoomUpdated);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
       clearInterval(timerRef.current);
     };
   }, [roomId]);
 
+  
   const handleNext = () => {
     socket.emit("nextQuestion", { roomId });
+  };
+
+  const handleLeave = () => {
+    socket.emit("leaveRoom", { roomId });
+    navigate("/my-quizzes");
   };
 
   /* ============ Loading ============ */
@@ -151,6 +170,9 @@ export default function HostGame() {
         <button onClick={handleNext} className="ep-host__next">
           הצג ניקוד 
         </button>
+        <button onClick={handleLeave} className="ep-host__leave">
+          יציאה
+        </button>
       </div>
     );
   }
@@ -167,9 +189,13 @@ export default function HostGame() {
         <button onClick={handleNext} className="ep-host__next">
           המשך
         </button>
+        <button onClick={handleLeave} className="ep-host__leave">
+          יציאה
+        </button>
       </div>
     );
   }
+
 
   /* ============ QUESTION — שאלה חיה ============ */
   if (room.phase === "QUESTION" && room.question) {
@@ -213,6 +239,9 @@ export default function HostGame() {
           )}
 
           <div className="ep-host__qhead-right">
+            <button onClick={handleLeave} className="ep-host__leave ep-host__leave--inline">
+              יציאה
+            </button>
             <button onClick={handleNext} className="ep-host__next ep-host__next--inline">
               סיים שאלה 
             </button>
@@ -258,6 +287,9 @@ export default function HostGame() {
         <div className="ep-host__spinner" />
         <p className="ep-host__loader-text">ממתין לתחילת המשחק…</p>
       </div>
+      <button onClick={handleLeave} className="ep-host__leave">
+        יציאה
+      </button>
     </div>
   );
 }

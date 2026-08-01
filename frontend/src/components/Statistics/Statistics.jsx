@@ -69,9 +69,12 @@ export default function Statistics() {
     }
 
     list = [...list].sort((a, b) => {
-      if (sortBy === "newest") return new Date(b.createdAt) - new Date(a.createdAt);
-      if (sortBy === "oldest") return new Date(a.createdAt) - new Date(b.createdAt);
-      if (sortBy === "players") return b.players.length - a.players.length;
+      if (sortBy === "newest") 
+        return new Date(b.createdAt) - new Date(a.createdAt);
+      if (sortBy === "oldest") 
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      if (sortBy === "players")
+         return b.players.length - a.players.length;
       return 0;
     });
 

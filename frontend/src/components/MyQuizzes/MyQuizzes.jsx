@@ -60,6 +60,7 @@ export default function MyQuizzes() {
         await axios.delete(`http://localhost:5000/quizzes/${quizId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        // במקום לקרוא שוב לקבלת כל החידונים נעשה פילטור
         setQuizzes(quizzes.filter(q => q._id !== quizId));
       } catch (err) {
         console.error(err);

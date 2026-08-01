@@ -28,8 +28,8 @@ export default function initSocket(server) {
 
     // אם אין אז אורח
     if (!token) {
-      socket.mongoId = null;
-      socket.username = "Guest";
+      socket.mongoId = null; 
+      socket.username = "Guest"; // רק לצורך הדפסה
       return next();
     }
 
@@ -200,7 +200,7 @@ export default function initSocket(server) {
       // מזהה משתמש
       const userId = socket.mongoId;
 
-      // מוחק חדר קודם של אותו משתמש (Host)
+      // מוחק חדר קודם של אותו משתמש
       for (const id in rooms) {
         if (rooms[id].hostId === userId) {
           clearTimeout(rooms[id].timer.timeoutId);
@@ -265,11 +265,11 @@ export default function initSocket(server) {
 
       // מכניס את המשתמש
       room.players.push({
-        socketId:    socket.id,
-        userId:      socket.mongoId || socket.id,
+        socketId:    socket.id, // שומר בשביל התקשורת
+        userId:      socket.mongoId || socket.id, // שומר בשביל הבסיס נתונים
         nickname,
         score:       0,
-        answers:     []          // ← חדש
+        answers:     []     
       });
 
       // מכניס את המשתמש לחדר
@@ -341,7 +341,7 @@ export default function initSocket(server) {
         socket.emit("scoreEarned", { earned: pointsEarned });
       }
 
-      // ← חדש: שמור את התשובה
+      // שמור את התשובה
       const timeToAnswer = q.time - Math.max(0, (room.timer.endsAt - Date.now()) / 1000);
 
       //מוסיף נתוני התשובה של השחקן למערך התשובות כדי שבסוף המשחק ייכנס לבסיס הנתונים
@@ -433,6 +433,29 @@ export default function initSocket(server) {
       emitRoom(roomId);
     });
 
+    /* =====================================================
+       Leave Room (Host / Player) - יציאה מפורשת
+    ===================================================== */
+    socket.on("leaveRoom", ({ roomId }) => {
+      const room = rooms[roomId];
+      if (!room) return;
+
+      // אם זה המארח - מסיים את המשחק לכולם
+     if (String(room.hostId) === String(socket.mongoId)) {
+        clearTimeout(room.timer.timeoutId);
+        room.phase = PHASES.END;
+        emitRoom(roomId);
+        delete rooms[roomId];
+        socket.leave(roomId);
+        return;
+      }
+
+      // אחרת - שחקן עוזב
+      room.players = room.players.filter(p => p.socketId !== socket.id);
+      socket.leave(roomId);
+      emitRoom(roomId);
+    });
+
 
     /* =====================================================
        Disconnect
@@ -448,7 +471,8 @@ export default function initSocket(server) {
         // אם המארח התנתק - סגור את החדר
         if (String(room.hostId) === String(socket.mongoId)) {
           clearTimeout(room.timer.timeoutId);
-          io.to(roomId).emit("roomUpdated", { ...room, phase: "END" });
+          room.phase = PHASES.END;
+          emitRoom(roomId);
           delete rooms[roomId];
           continue;
         }

@@ -9,9 +9,11 @@ export default function CreateRoom() {
   const [copied, setCopied] = useState(null); // 'pin' | 'link' | null
 
   const navigate = useNavigate();
+  // מקבל את החיבור
   const socket = getSocket();
 
   const [searchParams] = useSearchParams();
+  // שולף את מזהה החידון מהכתובת
   const quizId = searchParams.get("quizId");
 
   const roomCreated = useRef(false);
@@ -24,10 +26,11 @@ export default function CreateRoom() {
       roomCreated.current = true; // מסמן שכבר שלחנו emit
     }
 
+    // מעדכן את הממשק לאחר קבלת עדכון על שינוי חדר
     const handleRoomUpdated = (roomData) => {
       setRoom(roomData);
 
-      // אם החידון התחיל – עוברים למסך המארח
+      // אם החידון התחיל עוברים למסך המארח
       if (roomData.phase === "QUESTION") {
         navigate(`/host/game?roomId=${roomData.roomId}`);
       }
@@ -41,6 +44,7 @@ export default function CreateRoom() {
   }, [quizId, navigate]);
 
 
+  // מתחיל את המשחק כשלוחצים על התחל
   const startGame = () => {
     if (!room)
       return;
