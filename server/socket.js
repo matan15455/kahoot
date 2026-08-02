@@ -145,7 +145,7 @@ export default function initSocket(server) {
     async function saveSession(room) {
       try {
         const questionStats = room.questions.map((q, idx) => {
-          const correctText  = q.answers.find(a => a.isCorrect).text;
+          const correctTexts = q.answers.filter(a => a.isCorrect).map(a => a.text);
 
           // ספור כמה ענו נכון לשאלה הזו מתוך כל התשובות של השחקנים
           const totalCorrect = room.players.reduce((sum, p) => {
@@ -154,10 +154,10 @@ export default function initSocket(server) {
           }, 0);
 
           return {
-            index:         idx,
-            text:          q.text,
-            correctAnswer: correctText,
-            totalAnswered: room.players.filter(p =>
+            index:          idx,
+            text:           q.text,
+            correctAnswers: correctTexts,
+            totalAnswered:  room.players.filter(p =>
               p.answers.some(a => a.questionIndex === idx)
             ).length,
             totalCorrect
