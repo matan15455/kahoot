@@ -7,17 +7,21 @@ import CircularProgress from "@mui/material/CircularProgress";
 import "./SessionView.css";
 
 export default function SessionView() {
+  // שולף את מזהה המשחק
   const { sessionId } = useParams();
+  // שולף את הטוקן
   const { token } = useAuth();
   const navigate = useNavigate();
 
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
+  // מצבים להצגה
   const [tab, setTab] = useState("overview"); // overview | players | questions
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
 
   useEffect(() => {
+    // מבקש מהשרת את הסטטיסטיקות של אותו משחק
     const fetch = async () => {
       try {
         const res = await axios.get(`http://localhost:5000/stats/${sessionId}`, {
@@ -35,44 +39,46 @@ export default function SessionView() {
 
   /* חישובים */
   const computed = useMemo(() => {
-    if (!session) return null;
+    // בדיקה שהמשחק קיים בכלל
+    if (!session) 
+      return null;
 
+    // מיון שחקנים לפי ניקוד
     const sorted = [...session.players].sort((a, b) => b.score - a.score);
 
-    // התפלגות תשובות לכל שאלה — לפי טקסט התשובה
-    // וגם זיהוי התשובה הנכונה (לוקח את אחת ה-isCorrect)
+    // יצירת סטטיסטיקה לכל שאלה
     const questionInsights = session.questions.map((q, qIdx) => {
-      const counts = {}; // answeredText → count
-      let correctAnswerText = null;
+      const counts = {}; // כמה שחקנים בחרו בכל תשובה
+      const correctAnswerTexts = q.correctAnswers || [];
 
       session.players.forEach((p) => {
         const ans = p.answers.find((a) => a.questionIndex === qIdx);
         if (!ans) return;
         counts[ans.answered] = (counts[ans.answered] || 0) + 1;
-        if (ans.isCorrect && !correctAnswerText) {
-          correctAnswerText = ans.answered;
-        }
       });
 
       // ממוצע זמן (רק מי שענה)
       const times = [];
       session.players.forEach((p) => {
         const ans = p.answers.find((a) => a.questionIndex === qIdx);
+        // אם הזמן תקין נוסיף אותו למערך
         if (ans && typeof ans.timeToAnswer === "number") times.push(ans.timeToAnswer);
       });
+      // חישוב זמן תשובה ממוצע
       const avgTime = times.length > 0
         ? Math.round((times.reduce((s, t) => s + t, 0) / times.length) * 10) / 10
         : null;
-
+      // אחוז נכונות
       const correctPct = q.totalAnswered > 0
         ? Math.round((q.totalCorrect / q.totalAnswered) * 100)
         : 0;
 
+      // החזרת אובייקט הסטטיסטיקה של השאלה
       return {
         index: qIdx,
         question: q,
         counts,
-        correctAnswerText,
+        correctAnswerTexts,
         avgTime,
         correctPct,
       };
@@ -137,7 +143,6 @@ export default function SessionView() {
   return (
     <div className="ep-sv">
 
-      {/* ── ראש ── */}
       <header className="ep-sv__head">
         <button className="ep-sv__back" onClick={() => navigate("/statistics")}>
           חזרה
@@ -155,7 +160,6 @@ export default function SessionView() {
         </div>
       </header>
 
-      {/* ── טאבים ── */}
       <div className="ep-sv__tabs">
         <button
           className={"ep-sv__tab" + (tab === "overview" ? " is-active" : "")}
@@ -177,10 +181,10 @@ export default function SessionView() {
         </button>
       </div>
 
-      {/* ══ טאב סקירה ══ */}
+      {/* OVERVIEW */}
       {tab === "overview" && (
         <div className="ep-sv__panel">
-          {/* ── פודיום ── */}
+          {/*  פודיום  */}
           {sorted.length > 0 && (
             <div className="ep-sv__podium">
               {sorted[1] && (
@@ -321,7 +325,7 @@ export default function SessionView() {
         </div>
       )}
 
-      {/* ══ טאב שחקנים ══ */}
+      {/* PLAYERS */}
       {tab === "players" && !selectedPlayer && (
         <div className="ep-sv__panel">
           <table className="ep-sv__table">
@@ -481,18 +485,18 @@ export default function SessionView() {
                           }>
                             {ans.answered}
                           </span>
-                          {!ans.isCorrect && qi.correctAnswerText && (
+                          {!ans.isCorrect && qi.correctAnswerTexts.length > 0 && (
                             <span className="ep-sv__correct-hint">
-                              נכון: <strong>{qi.correctAnswerText}</strong>
+                              נכון: <strong>{qi.correctAnswerTexts.join(", ")}</strong>
                             </span>
                           )}
                         </div>
                       ) : (
                         <div className="ep-sv__ans-cell">
                           <span className="ep-sv__no-answer">לא ענה</span>
-                          {qi.correctAnswerText && (
+                          {qi.correctAnswerTexts.length > 0 && (
                             <span className="ep-sv__correct-hint">
-                              נכון: <strong>{qi.correctAnswerText}</strong>
+                              נכון: <strong>{qi.correctAnswerTexts.join(", ")}</strong>
                             </span>
                           )}
                         </div>
@@ -525,7 +529,7 @@ export default function SessionView() {
         </div>
       )}
 
-      {/* ══ טאב שאלות ══ */}
+      {/*  טאב שאלות  */}
       {tab === "questions" && !selectedQuestion && (
         <div className="ep-sv__panel">
           <table className="ep-sv__table">
@@ -581,7 +585,7 @@ export default function SessionView() {
         </div>
       )}
 
-      {/* ══ פרטי שאלה ══ */}
+      {/* QUESTION */}
       {tab === "questions" && selectedQuestion && (() => {
         const qIdx = session.questions.indexOf(selectedQuestion);
         const qi = questionInsights[qIdx];
@@ -636,14 +640,14 @@ export default function SessionView() {
               </div>
             </div>
 
-            {/* ── התפלגות תשובות (גרף) ── */}
+            {/* התפלגות תשובות (גרף)  */}
             {distEntries.length > 0 && (
               <div className="ep-sv__dist-card">
                 <h3 className="ep-sv__panel-title">איך הצביעו השחקנים</h3>
                 <ul className="ep-sv__dist">
                   {distEntries.map(([text, count], i) => {
                     const meta = ANSWER_META[i % ANSWER_META.length];
-                    const isCorrect = text === qi.correctAnswerText;
+                    const isCorrect = qi.correctAnswerTexts.includes(text);
                     const pct = totalAns > 0 ? Math.round((count / totalAns) * 100) : 0;
                     const widthPct = (count / maxCount) * 100;
                     return (

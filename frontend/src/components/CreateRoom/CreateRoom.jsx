@@ -17,6 +17,8 @@ export default function CreateRoom() {
   const quizId = searchParams.get("quizId");
 
   const roomCreated = useRef(false);
+  const gameStartingRef = useRef(false);
+  const roomIdRef = useRef(null);
 
 
   useEffect(() => {
@@ -29,17 +31,23 @@ export default function CreateRoom() {
     // מעדכן את הממשק לאחר קבלת עדכון על שינוי חדר
     const handleRoomUpdated = (roomData) => {
       setRoom(roomData);
+      roomIdRef.current = roomData.roomId;
 
       // אם החידון התחיל עוברים למסך המארח
       if (roomData.phase === "QUESTION") {
+        gameStartingRef.current = true;
         navigate(`/host/game?roomId=${roomData.roomId}`);
       }
     };
 
     socket.on("roomUpdated", handleRoomUpdated);
+    
 
     return () => {
       socket.off("roomUpdated", handleRoomUpdated);
+      if (!gameStartingRef.current && roomIdRef.current) {
+        socket.emit("leaveRoom", { roomId: roomIdRef.current });
+      }
     };
   }, [quizId, navigate]);
 

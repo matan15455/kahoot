@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import { getSocket, connectSocket } from "../../socket";
 import { useNavigate } from "react-router-dom";
 import { EpShape } from "../_shared/EpBrand";
@@ -34,6 +34,9 @@ export default function JoinScreen() {
     setSocket(s);
   }, []);
 
+  const gameStartingRef = useRef(false); // true אם עוזבים כי המשחק התחיל (לא לשלוח leaveRoom)
+  const joinedRoomIdRef = useRef(null);
+
 
   useEffect(() => {
     if (!socket)
@@ -45,8 +48,10 @@ export default function JoinScreen() {
         return;
 
       setRoom(roomData);
+      joinedRoomIdRef.current = roomData.roomId;
 
       if (roomData.phase === "QUESTION") {
+        gameStartingRef.current = true;
         navigate(`/player/game?roomId=${roomData.roomId}`);
       }
     };
@@ -64,6 +69,10 @@ export default function JoinScreen() {
     return () => {
       socket.off("kicked", handleKicked);
       socket.off("roomUpdated", handleRoomUpdated);
+
+      if (!gameStartingRef.current && joinedRoomIdRef.current) {
+        socket.emit("leaveRoom", { roomId: joinedRoomIdRef.current });
+      }
     };
   }, [socket, roomId, navigate]);
 

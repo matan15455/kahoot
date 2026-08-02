@@ -126,7 +126,7 @@ export default function HostGame() {
         <ul className="ep-host__sum">
           {entries.map(([answer, count], idx) => {
             const meta = ANSWER_META[idx % ANSWER_META.length];
-            const isCorrect = room.summary.correctAnswer === answer;
+            const isCorrect = room.summary.correctAnswers.includes(answer);
             const pct = totalAnswers ? (count / totalAnswers) * 100 : 0;
             const widthPct = (count / maxCount) * 100;
             return (

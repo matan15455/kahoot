@@ -19,11 +19,9 @@ export default function QuestionForm({ onAddQuestion, onCancel, index = 0 }) {
     let newAnswers = [...answers];
 
     if (key === "isCorrect") {
-      // רק תשובה אחת יכולה להיות נכונה
-      newAnswers = newAnswers.map((a, j) => ({
-        ...a,
-        isCorrect: j === i
-      }));
+      newAnswers = newAnswers.map((a, j) =>
+        j === i ? { ...a, isCorrect: !a.isCorrect } : a
+      );
     } else {
       newAnswers[i] = {
         ...newAnswers[i],
@@ -56,7 +54,7 @@ export default function QuestionForm({ onAddQuestion, onCancel, index = 0 }) {
       return;
     }
     if (!answers.some(a => a.isCorrect)) {
-      setError("יש לבחור תשובה נכונה אחת");
+      setError("יש לבחור לפחות תשובה נכונה אחת");
       return;
     }
     onAddQuestion({ text, time, points, answers });
@@ -129,7 +127,7 @@ export default function QuestionForm({ onAddQuestion, onCancel, index = 0 }) {
 
       {/* תשובות */}
       <div className="ep-qfq__answers-head">
-        <span className="ep-field__label">תשובות · בחרו את הנכונה</span>
+        <span className="ep-field__label">תשובות · סמנו את הנכונות (אפשר יותר מאחת)</span>
         <span className="ep-qfq__answers-count">
           {answers.length} {answers.length === 1 ? "תשובה" : "תשובות"}
         </span>
@@ -162,12 +160,11 @@ export default function QuestionForm({ onAddQuestion, onCancel, index = 0 }) {
                 maxLength={100}
               />
 
-              <label className="ep-qfq__answer-mark" title="סמן כתשובה הנכונה">
+              <label className="ep-qfq__answer-mark" title="סמן/בטל כתשובה נכונה">
                 <input
-                  type="radio"
-                  name="correctAnswer"
+                  type="checkbox"
                   checked={a.isCorrect}
-                  onChange={() => handleAnswerChange(i, "isCorrect", true)}
+                  onChange={() => handleAnswerChange(i, "isCorrect", null)}
                 />
                 <span className="ep-qfq__answer-mark-circle">
                   {a.isCorrect ? "✓" : ""}

@@ -19,7 +19,7 @@ const PlayerResultSchema = new mongoose.Schema({
 // סטטיסטיקה מצטברת על שאלה בודדת עבור כל השחקנים במשחק
 const QuestionStatSchema = new mongoose.Schema({
   text:          String, // שם השאלה
-  correctAnswer: String, // תשובה נכונה
+  correctAnswers: [String], // תשובה נכונה
   totalAnswered: Number, // כמה שחקנים ענו על השאלה הזאת
   totalCorrect:  Number // כמה ענו נכון כדי לחשב אחוזי הצלחה
 }, { _id: false });

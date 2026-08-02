@@ -79,7 +79,7 @@ export default function initSocket(server) {
       if (room.phase === PHASES.SUMMARY) {
         payload.summary = {
           answersCount: room.answersCount,
-          correctAnswer: getCorrectAnswer(room),
+          correctAnswers: getCorrectAnswers(room),
         };
       }
 
@@ -98,9 +98,9 @@ export default function initSocket(server) {
     }
 
     // מחזיר תשובה נכונה של השאלה הנוכחית
-    function getCorrectAnswer(room) {
+    function getCorrectAnswers(room) {
       const q = room.questions[room.currentQuestionIndex];
-      return q.answers.find(a => a.isCorrect).text;
+      return q.answers.filter(a => a.isCorrect).map(a => a.text);
     }
 
     // 
@@ -329,8 +329,8 @@ export default function initSocket(server) {
       if (!player) return;
 
       const q       = room.questions[room.currentQuestionIndex];
-      const correct = getCorrectAnswer(room);
-      const isCorrect = answerText === correct;
+      const correct = getCorrectAnswers(room);
+      const isCorrect = correct.includes(answerText);
 
       let pointsEarned = 0;
       if (isCorrect) {

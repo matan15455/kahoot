@@ -171,7 +171,7 @@ export default function QuizCreator() {
         {questions.length > 0 && (
           <ul className="ep-qc__qlist">
             {questions.map((q, i) => {
-              const correct = q.answers.find(a => a.isCorrect);
+              const correctAnswers = q.answers.filter(a => a.isCorrect);
               return (
                 <li className="ep-qc__qitem" key={i}>
                   <span className="ep-qc__qitem-num">{String(i + 1).padStart(2, "0")}</span>
@@ -187,9 +187,9 @@ export default function QuizCreator() {
                       <span className="ep-qc__qitem-chip">
                         {q.answers.length} תשובות
                       </span>
-                      {correct && (
+                      {correctAnswers.length > 0 && (
                         <span className="ep-qc__qitem-chip ep-qc__qitem-chip--ok">
-                          ✓ נכון: {correct.text}
+                          ✓ נכון: {correctAnswers.map(a => a.text).join(", ")}
                         </span>
                       )}
                     </div>

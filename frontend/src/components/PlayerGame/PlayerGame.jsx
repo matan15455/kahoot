@@ -131,8 +131,8 @@ export default function PlayerGame() {
     const totalAnswers = entries.reduce((sum, [, c]) => sum + c, 0);
     const maxCount = Math.max(...entries.map(([, c]) => c), 1);
 
-    const wasCorrect = selectedAnswer && selectedAnswer === room.summary.correctAnswer;
-    const wasWrong = selectedAnswer && selectedAnswer !== room.summary.correctAnswer;
+    const wasCorrect = selectedAnswer && room.summary.correctAnswers.includes(selectedAnswer);
+    const wasWrong = selectedAnswer && !room.summary.correctAnswers.includes(selectedAnswer);
 
     return (
       <div className="ep-pg">
@@ -158,8 +158,8 @@ export default function PlayerGame() {
                   )}
                 </>
               )}
-              {wasWrong && <>התשובה הנכונה: <strong>{room.summary.correctAnswer}</strong></>}
-              {!selectedAnswer && <>התשובה הנכונה: <strong>{room.summary.correctAnswer}</strong></>}
+              {wasWrong && <>התשובה הנכונה: <strong>{room.summary.correctAnswers.join(", ")}</strong></>}
+              {!selectedAnswer && <>התשובה הנכונה: <strong>{room.summary.correctAnswers.join(", ")}</strong></>}
             </p>
           </div>
         </div>
@@ -170,7 +170,7 @@ export default function PlayerGame() {
           <ul className="ep-pg__sum">
             {entries.map(([answer, count], idx) => {
               const meta = ANSWER_META[idx % ANSWER_META.length];
-              const isCorrect = room.summary.correctAnswer === answer;
+             const isCorrect = room.summary.correctAnswers.includes(answer);
               const isMine = selectedAnswer === answer;
               const pct = totalAnswers ? (count / totalAnswers) * 100 : 0;
               const widthPct = (count / maxCount) * 100;
