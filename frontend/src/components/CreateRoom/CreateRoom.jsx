@@ -149,7 +149,7 @@ export default function CreateRoom() {
               <span className="ep-cr__empty-glyph" aria-hidden="true">
                 <EpShape kind="hex" size={40} color="rgba(255,255,255,0.18)" />
               </span>
-              <p>החדר ריק לעת עתה.<br />שתפו את הקוד עם השחקנים.</p>
+              <p>החדר ריק כרגע.<br />שתף את הקוד עם שחקנים.</p>
             </div>
           ) : (
             <ul className="ep-cr__players">

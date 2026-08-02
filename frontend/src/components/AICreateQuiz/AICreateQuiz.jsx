@@ -197,8 +197,7 @@ export default function AICreateQuiz() {
 
           <div className="ep-ai__form-head">
             <h1 className="ep-ai__title">
-              תן ל-AI<br />
-              <span className="ep-ai__title-accent">להציע.</span>
+              יצירה עם AI<br />
             </h1>
             <p className="ep-ai__sub">
              בחר נושא והנחיות וה-AI ייצור בשבילך את השאלות. תוכל גם לערוך אחרי זה
@@ -214,7 +213,7 @@ export default function AICreateQuiz() {
               <textarea
                 id="ai-topic"
                 className="ep-field__input ep-ai__topic"
-                placeholder="לדוגמה: מלחמות העולם, פיזיקה כיתה י', ספרי בראשית…"
+                placeholder="לדוגמה: מלחמות העולם, פיזיקה, ספרי בראשית…"
                 value={topic}
                 onChange={(e) => { setTopic(e.target.value); if (error) setError(""); }}
                 rows={3}
@@ -222,7 +221,7 @@ export default function AICreateQuiz() {
                 autoFocus
               />
               <p className="ep-field__hint">
-                ככל שהנושא יותר ספציפי — השאלות יותר מדויקות.
+                ככל שהנושא יותר ספציפי אז השאלות יותר מדויקות.
               </p>
             </div>
 

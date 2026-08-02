@@ -106,7 +106,7 @@ export default function QuizCreator() {
               setQuestions([]);
             }}
           >
-            ← חזור
+             חזור
           </button>
           <button
             className="ep-qc__btn ep-qc__btn--primary"
@@ -156,7 +156,7 @@ export default function QuizCreator() {
             </div>
             <h2 className="ep-qc__empty-title">בואו נוסיף שאלה ראשונה</h2>
             <p className="ep-qc__empty-sub">
-              שאלה אחת עם 4 תשובות מספיקה כדי להתחיל. ניתן תמיד להוסיף עוד אחר כך.
+              שאלה אחת  מספיקה כדי להתחיל.
             </p>
             <button
               className="ep-qc__btn ep-qc__btn--primary ep-qc__btn--lg"

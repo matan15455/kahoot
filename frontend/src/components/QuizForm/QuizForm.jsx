@@ -26,10 +26,8 @@ export default function QuizForm({ onAddQuiz }) {
           </span>
           חידון חדש · שלב 1 מתוך 2
         </p>
-        <h1 className="ep-qf__title">בואו נצור משהו טוב.</h1>
-        <p className="ep-qf__sub">
-          קודם — שם ותיאור קצר. אחר כך נוסיף שאלות אחת-אחת.
-        </p>
+        <h1 className="ep-qf__title">יצירת שאלה ידנית</h1>
+
       </div>
 
       <div className="ep-qf__fields">
@@ -75,7 +73,6 @@ export default function QuizForm({ onAddQuiz }) {
 
       <button className="ep-qf__submit" type="submit">
         <span>המשך ליצירת שאלות</span>
-        <span className="ep-qf__submit-arrow" aria-hidden="true">←</span>
       </button>
     </form>
   );

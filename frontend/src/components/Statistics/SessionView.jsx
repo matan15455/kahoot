@@ -33,7 +33,7 @@ export default function SessionView() {
     fetch();
   }, [sessionId, token]);
 
-  /* ── חישובים גלובליים ל-session ── */
+  /* חישובים */
   const computed = useMemo(() => {
     if (!session) return null;
 
@@ -247,7 +247,7 @@ export default function SessionView() {
             </div>
           </div>
 
-          {/* ── הכי קשה / הכי קלה ── */}
+          {/*  הכי קשה / הכי קלה  */}
           {hardest && easiest && hardest.index !== easiest.index && (
             <div className="ep-sv__hl-row">
               <button

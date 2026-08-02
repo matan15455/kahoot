@@ -152,7 +152,7 @@ export default function JoinScreen() {
             <span className="ep-join__title-accent">לחדר.</span>
           </h1>
           <p className="ep-join__sub">
-            הזן את קוד החדר שקיבלת מהמנחה ובחר לעצמך שם.
+            הזן את קוד החדר שקיבלת מהמארח ובחר לעצמך שם.
           </p>
         </div>
 
