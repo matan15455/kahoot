@@ -62,7 +62,6 @@ export function AuthProvider({ children }) {
   );
 }
 
-// Hook נוח לשימוש
 export function useAuth() {
   return useContext(AuthContext);
 }

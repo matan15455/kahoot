@@ -8,7 +8,7 @@ export default function ScoreTable({ players = [] }) {
 
   return (
     <div className="ep-st">
-      {/* ── פודיום: 2 · 1 · 3 ── */}
+      {/*  פודיום  */}
       <div className="ep-st__podium">
         {top3[1] && (
           <div className="ep-st__pod ep-st__pod--2">
@@ -50,7 +50,7 @@ export default function ScoreTable({ players = [] }) {
         )}
       </div>
 
-      {/* ── שאר השחקנים ── */}
+      {/*  שאר השחקנים  */}
       {rest.length > 0 && (
         <ul className="ep-st__list">
           {rest.map((p, i) => (

@@ -76,9 +76,6 @@ export default function JoinScreen() {
     };
   }, [socket, roomId, navigate]);
 
-  /* ==========================
-     Join
-  ========================== */
   const handleJoin = () => {
     if (!socket) return;
 
@@ -101,13 +98,12 @@ export default function JoinScreen() {
     handleJoin();
   };
 
-  /* ============ Lobby (אחרי הצטרפות) ============ */
+  /*  Lobby (אחרי הצטרפות)  */
   if (room) {
     return (
       <div className="ep-join">
         <div className="ep-join__shell">
 
-          {/* כרטיס " */}
           <div className="ep-join__you">
             <p className="ep-join__you-label">השם שלך בחדר</p>
             <p className="ep-join__you-name">{nickname}</p>
@@ -148,7 +144,7 @@ export default function JoinScreen() {
     );
   }
 
-  /* ============ טופס הצטרפות ============ */
+  /*  טופס הצטרפות  */
   return (
     <div className="ep-join">
       <form className="ep-join__form" onSubmit={handleSubmit} noValidate>

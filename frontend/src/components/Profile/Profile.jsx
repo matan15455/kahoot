@@ -11,6 +11,7 @@ export default function Profile() {
   const navigate = useNavigate();
 
   const [userData, setUserData] = useState({
+    currentPassword: "",
     password: "",
     username: "",
   });
@@ -31,6 +32,7 @@ export default function Profile() {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUserData({
+          currentPassword: "",
           password: "",
           username: res.data.username,
         });
@@ -58,12 +60,20 @@ export default function Profile() {
       return;
     }
 
-    if (!isValidPassword(userData.password)) {
-      setError("הסיסמה חייבת להכיל לפחות 8 תווים, אות גדולה, אות קטנה, ספרה ותו מיוחד");
+    if (!userData.currentPassword) {
+      setError("יש להזין את הסיסמה הנוכחית");
       return;
     }
 
-    const updates = { password: userData.password };
+    if (!isValidPassword(userData.password)) {
+      setError("הסיסמה חייבת להכיל לפחות 8 תווים, אות אחת וספרה אחת");
+      return;
+    }
+
+    const updates = {
+      password: userData.password,
+      currentPassword: userData.currentPassword,
+    };
 
     try {
       setSaving(true);
@@ -72,7 +82,7 @@ export default function Profile() {
       });
       setSuccess(true);
       setTimeout(() => setSuccess(false), 2500);
-      setUserData((prev) => ({ ...prev, password: "" }));
+      setUserData((prev) => ({ ...prev, password: "", currentPassword: "" }));
     } catch (err) {
       setError(err.response?.data?.message || "שגיאה בעדכון");
     } finally {
@@ -95,7 +105,7 @@ export default function Profile() {
     }
   };
 
-  /* ── Loading ── */
+  /*  Loading  */
   if (loading) {
     return (
       <div className="ep-prof ep-prof--state">
@@ -113,9 +123,7 @@ export default function Profile() {
     <div className="ep-prof">
       <div className="ep-prof__container">
 
-        {/* ══ כרטיס כותרת — Avatar + שם משתמש ══ */}
         <div className="ep-prof__hero">
-          {/* בלובים דקורטיביים */}
           <span className="ep-prof__blob ep-prof__blob--a" aria-hidden="true" />
           <span className="ep-prof__blob ep-prof__blob--b" aria-hidden="true" />
 
@@ -129,7 +137,6 @@ export default function Profile() {
             <h1 className="ep-prof__hero-name">{userData.username || "—"}</h1>
           </div>
 
-          {/* צורות גיאומטריות דקורטיביות */}
           <span className="ep-prof__deco ep-prof__deco--1" aria-hidden="true">
             <EpShape kind="burst" size={28} color="var(--ep-ans-3)" />
           </span>
@@ -138,7 +145,7 @@ export default function Profile() {
           </span>
         </div>
 
-        {/* ══ Toast הצלחה ══ */}
+        {/*  Toast הצלחה  */}
         {success && (
           <div className="ep-prof__toast" role="status">
             <span className="ep-prof__toast-icon">✓</span>
@@ -146,7 +153,7 @@ export default function Profile() {
           </div>
         )}
 
-        {/* ══ שגיאה ══ */}
+        {/*  שגיאה  */}
         {error && (
           <div className="ep-prof__error" role="alert">
             <span className="ep-prof__error-icon">!</span>
@@ -154,7 +161,7 @@ export default function Profile() {
           </div>
         )}
 
-        {/* ══ טופס פרטים ══ */}
+        {/*  טופס פרטים  */}
         <section className="ep-prof__card">
           <div className="ep-prof__section-head">
             <span className="ep-prof__section-kicker">פרטי חשבון</span>
@@ -175,7 +182,22 @@ export default function Profile() {
               />
             </div>
 
-            {/* סיסמה */}
+            {/* סיסמה נוכחית (נדרש רק אם משנים סיסמה) */}
+            <div className="ep-field">
+              <label className="ep-field__label" htmlFor="prof-current-pwd">סיסמה נוכחית</label>
+              <input
+                id="prof-current-pwd"
+                name="currentPassword"
+                className="ep-field__input"
+                type="password"
+                placeholder="הזן את הסיסמה הנוכחית שלך"
+                value={userData.currentPassword || ""}
+                onChange={handleChange}
+                autoComplete="current-password"
+              />
+            </div>
+
+            {/* סיסמה חדשה */}
             <div className="ep-field">
               <div className="ep-field__label-row">
                 <label className="ep-field__label" htmlFor="prof-pwd">סיסמה חדשה</label>
@@ -198,7 +220,7 @@ export default function Profile() {
                 autoComplete="new-password"
               />
               <p className="ep-field__hint">
-                לפחות 8 תווים, אות גדולה, ספרה ותו מיוחד
+                הסיסמה חייבת להכיל לפחות 8 תווים, אות אחת וספרה אחת
               </p>
             </div>
           </div>
@@ -213,13 +235,12 @@ export default function Profile() {
             ) : (
               <>
                 <span>שמור שינויים</span>
-                <span className="ep-prof__save-arrow" aria-hidden="true">←</span>
               </>
             )}
           </button>
         </section>
 
-        {/* ══ אזור מחיקה ══ */}
+        {/*  אזור מחיקה  */}
         <section className="ep-prof__danger">
           <div className="ep-prof__danger-body">
             <h3 className="ep-prof__danger-title">מחיקת חשבון</h3>

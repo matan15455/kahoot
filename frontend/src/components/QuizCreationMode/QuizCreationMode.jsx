@@ -59,7 +59,7 @@ export default function QuizCreationMode() {
             </button>
           </article>
 
-          {/* ── AI ── */}
+          {/*  AI  */}
           <article
             className="ep-qcm__card ep-qcm__card--ai"
             onClick={() => navigate("/create-ai")}

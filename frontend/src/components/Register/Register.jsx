@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
-import { isValidPassword } from "../../utils/validators";
+import { isValidUsername, isValidPassword } from "../../utils/validators";
 import { EpBrandMark, EpShape } from "../_shared/EpBrand";
 
 import "./Register.css";
@@ -20,7 +20,6 @@ export default function Register() {
 
   //טיפול בהגשת טופס ההרשמה
   const handleSubmit = async (e) => {
-    //מונע מהדפדפן לרענן את הדף ולמחוק את הSTATES
     e.preventDefault();
 
     //מנקה את השגיאה הקודמת
@@ -28,6 +27,16 @@ export default function Register() {
 
     if (!username || !password || !confirmPassword) {
       setError("יש למלא שם משתמש וסיסמה");
+      return;
+    }
+
+    if (!isValidUsername(username)) {
+      setError("שם משתמש צריך להיות 3-20 תווים, אותיות וספרות בלבד");
+      return;
+    }
+
+    if (!isValidPassword(password)) {
+      setError("הסיסמה חייבת להכיל לפחות 8 תווים, אות אחת וספרה אחת");
       return;
     }
 
@@ -55,7 +64,6 @@ export default function Register() {
       // שומר את הטוקן
       login({ token: res.data.token });
 
-      // עובר לעמוד "חידונים שלי
       navigate("/my-quizzes");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
@@ -68,7 +76,6 @@ export default function Register() {
     <div className="ep-reg">
       <div className="ep-reg__grid">
 
-        {/* ── צד שמאל: מותג ── */}
         <aside className="ep-reg__brand">
           <span className="ep-reg__blob ep-reg__blob--a" aria-hidden="true" />
           <span className="ep-reg__blob ep-reg__blob--b" aria-hidden="true" />
@@ -109,7 +116,6 @@ export default function Register() {
           </ul>
         </aside>
 
-        {/* ── צד ימין: טופס ── */}
         <main className="ep-reg__form-wrap">
           <form className="ep-reg__form" onSubmit={handleSubmit} noValidate>
             <div className="ep-reg__form-top">
@@ -131,6 +137,9 @@ export default function Register() {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                 />
+                <p className="ep-field__hint">
+                 
+שם משתמש צריך להיות 3-20 תווים, אותיות וספרות בלבד                </p>
               </div>
 
               {/* סיסמה */}
@@ -155,7 +164,8 @@ export default function Register() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <p className="ep-field__hint">
-                  לפחות 8 תווים, אות גדולה, ספרה ותו מיוחד
+                 
+הסיסמה חייבת להכיל לפחות 8 תווים, אות אחת וספרה אחת
                 </p>
               </div>
 
@@ -191,7 +201,6 @@ export default function Register() {
               ) : (
                 <>
                   <span>הירשם</span>
-                  <span className="ep-reg__submit-arrow" aria-hidden="true">←</span>
                 </>
               )}
             </button>
@@ -199,7 +208,7 @@ export default function Register() {
             <p className="ep-reg__footer">
               כבר יש לך חשבון?{" "}
               <Link to="/login" className="ep-reg__link">
-                התחבר ←
+                 התחבר
               </Link>
             </p>
           </form>

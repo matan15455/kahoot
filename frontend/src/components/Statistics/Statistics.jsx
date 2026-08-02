@@ -32,7 +32,7 @@ export default function Statistics() {
     fetch();
   }, [token]);
 
-  /* ── חישוב מספר הפעלה לכל session ── */
+  /*  חישוב מספר הפעלה לכל session  */
   const sessionsWithRun = useMemo(() => {
     const runCountMap = {};
     return [...sessions]
@@ -44,7 +44,7 @@ export default function Statistics() {
       });
   }, [sessions]);
 
-  /* ── רשימת חידונים ייחודית ל-dropdown ── */
+  /*  רשימת חידונים ייחודית ל-dropdown  */
   const uniqueQuizzes = useMemo(() => {
     const map = new Map();
     sessions.forEach((s) => {
@@ -56,7 +56,7 @@ export default function Statistics() {
     return [...map.values()].sort((a, b) => b.count - a.count);
   }, [sessions]);
 
-  /* ── סינון + מיון לתצוגה ── */
+  /*  סינון + מיון לתצוגה  */
   const visible = useMemo(() => {
     let list = sessionsWithRun;
 
@@ -93,7 +93,7 @@ export default function Statistics() {
 
   return (
     <div className="ep-stat">
-      {/* ── כותרת ── */}
+      {/*  כותרת  */}
       <header className="ep-stat__head">
         <div>
           <p className="ep-stat__kicker">סטטיסטיקות</p>
@@ -118,7 +118,6 @@ export default function Statistics() {
         )}
       </header>
 
-      {/* ── EMPTY ── */}
       {sessions.length === 0 ? (
         <div className="ep-stat__empty">
           <div className="ep-stat__empty-icon">📊</div>
@@ -135,7 +134,6 @@ export default function Statistics() {
         </div>
       ) : (
         <>
-          {/* ── בקרי סינון ── */}
           <div className="ep-stat__controls">
             <div className="ep-stat__search">
               <input
@@ -183,7 +181,7 @@ export default function Statistics() {
             </select>
           </div>
 
-          {/* ── רשימה ── */}
+          {/*  רשימה  */}
           {visible.length === 0 ? (
             <div className="ep-stat__no-results">
               <p>לא נמצאו תוצאות עבור החיפוש שלך.</p>

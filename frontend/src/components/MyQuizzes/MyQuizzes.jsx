@@ -36,7 +36,7 @@ export default function MyQuizzes() {
     fetchQuizzes();
   }, [token]);
 
-  /* ── Loading ── */
+  /*  Loading  */
   if (loading) {
     return (
       <div className="ep-myq ep-myq--state">
@@ -71,7 +71,6 @@ export default function MyQuizzes() {
   return (
     <div className="ep-myq">
 
-      {/* ── כותרת ── */}
       <header className="ep-myq__head">
         <div className="ep-myq__head-text">
           <p className="ep-myq__kicker">
@@ -106,7 +105,6 @@ export default function MyQuizzes() {
         )}
       </header>
 
-      {/* ── תוכן ── */}
       {count === 0 ? (
         <div className="ep-myq__empty">
           <div className="ep-myq__empty-art" aria-hidden="true">

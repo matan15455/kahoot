@@ -219,7 +219,6 @@ export default function SessionView() {
             </div>
           )}
 
-          {/* ── 4 כרטיסי insight ── */}
           <div className="ep-sv__kpis">
             <div className="ep-sv__kpi">
               <span className="ep-sv__kpi-label">ממוצע ניקוד</span>
@@ -409,7 +408,7 @@ export default function SessionView() {
         </div>
       )}
 
-      {/* ══ פרטי שחקן ══ */}
+      {/*  פרטי שחקן  */}
       {tab === "players" && selectedPlayer && (
         <div className="ep-sv__panel">
           <button
@@ -419,7 +418,6 @@ export default function SessionView() {
             ← כל השחקנים
           </button>
 
-          {/* Hero */}
           <div className="ep-sv__player-hero">
             <div className="ep-sv__player-hero-left">
               <div className="ep-sv__player-big-avatar">

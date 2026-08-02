@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
+const usernameRegex = /^[a-zA-Zא-ת0-9]{3,20}$/;
+const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
 
 // הרשמה
 router.post("/register", async (req, res) => {
@@ -14,6 +16,18 @@ router.post("/register", async (req, res) => {
     if (!username || !password) {
       return res.status(400).json({
         message: "נדרשים שם משתמש וסיסמה"
+      });
+    }
+
+    if (!usernameRegex.test(username)) {
+      return res.status(400).json({
+        message: "שם משתמש צריך להיות 3-20 תווים, אותיות וספרות בלבד"
+      });
+    }
+
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message: "הסיסמה חייבת להכיל לפחות 8 תווים, אות אחת וספרה אחת"
       });
     }
 
@@ -41,6 +55,7 @@ router.post("/register", async (req, res) => {
   }
 });
 
+// התחברות
 router.get("/login", async (req, res) => {
   try {
     const { username, password } = req.query;

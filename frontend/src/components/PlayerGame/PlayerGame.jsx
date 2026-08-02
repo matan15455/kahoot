@@ -89,7 +89,7 @@ export default function PlayerGame() {
     setEarned(earned);
   };
 
-  /* ============ Loading ============ */
+  /*  Loading  */
   if (!room) {
     return (
       <div className="ep-pg ep-pg--state">
@@ -101,7 +101,7 @@ export default function PlayerGame() {
     );
   }
 
-  /* ============ END ============ */
+  /*  END  */
   if (room.phase === "END") {
     return (
       <div className="ep-pg">
@@ -125,7 +125,7 @@ export default function PlayerGame() {
     );
   }
 
-  /* ============ SUMMARY ============ */
+  /*  SUMMARY  */
   if (room.phase === "SUMMARY" && room.summary) {
     const entries = Object.entries(room.summary.answersCount);
     const totalAnswers = entries.reduce((sum, [, c]) => sum + c, 0);
@@ -136,7 +136,6 @@ export default function PlayerGame() {
 
     return (
       <div className="ep-pg">
-        {/* בנר תוצאה אישית */}
         <div
           className={
             "ep-pg__verdict" +
@@ -231,7 +230,7 @@ export default function PlayerGame() {
     );
   }
 
-  /* ============ SCORES ============ */
+  /*  SCORES  */
   if (room.phase === "SCORES") {
     return (
       <div className="ep-pg">
@@ -251,7 +250,7 @@ export default function PlayerGame() {
     );
   }
 
-  /* ============ QUESTION ============ */
+  /*  QUESTION  */
   if (room.phase === "QUESTION" && room.question) {
     const totalQ = room.questions?.length || room.question.totalQuestions;
     const danger = timeLeft !== null && timeLeft <= 5;
@@ -260,7 +259,6 @@ export default function PlayerGame() {
     return (
       <div className="ep-pg ep-pg--q">
 
-        {/* ראש: chip + timer */}
         <header className="ep-pg__qhead">
           <span className="ep-pg__chip">
             שאלה {room.questionIndex + 1}
@@ -297,7 +295,6 @@ export default function PlayerGame() {
           <h2 className="ep-pg__qtext">{room.question.text}</h2>
         </div>
 
-        {/* רמז: בחרו תשובה */}
         <div className="ep-pg__hint">
           <p className="ep-pg__hint-label">
             {selectedAnswer ? "תשובתך נשלחה" : "בחרו תשובה"}
@@ -307,7 +304,6 @@ export default function PlayerGame() {
           )}
         </div>
 
-        {/* 4 כפתורי תשובה */}
         <ul className="ep-pg__answers">
           {room.question.answers.map((ans, idx) => {
             const meta = ANSWER_META[idx % ANSWER_META.length];
@@ -351,8 +347,7 @@ export default function PlayerGame() {
     );
   }
 
-  /* ============ Default — ממתין ============ */
-  /* ============ Default — ממתין ============ */
+  /*  Default  ממתין  */
   return (
     <div className="ep-pg ep-pg--state">
       <div className="ep-pg__loader">

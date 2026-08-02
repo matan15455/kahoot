@@ -39,7 +39,7 @@ export default function QuestionForm({ onAddQuestion, onCancel, index = 0 }) {
   };
 
   const removeAnswer = (i) => {
-    if (answers.length <= 2) return; // לפחות 2 תשובות
+    if (answers.length <= 2) return; 
     setAnswers(answers.filter((_, j) => j !== i));
   };
 

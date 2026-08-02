@@ -43,7 +43,7 @@ router.patch("/:username", authMiddleware, async (req, res) => {
   }
 
   // רשימת שדות שמותר לעדכן
-  const allowedFields = ["password"];
+  const allowedFields = ["password", "currentPassword"];
 
   // בדיקה אם יש שדות לא חוקיים
   const invalidFields = Object.keys(updates).filter(
@@ -53,8 +53,12 @@ router.patch("/:username", authMiddleware, async (req, res) => {
     return res.status(400).json({ message: `שדות לא חוקיים: ${invalidFields.join(", ")}` });
   }
 
+  if (updates.password && !updates.currentPassword) {
+    return res.status(400).json({ message: "יש להזין את הסיסמה הנוכחית" });
+  }
+
   // ולידציה לשדה הסיסמה
-  const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+  const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
 
   if (updates.password && !passwordRegex.test(updates.password)) {
     return res.status(400).json({ message: "סיסמה לא עומדת בדרישות הבטיחות" });
@@ -66,13 +70,20 @@ router.patch("/:username", authMiddleware, async (req, res) => {
       return res.status(404).json({ message: "שם משתמש לא קיים במערכת" });
     }
 
+    if (updates.password) {
+      const isMatch = await bcrypt.compare(updates.currentPassword, user.password);
+      if (!isMatch) {
+        return res.status(403).json({ message: "הסיסמה הנוכחית שגויה" });
+      }
+    }
+
     // עדכון השדות החוקיים בלבד
     for (const key of Object.keys(updates)) {
       if (key === "password") {
         // הצפנת הסיסמה לפני שמירה
         const hashedPassword = await bcrypt.hash(updates.password, 10);
         user.password = hashedPassword;
-      } else {
+      } else if (key !== "currentPassword") {
         user[key] = updates[key];
       }
     }

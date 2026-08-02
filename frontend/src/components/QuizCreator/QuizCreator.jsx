@@ -62,7 +62,7 @@ export default function QuizCreator() {
     setSaving(false);
   };
 
-  /* ============ Step 1: QuizForm (title + description) ============ */
+  /*  Step 1 */
   if (!quiz) {
     return (
       <div className="ep-qc">
@@ -77,14 +77,14 @@ export default function QuizCreator() {
     );
   }
 
-  /* ============ Step 2: Build questions ============ */
+  /* Step 2 */
   const totalPoints = questions.reduce((s, q) => s + (q.points || 0), 0);
   const totalTime = questions.reduce((s, q) => s + (q.time || 0), 0);
 
   return (
     <div className="ep-qc">
 
-      {/* ── כותרת ── */}
+      {/*  כותרת  */}
       <header className="ep-qc__head">
         <div className="ep-qc__head-text">
           <p className="ep-qc__kicker">
@@ -122,7 +122,7 @@ export default function QuizCreator() {
         </div>
       </header>
 
-      {/* ── סטטיסטיקה ── */}
+      {/*  סטטיסטיקה  */}
       <div className="ep-qc__stats">
         <div className="ep-qc__stat">
           <span className="ep-qc__stat-label">שאלות</span>
@@ -138,7 +138,7 @@ export default function QuizCreator() {
         </div>
       </div>
 
-      {/* ── תוכן ── */}
+      {/*  תוכן  */}
       <div className="ep-qc__body">
 
         {questions.length === 0 && !addingQuestion && (
@@ -207,7 +207,7 @@ export default function QuizCreator() {
           </ul>
         )}
 
-        {/* ── + הוסף שאלה ── */}
+        {/* הוסף שאלה  */}
         {questions.length > 0 && !addingQuestion && (
           <button
             className="ep-qc__add"
@@ -218,7 +218,7 @@ export default function QuizCreator() {
           </button>
         )}
 
-        {/* ── טופס הוספה ── */}
+        {/*  טופס הוספה  */}
         {addingQuestion && (
           <QuestionForm
             index={questions.length}

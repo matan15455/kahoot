@@ -74,7 +74,7 @@ export default function HostGame() {
     navigate("/my-quizzes");
   };
 
-  /* ============ Loading ============ */
+  /*  Loading  */
   if (!room) {
     return (
       <div className="ep-host ep-host--state">
@@ -86,7 +86,7 @@ export default function HostGame() {
     );
   }
 
-  /* ============ END — סיום החידון ============ */
+  /*  END — סיום החידון  */
   if (room.phase === "END") {
     return (
       <div className="ep-host">
@@ -107,7 +107,7 @@ export default function HostGame() {
     );
   }
 
-  /* ============ SUMMARY — סיכום שאלה ============ */
+  /*  SUMMARY — סיכום שאלה  */
   if (room.phase === "SUMMARY" && room.summary) {
     const entries = Object.entries(room.summary.answersCount);
     const totalAnswers = entries.reduce((sum, [, c]) => sum + c, 0);
@@ -177,7 +177,7 @@ export default function HostGame() {
     );
   }
 
-  /* ============ SCORES — לוח ניקוד בין שאלות ============ */
+  /*  SCORES — לוח ניקוד בין שאלות  */
   if (room.phase === "SCORES") {
     return (
       <div className="ep-host">
@@ -197,7 +197,7 @@ export default function HostGame() {
   }
 
 
-  /* ============ QUESTION — שאלה חיה ============ */
+  /*  QUESTION — שאלה חיה  */
   if (room.phase === "QUESTION" && room.question) {
     const totalQ = room.questions?.length || room.question.totalQuestions;
     const danger = timeLeft !== null && timeLeft <= 5;
@@ -206,7 +206,7 @@ export default function HostGame() {
     return (
       <div className="ep-host">
 
-        {/* ── ראש ── */}
+        {/*  ראש  */}
         <header className="ep-host__qhead">
           <div className="ep-host__qhead-left">
             <span className="ep-host__chip">
@@ -248,12 +248,12 @@ export default function HostGame() {
           </div>
         </header>
 
-        {/* ── טקסט השאלה ── */}
+        {/*  טקסט השאלה  */}
         <div className="ep-host__qbox">
           <h2 className="ep-host__qtext">{room.question.text}</h2>
         </div>
 
-        {/* ── 4 התשובות ── */}
+        {/*   התשובות  */}
         <ul className="ep-host__answers">
           {room.question.answers.map((ans, idx) => {
             const meta = ANSWER_META[idx % ANSWER_META.length];
@@ -280,7 +280,7 @@ export default function HostGame() {
     );
   }
 
-  /* ============ Default — ממתין ============ */
+  /*  Default  ממתין  */
   return (
     <div className="ep-host ep-host--state">
       <div className="ep-host__loader">

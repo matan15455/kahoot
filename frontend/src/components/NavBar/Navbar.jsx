@@ -32,7 +32,6 @@ export default function Navbar() {
     <nav className="ep-nav">
       <div className="ep-nav__inner">
 
-        {/* ── מותג ── */}
         <NavLink to="/" className="ep-nav__brand" end>
           <EpLogo size={32} />
           <span className="ep-nav__brand-wordmark">
@@ -41,7 +40,6 @@ export default function Navbar() {
           </span>
         </NavLink>
 
-        {/* ── קישורים ── */}
         <div className="ep-nav__links">
           {isAuthenticated ? (
             <>

@@ -16,7 +16,6 @@ export default function Login() {
 
   //מטפל בהגשת טופס ההתחברות
   const handleSubmit = async (e) => {
-    //מונע רענון של הדפדפן ומחיקת הSTATE
     e.preventDefault();
 
     //מוחק שגיאות קודמות
@@ -46,9 +45,7 @@ export default function Login() {
     <div className="ep-login">
       <div className="ep-login__grid">
 
-        {/* ── צד שמאל: מותג + הצהרת ערך ── */}
         <aside className="ep-login__brand">
-          {/* כתמי רקע דקורטיביים */}
           <span className="ep-login__blob ep-login__blob--a" aria-hidden="true" />
           <span className="ep-login__blob ep-login__blob--b" aria-hidden="true" />
 
@@ -88,7 +85,6 @@ export default function Login() {
           </ul>
         </aside>
 
-        {/* ── צד ימין: טופס ── */}
         <main className="ep-login__form-wrap">
           <form className="ep-login__form" onSubmit={handleSubmit} noValidate>
             <div className="ep-login__form-top">
@@ -158,7 +154,7 @@ export default function Login() {
               </Link>
               {"  ·  "}
               <Link to="/join-room" className="ep-login__link">
-                הצטרפו לחדר ללא הרשמה
+                הצטרף לחדר ללא הרשמה
               </Link>
             </p>
           </form>

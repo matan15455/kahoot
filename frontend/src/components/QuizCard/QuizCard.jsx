@@ -9,7 +9,7 @@ export default function QuizCard({ quiz, colorIndex = 0,onDelete  }) {
     navigate(`/create-room?quizId=${quiz._id}`);
   };
 
-  // צבע/צורה דטרמיניסטיים — כל חידון מקבל זהות ויזואלית עקבית
+  // צבע/צורה דטרמיניסטיים כל חידון מקבל זהות ויזואלית עקבית
   const meta = ANSWER_META[colorIndex % ANSWER_META.length];
   const questionCount = quiz.questions?.length || 0;
 

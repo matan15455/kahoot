@@ -6,7 +6,7 @@ import "./CreateRoom.css";
 
 export default function CreateRoom() {
   const [room, setRoom] = useState(null);
-  const [copied, setCopied] = useState(null); // 'pin' | 'link' | null
+  const [copied, setCopied] = useState(null); 
 
   const navigate = useNavigate();
   // מקבל את החיבור
@@ -72,7 +72,7 @@ export default function CreateRoom() {
     setTimeout(() => setCopied(null), 1500);
   };
 
-  /* ============ Loading ============ */
+  /*  Loading  */
   if (!room) {
     return (
       <div className="ep-cr ep-cr--state">
@@ -91,7 +91,6 @@ export default function CreateRoom() {
     <div className="ep-cr">
       <div className="ep-cr__grid">
 
-        {/* ============ צד שמאל: PIN ו-CTA ============ */}
         <section className="ep-cr__main">
           <div className="ep-cr__main-head">
             <span className="ep-cr__kicker">
@@ -141,7 +140,7 @@ export default function CreateRoom() {
           )}
         </section>
 
-        {/* ============ צד ימין: שחקנים ============ */}
+        {/*  צד ימין: שחקנים  */}
         <aside className="ep-cr__roster">
           <div className="ep-cr__roster-head">
             <p className="ep-cr__roster-label">שחקנים בחדר</p>
