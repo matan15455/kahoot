@@ -6,9 +6,7 @@ import jwt from "jsonwebtoken";
 
 const rooms = {};
 
-/* ===========================
-   PHASES 
-=========================== */
+/* PHASES  */
 const PHASES = {
   LOBBY: "LOBBY",
   QUESTION: "QUESTION",
@@ -49,9 +47,7 @@ export default function initSocket(server) {
   io.on("connection", (socket) => {
     console.log("🟢 Connected:", socket.mongoId,socket.username);    
 
-    /* =====================================================
-        Helpers
-    ===================================================== */
+    /* Helpers */
 
     // שולח חדר
     function emitRoom(roomId) {
@@ -86,9 +82,7 @@ export default function initSocket(server) {
       io.to(roomId).emit("roomUpdated", payload);
     }
 
-    /**
-     * מסיר מידע רגיש (isCorrect) לפני שליחה ללקוח
-     */
+    /* מסיר מידע רגיש (isCorrect) לפני שליחה ללקוח */
     function sanitizeQuestion(q) {
       return {
         text: q.text,
@@ -103,7 +97,7 @@ export default function initSocket(server) {
       return q.answers.filter(a => a.isCorrect).map(a => a.text);
     }
 
-    // 
+    // מאתחל נתוני תשובות
     function initAnswers(room) {
       room.answersCount = {}; // מאפס כמה שחקנים בחרו כל תשובה
       room.totalAnswers = 0; // כמה שחקנים כבר ענו על השאלה הנוכחית
@@ -184,9 +178,7 @@ export default function initSocket(server) {
       }
     }
 
-    /* =====================================================
-        Create Room (Host)
-    ===================================================== */
+    /* Create Room (Host) */
 
     // מקבל קוד חידון ויוצר חדר
     socket.on("createRoom", ({ quizId }) => {
@@ -239,9 +231,7 @@ export default function initSocket(server) {
       console.log(`🏠 Room ${roomId} created by ${userId}`);
     });
 
-    /* =====================================================
-        Join Room (Player)
-    ===================================================== */
+    /* Join Room (Player) */
 
 
     // התחברות לחדר
@@ -282,9 +272,7 @@ export default function initSocket(server) {
     });
 
 
-    /* =====================================================
-        Start Quiz (Host)
-    ===================================================== */
+    /* Start Quiz (Host) */
 
     // מתחיל חידון
     socket.on("startQuiz", async ({ roomId }) => {
@@ -316,9 +304,7 @@ export default function initSocket(server) {
       emitRoom(roomId);
     });
 
-    /* =====================================================
-        Answer Question (Player)
-    ===================================================== */
+    /* Answer Question (Player) */
 
     //מתבצע כששחקן עונה על שאלה
     socket.on("answerQuestion", ({ roomId, answerText }) => {
@@ -362,9 +348,8 @@ export default function initSocket(server) {
       }
     });
 
-    /* =====================================================
-        Next Question (Host)
-    ===================================================== */
+    /* Next Question (Host) */
+
     // ממאזין לסיום שאלה מהמארח
     socket.on("nextQuestion",async  ({ roomId }) => {
       const room = rooms[roomId];
@@ -375,7 +360,7 @@ export default function initSocket(server) {
       if (String(room.hostId) !== String(socket.mongoId)) 
         return;
 
-      //  אם אנחנו באמצע שאלה → קודם סיכום
+      //  אם אנחנו באמצע שאלה קודם סיכום
       if (room.phase === PHASES.QUESTION) {
         finishQuestion(roomId);
         return;
@@ -388,7 +373,6 @@ export default function initSocket(server) {
         return;
       }
 
-      // SCORES → QUESTION / END
       if (room.phase === PHASES.SCORES) {
         // אם זה סוף חידון
         if (room.currentQuestionIndex >= room.questions.length - 1) {
@@ -414,7 +398,6 @@ export default function initSocket(server) {
       }
     });
 
-    // כשנכנסים למסך המשחק, יש חלון זמן קצר בין רישום ה-listener לבין הרגע שה-socket מוכן — אם roomUpdated נשלח מהשרת בדיוק בחלון הזה, הלקוח לא יקבל אותו.
     socket.on("requestRoomState", ({ roomId }) => {
       emitRoom(roomId);
     });
@@ -433,9 +416,7 @@ export default function initSocket(server) {
       emitRoom(roomId);
     });
 
-    /* =====================================================
-       Leave Room (Host / Player) - יציאה מפורשת
-    ===================================================== */
+    /* Leave Room (Host / Player) - יציאה מפורשת */
     socket.on("leaveRoom", ({ roomId }) => {
       const room = rooms[roomId];
       if (!room) return;
@@ -457,9 +438,7 @@ export default function initSocket(server) {
     });
 
 
-    /* =====================================================
-       Disconnect
-    ===================================================== */
+    /* Disconnect */
 
     socket.on("disconnect", () => {
 

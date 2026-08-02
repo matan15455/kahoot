@@ -20,7 +20,7 @@ export default function authMiddleware(req, res, next) {
       username: decoded.username  // שם המשתמש
     };
 
-    next(); // ממשיכים ל־route
+    next(); 
   } catch (err) {
       if (err.name === "TokenExpiredError") {
         return res.status(401).json({ message: "פג תוקף החיבור, התחבר/י מחדש" });
